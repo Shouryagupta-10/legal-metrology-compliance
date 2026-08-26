@@ -33,6 +33,7 @@ import { RulebookModal } from './components/Handbook/RulebookModal';
 import { LegalOfficerChat } from './components/Assistant/LegalOfficerChat';
 
 export const App: React.FC = () => {
+  const [isDark, setIsDark] = useState<boolean>(false);
   const [currentSample, setCurrentSample] = useState<SampleProduct>(SAMPLE_PRODUCTS[0]);
   const [currentReport, setCurrentReport] = useState<ComplianceReport | null>(null);
   const [activeTab, setActiveTab] = useState<'audit' | 'ecommerce' | 'batch' | 'handbook'>('audit');
@@ -282,7 +283,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-sky-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-sky-500 selection:text-white">
       {/* Top Navigation */}
       <Navbar
         report={currentReport}
@@ -292,6 +293,8 @@ export const App: React.FC = () => {
         onReset={handleReset}
         onOpenBatchModal={() => setIsBatchModalOpen(true)}
         onOpenAssistant={() => setIsAssistantOpen(true)}
+        isDark={isDark}                             
+          toggleTheme={() => setIsDark(!isDark)}
       />
 
       {/* Main Container */}
@@ -370,7 +373,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+      <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>
             MetrologyGuard AI &copy; 2026 &bull; Legal Metrology (Packaged Commodities) Compliance System
