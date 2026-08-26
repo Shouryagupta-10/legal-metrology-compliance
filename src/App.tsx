@@ -283,7 +283,8 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-sky-500 selection:text-white">
+    <div className={isDark ? 'dark' : ''}>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-sky-500 selection:text-white transition-colors duration-300">
       {/* Top Navigation */}
       <Navbar
         report={currentReport}
@@ -436,6 +437,7 @@ export const App: React.FC = () => {
           />
         </>
       )}
+    </div>
     </div>
   );
 };
