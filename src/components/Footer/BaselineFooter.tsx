@@ -98,15 +98,51 @@ export const BaselineFooter: React.FC<{
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-white/15 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50 font-mono">
-        <div>
-          &copy; 2026 Baseline MetrologyGuard AI. Standard: LMPC Rules 2011 / 2024.
+            {/* Bottom Bar & Legal Disclaimers */}
+            {/* Bottom Bar & Legal Disclaimers */}
+      <div className="border-t border-white/15 pt-8 flex flex-col gap-6 text-xs text-white/50 font-mono">
+        
+        {/* Hackathon Disclaimer */}
+        <div className="bg-white/5 p-4 rounded-xl border border-white/10 text-[10px] sm:text-xs leading-relaxed text-white/60">
+          <strong className="text-white">LEGAL DISCLAIMER:</strong> This software is a prototype developed for the <strong className="text-white">Smart India Hackathon (SIH) 2026</strong>. It is designed to assist with packaging compliance audits but is not an official government utility. The calculated Section 36 penalty liabilities and generated Inspection Certificates are simulations. Always consult a registered Legal Metrology Officer before commercial printing.
         </div>
-        <div className="flex items-center gap-6">
-          <button onClick={onOpenHandbook} className="hover:text-white">Statutory Rulebook</button>
-          <a href="#studio" className="hover:text-white">Packaging Studio</a>
+
+        {/* Copyright & Team Credits */}
+        <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 pb-4">
+          <div className="shrink-0">
+            &copy; 2026 Baseline MetrologyGuard AI. Standard: LMPC Rules 2011 / 2024.
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <span className="text-white/40">PS ID: SIH26034</span>
+            <span className="text-[var(--brand-light)] font-bold">Team ComplianceX</span>
+            
+            {/* Team LinkedIn Links */}
+            <div className="flex flex-wrap items-center gap-2 xl:border-l xl:border-white/20 xl:pl-4 text-[11px]">
+              <a href="https://www.linkedin.com/in/pulkit-sachdev-980809367" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Pulkit Sachdev</a>
+              <span className="text-white/20 hidden sm:inline">•</span>
+              
+              <a href="https://www.linkedin.com/in/sameer-aryan-6a699b377" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Sameer Aryan</a>
+              <span className="text-white/20 hidden sm:inline">•</span>
+              
+              <a href="https://www.linkedin.com/in/shourya-gupta-b83905374" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Shourya Gupta</a>
+              <span className="text-white/20 hidden md:inline">•</span>
+              
+              <a href="https://www.linkedin.com/in/kirti-gupta-6518533ba" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Kirti Gupta</a>
+              <span className="text-white/20 hidden sm:inline">•</span>
+              
+              <a href="https://www.linkedin.com/in/aman-sharma-2b9608380" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Aman Sharma</a>
+              <span className="text-white/20 hidden sm:inline">•</span>
+              
+              <a href="https://www.linkedin.com/in/akshita-agarwal-1ba358380" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Akshita Aggarwal</a>
+            </div>
+
+            <a href="https://github.com/Shouryagupta-10/legal-metrology-compliance" target="_blank" rel="noreferrer" className="hover:text-[var(--brand-light)] text-white transition-colors font-bold underline underline-offset-4 ml-0 xl:ml-2 shrink-0">
+              GitHub Repo
+            </a>
+          </div>
         </div>
       </div>
     </footer>
   );
-};
+}; 
