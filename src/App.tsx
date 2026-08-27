@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import Lenis from 'lenis';
 
 import {
   SampleProduct,
@@ -15,7 +16,14 @@ import { evaluateCompliance } from './services/ruleEngine';
 import { performOcr } from './services/clientOcr';
 import { sounds } from './services/soundEffects';
 
-import { Navbar } from './components/Navbar';
+import { BaselineLoader } from './components/Loader/BaselineLoader';
+import { BaselineHero } from './components/Hero/BaselineHero';
+import { FullscreenMenu } from './components/Navigation/FullscreenMenu';
+import { BaselineTrustSection } from './components/Sections/BaselineTrustSection';
+import { BaselineStatsSection } from './components/Sections/BaselineStatsSection';
+import { BaselineTestimonialsSection } from './components/Sections/BaselineTestimonialsSection';
+import { BaselineFooter } from './components/Footer/BaselineFooter';
+
 import { MultiImageUploader } from './components/Scanner/MultiImageUploader';
 import { CameraModal } from './components/Scanner/CameraModal';
 import { EcommerceScraperModal } from './components/Scanner/EcommerceScraperModal';
@@ -26,7 +34,6 @@ import { ComplianceScoreCard } from './components/Compliance/ComplianceScoreCard
 import { ViolationAlerts } from './components/Compliance/ViolationAlerts';
 import { RuleChecklist } from './components/Compliance/RuleChecklist';
 import { USPCalculator } from './components/Compliance/USPCalculator';
-import { CompoundingSimulator } from './components/Compliance/CompoundingSimulator';
 import { AuditReportView } from './components/Reports/AuditReportView';
 import { BatchAuditModal } from './components/Batch/BatchAuditModal';
 import { RulebookModal } from './components/Handbook/RulebookModal';
@@ -36,6 +43,9 @@ export const App: React.FC = () => {
   const [currentSample, setCurrentSample] = useState<SampleProduct>(SAMPLE_PRODUCTS[0]);
   const [currentReport, setCurrentReport] = useState<ComplianceReport | null>(null);
   const [activeTab, setActiveTab] = useState<'audit' | 'ecommerce' | 'batch' | 'handbook'>('audit');
+
+  const [isLoaderReady, setIsLoaderReady] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Interactive 1-Click Artwork Fix state
   const [isFixApplied, setIsFixApplied] = useState<boolean>(false);
@@ -58,6 +68,40 @@ export const App: React.FC = () => {
   const [isFieldEditorOpen, setIsFieldEditorOpen] = useState<boolean>(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
 
+  // Initialize Lenis & Adaptive Scale-up Grid
+  useEffect(() => {
+    // 1. Adaptive Rem Grid Scale-up for screens > 1920px
+    const FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666;
+    const handleResize = () => {
+      const reduction = ((BASE_W - window.innerWidth) / BASE_W) * 100 * COEF;
+      const size = FONT_BASE - (FONT_BASE * reduction) / 100;
+      if (size > FONT_BASE) {
+        document.documentElement.style.fontSize = size + "px";
+      } else {
+        document.documentElement.style.removeProperty("font-size");
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    // 2. Lenis Smooth Scroll
+    const lenis = new Lenis({
+      smoothWheel: true,
+      duration: 1.2
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      lenis.destroy();
+    };
+  }, []);
+
   // Initialize report on mount or sample switch
   useEffect(() => {
     setIsFixApplied(false);
@@ -68,7 +112,6 @@ export const App: React.FC = () => {
     let decls = { ...sample.declarations };
 
     if (fixMode) {
-      // Auto-fix any defective declarations to 100% compliant standards
       if (decls.netQuantityUnit === 'gms') decls.netQuantityUnit = 'g';
       decls.isTaxesInclusiveDeclared = true;
       decls.rawTaxDeclarationText = 'Inclusive of all taxes';
@@ -164,33 +207,6 @@ export const App: React.FC = () => {
     }
   };
 
-  // Live Camera snapshot handler
-  const handleCameraCapture = (imageDataUrl: string) => {
-    handleImageUploaded(imageDataUrl, 'Live Camera Snapshot');
-  };
-
-  // E-commerce listing audit handler
-  const handleEcommerceAudit = (
-    declarations: ExtractedDeclarations,
-    ecomData: EcommerceListingData,
-    productName: string,
-    brandName: string,
-    categoryName: string
-  ) => {
-    const report = evaluateCompliance({
-      productName,
-      brandName,
-      categoryName,
-      declarations,
-      ecommerceData: ecomData,
-      isEcommerceMode: true,
-      labelImages: currentSample.labelImages
-    });
-
-    setCurrentReport(report);
-    setActiveTab('audit');
-  };
-
   // Synchronized Selection: User clicks a bounding box on the image
   const handleSelectBoundingBox = (boxId: string) => {
     setActiveBoundingBoxId(boxId);
@@ -231,157 +247,156 @@ export const App: React.FC = () => {
     }
   };
 
-  // PDP calculation update
-  const handleSavePDP = (pdpResult: PrincipalDisplayPanelCalculation) => {
-    if (!currentReport) return;
-    sounds.playSuccess();
-    const updated = evaluateCompliance({
-      productName: currentReport.productName,
-      brandName: currentReport.brandName,
-      categoryName: currentReport.categoryName,
-      declarations: currentReport.declarations,
-      pdpInput: {
-        packageShape: pdpResult.packageShape,
-        heightMm: pdpResult.heightMm,
-        widthMm: pdpResult.widthMm,
-        depthMm: pdpResult.depthMm,
-        diameterMm: pdpResult.diameterMm,
-        measuredNumeralHeightMm: pdpResult.measuredNumeralHeightMm
-      },
-      labelImages: currentReport.labelImages
-    });
-    setCurrentReport(updated);
-  };
-
-  // Human-in-the-loop manual declaration correction
-  const handleSaveDeclarations = (updatedDeclarations: ExtractedDeclarations) => {
-    if (!currentReport) return;
-    sounds.playSuccess();
-    const updated = evaluateCompliance({
-      productName: updatedDeclarations.commodityName || currentReport.productName,
-      brandName: currentReport.brandName,
-      categoryName: currentReport.categoryName,
-      declarations: updatedDeclarations,
-      pdpInput: {
-        packageShape: currentReport.pdpCalculation.packageShape,
-        heightMm: currentReport.pdpCalculation.heightMm,
-        widthMm: currentReport.pdpCalculation.widthMm,
-        depthMm: currentReport.pdpCalculation.depthMm,
-        diameterMm: currentReport.pdpCalculation.diameterMm,
-        measuredNumeralHeightMm: currentReport.pdpCalculation.measuredNumeralHeightMm
-      },
-      labelImages: currentReport.labelImages
-    });
-    setCurrentReport(updated);
-  };
-
-  const handleReset = () => {
-    setIsFixApplied(false);
-    setCurrentSample(SAMPLE_PRODUCTS[0]);
-    setActiveTab('audit');
-  };
-
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-sky-500 selection:text-white">
-      {/* Top Navigation */}
-      <Navbar
-        report={currentReport}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onOpenHandbook={() => setIsHandbookOpen(true)}
-        onReset={handleReset}
-        onOpenBatchModal={() => setIsBatchModalOpen(true)}
+    <div className="min-h-screen bg-white text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white">
+      {/* 1. Opening Intro Loader */}
+      <BaselineLoader onReady={() => setIsLoaderReady(true)} />
+
+      {/* 2. Fullscreen Menu Overlay */}
+      <FullscreenMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        onSelectTab={setActiveTab}
         onOpenAssistant={() => setIsAssistantOpen(true)}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        {/* Multi-Image Uploader & Sample Gallery */}
-        <MultiImageUploader
-          onImageSelected={handleImageUploaded}
+      {/* Inset Main Frame (0.5rem - 0.75rem padding) */}
+      <main className="baseline-page-frame space-y-3">
+        {/* 3. Hero Section (Deep Navy Card) */}
+        <BaselineHero
+          currentSample={currentSample}
           onSelectSample={sample => {
             sounds.playClick();
             setCurrentSample(sample);
           }}
-          onOpenLiveCamera={() => setIsCameraOpen(true)}
-          onOpenEcommerceModal={() => setIsEcomModalOpen(true)}
-          isScanning={isScanning}
-          scanProgress={scanProgress}
-          scanStatusText={scanStatusText}
-          activeSampleId={currentSample.id}
+          report={currentReport}
+          onOpenMenu={() => setIsMenuOpen(true)}
+          onOpenAssistant={() => setIsAssistantOpen(true)}
+          onOpenHandbook={() => setIsHandbookOpen(true)}
+          onOpenBatchModal={() => setIsBatchModalOpen(true)}
+          isReady={isLoaderReady}
         />
 
-        {currentReport && (
-          <>
-            {/* Upper Section: Compliance Score & Section 36 Warnings */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <ComplianceScoreCard report={currentReport} />
+        {/* 4. Trust & Enforcement Section with Ghost Typography */}
+        <BaselineTrustSection
+          onSelectSample={sample => {
+            sounds.playClick();
+            setCurrentSample(sample);
+          }}
+        />
+
+        {/* 5. Main Packaging Inspection Studio */}
+        <section id="studio" className="bg-[var(--surface)] rounded-[var(--radius-card-lg)] p-4 sm:p-8 lg:p-10 border border-[var(--hairline)] shadow-sm space-y-8">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[var(--hairline)] pb-6">
+            <div>
+              <div className="baseline-eyebrow tone-dark mb-2">
+                <span className="eyebrow-dot" />
+                <span>Statutory Verification Studio</span>
               </div>
-              <div>
-                <ViolationAlerts
-                  report={currentReport}
-                  onFocusRule={handleSelectRule}
-                />
-              </div>
+              <h2 className="text-3xl sm:text-4xl font-medium uppercase tracking-tight text-[var(--ink)]">
+                Packaging Proofing &amp; Vision Audit
+              </h2>
             </div>
 
-            {/* Middle Section: Interactive Studio Canvas + Rule Checklist */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left Column: Interactive Studio Canvas */}
-              <div className="lg:col-span-5 h-[640px]">
-                <InteractiveStudioCanvas
-                  imageRecord={currentSample.labelImages[0]}
-                  activeBoundingBoxId={activeBoundingBoxId}
-                  onSelectBoundingBox={handleSelectBoundingBox}
-                  onOpenPDPTool={() => setIsPDPToolOpen(true)}
-                  onOpenFieldEditor={() => setIsFieldEditorOpen(true)}
-                  isFixApplied={isFixApplied}
-                  onToggleAutoFix={
-                    currentReport.overallStatus === 'NON_COMPLIANT' || isFixApplied
-                      ? handleToggleAutoFix
-                      : undefined
-                  }
-                />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsFieldEditorOpen(true)}
+                className="px-4 py-2 rounded-full border border-[var(--hairline)] bg-white text-xs font-medium uppercase tracking-wider text-[var(--ink)] hover:bg-[var(--surface)] transition-all btn-tactile shadow-xs"
+              >
+                Edit Extracted Fields
+              </button>
+              <button
+                onClick={() => setIsPDPToolOpen(true)}
+                className="px-4 py-2 rounded-full bg-[var(--brand)] text-white text-xs font-medium uppercase tracking-wider hover:bg-[var(--brand-deep)] transition-all btn-tactile shadow-md"
+              >
+                PDP Geometry Tool
+              </button>
+            </div>
+          </div>
+
+          {/* Sample Selector / Dropzone */}
+          <MultiImageUploader
+            onImageSelected={handleImageUploaded}
+            onSelectSample={sample => {
+              sounds.playClick();
+              setCurrentSample(sample);
+            }}
+            onOpenLiveCamera={() => setIsCameraOpen(true)}
+            onOpenEcommerceModal={() => setIsEcomModalOpen(true)}
+            isScanning={isScanning}
+            scanProgress={scanProgress}
+            scanStatusText={scanStatusText}
+            activeSampleId={currentSample.id}
+          />
+
+          {currentReport && (
+            <>
+              {/* Score & Alerts Summary */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <ComplianceScoreCard report={currentReport} />
+                </div>
+                <div>
+                  <ViolationAlerts
+                    report={currentReport}
+                    onFocusRule={handleSelectRule}
+                  />
+                </div>
               </div>
 
-              {/* Right Column: Statutory Rule-by-Rule Checklist & Interactive Tools */}
-              <div className="lg:col-span-7 space-y-6">
-                <RuleChecklist
-                  ruleResults={currentReport.ruleResults}
-                  activeRuleId={activeRuleId}
-                  onSelectRule={handleSelectRule}
-                />
+              {/* Studio Canvas + Statutory Checklist */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-5 h-[640px]">
+                  <InteractiveStudioCanvas
+                    imageRecord={currentSample.labelImages[0]}
+                    activeBoundingBoxId={activeBoundingBoxId}
+                    onSelectBoundingBox={handleSelectBoundingBox}
+                    onOpenPDPTool={() => setIsPDPToolOpen(true)}
+                    onOpenFieldEditor={() => setIsFieldEditorOpen(true)}
+                    isFixApplied={isFixApplied}
+                    onToggleAutoFix={
+                      currentReport.overallStatus === 'NON_COMPLIANT' || isFixApplied
+                        ? handleToggleAutoFix
+                        : undefined
+                    }
+                  />
+                </div>
 
-                {/* Interactive Section 36 Liability & Compounding Simulator */}
-                <CompoundingSimulator />
-
-                {/* Live Unit Sale Price (USP) Sandbox */}
-                <USPCalculator />
+                <div id="checklist" className="lg:col-span-7 space-y-6">
+                  <RuleChecklist
+                    ruleResults={currentReport.ruleResults}
+                    activeRuleId={activeRuleId}
+                    onSelectRule={handleSelectRule}
+                  />
+                  <USPCalculator />
+                </div>
               </div>
-            </div>
 
-            {/* Official Inspection Certificate View */}
-            <div className="pt-4">
-              <AuditReportView report={currentReport} />
-            </div>
-          </>
-        )}
+              {/* Inspection Notice Document */}
+              <div className="pt-4">
+                <AuditReportView report={currentReport} />
+              </div>
+            </>
+          )}
+        </section>
+
+        {/* 6. Stats & Penalties Band */}
+        <div id="analytics">
+          <BaselineStatsSection />
+        </div>
+
+        {/* 7. Statutory Testimonials & Case Studies */}
+        <BaselineTestimonialsSection />
+
+        {/* 8. Luxury Navy Footer */}
+        <BaselineFooter
+          onOpenAssistant={() => setIsAssistantOpen(true)}
+          onOpenHandbook={() => setIsHandbookOpen(true)}
+        />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>
-            MetrologyGuard AI &copy; 2026 &bull; Legal Metrology (Packaged Commodities) Compliance System
-          </span>
-          <span className="text-[11px] text-slate-600 font-mono">
-            Standard: LMPC Rules 2011 &bull; 2021 USP Amendment &bull; Section 36 Legal Metrology Act, 2009
-          </span>
-        </div>
-      </footer>
-
-      {/* Interactive AI Legal Metrology Officer Drawer */}
+      {/* AI Assistant Drawer */}
       <LegalOfficerChat
         isOpen={isAssistantOpen}
         onClose={() => setIsAssistantOpen(false)}
@@ -391,21 +406,33 @@ export const App: React.FC = () => {
       <CameraModal
         isOpen={isCameraOpen}
         onClose={() => setIsCameraOpen(false)}
-        onCapture={handleCameraCapture}
+        onCapture={url => handleImageUploaded(url, 'Camera Capture')}
       />
 
       <EcommerceScraperModal
         isOpen={isEcomModalOpen}
         onClose={() => setIsEcomModalOpen(false)}
-        onAuditListing={handleEcommerceAudit}
+        onAuditListing={(decls, ecomData, pName, bName, cName) => {
+          const rep = evaluateCompliance({
+            productName: pName,
+            brandName: bName,
+            categoryName: cName,
+            declarations: decls,
+            ecommerceData: ecomData,
+            isEcommerceMode: true,
+            labelImages: currentSample.labelImages
+          });
+          setCurrentReport(rep);
+          setActiveTab('audit');
+        }}
       />
 
       <BatchAuditModal
         isOpen={isBatchModalOpen}
         onClose={() => setIsBatchModalOpen(false)}
-        onSelectSingleReport={sample => {
+        onSelectSingleReport={s => {
           sounds.playClick();
-          setCurrentSample(sample);
+          setCurrentSample(s);
         }}
       />
 
@@ -422,14 +449,48 @@ export const App: React.FC = () => {
             initialShape={currentReport.pdpCalculation.packageShape}
             netQtyValue={currentReport.declarations.netQuantityValue || 500}
             netQtyUnit={currentReport.declarations.netQuantityUnit || 'g'}
-            onSavePDP={handleSavePDP}
+            onSavePDP={pdp => {
+              const updated = evaluateCompliance({
+                productName: currentReport.productName,
+                brandName: currentReport.brandName,
+                categoryName: currentReport.categoryName,
+                declarations: currentReport.declarations,
+                pdpInput: {
+                  packageShape: pdp.packageShape,
+                  heightMm: pdp.heightMm,
+                  widthMm: pdp.widthMm,
+                  depthMm: pdp.depthMm,
+                  diameterMm: pdp.diameterMm,
+                  measuredNumeralHeightMm: pdp.measuredNumeralHeightMm
+                },
+                labelImages: currentReport.labelImages
+              });
+              setCurrentReport(updated);
+            }}
           />
 
           <FieldEditorModal
             isOpen={isFieldEditorOpen}
             onClose={() => setIsFieldEditorOpen(false)}
             declarations={currentReport.declarations}
-            onSaveDeclarations={handleSaveDeclarations}
+            onSaveDeclarations={decls => {
+              const updated = evaluateCompliance({
+                productName: decls.commodityName || currentReport.productName,
+                brandName: currentReport.brandName,
+                categoryName: currentReport.categoryName,
+                declarations: decls,
+                pdpInput: {
+                  packageShape: currentReport.pdpCalculation.packageShape,
+                  heightMm: currentReport.pdpCalculation.heightMm,
+                  widthMm: currentReport.pdpCalculation.widthMm,
+                  depthMm: currentReport.pdpCalculation.depthMm,
+                  diameterMm: currentReport.pdpCalculation.diameterMm,
+                  measuredNumeralHeightMm: currentReport.pdpCalculation.measuredNumeralHeightMm
+                },
+                labelImages: currentReport.labelImages
+              });
+              setCurrentReport(updated);
+            }}
           />
         </>
       )}

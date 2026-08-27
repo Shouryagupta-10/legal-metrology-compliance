@@ -4,32 +4,59 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        legal: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0284c7',
-          600: '#0369a1',
-          700: '#075985',
-          800: '#0c4a6e',
-          900: '#082f49',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        brand: {
+          DEFAULT: 'var(--brand)',
+          deep: 'var(--brand-deep)',
+          light: 'var(--brand-light)',
         },
-        metrology: {
-          accent: '#2563eb',
-          amber: '#f59e0b',
-          crimson: '#dc2626',
-          emerald: '#059669',
-        }
+        accent: {
+          teal: 'var(--accent-teal)',
+        },
+        surface: {
+          DEFAULT: 'var(--surface)',
+          card: 'var(--surface-card)',
+        },
+        ink: {
+          DEFAULT: 'var(--ink)',
+          soft: 'var(--ink-soft)',
+        },
+        ghost: 'var(--ghost)',
+        hairline: 'var(--hairline)',
+        'on-brand': 'var(--on-brand)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+        sans: ['Onest', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+      borderRadius: {
+        card: 'var(--radius-card)',
+        'card-lg': 'var(--radius-card-lg)',
+        pill: 'var(--radius-pill)',
+        xl: '0.75rem',
+      },
+      keyframes: {
+        'word-slide-up': {
+          '0%': { transform: 'translateY(115%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' }
+        },
+        'curtain-exit': {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-105%)' }
+        },
+        'progress-fill': {
+          '0%': { transform: 'scaleX(0)' },
+          '100%': { transform: 'scaleX(1)' }
+        }
+      },
+      animation: {
+        'word-slide': 'word-slide-up 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'curtain-slide': 'curtain-exit 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards',
+        'progress': 'progress-fill 1.28s cubic-bezier(0.65, 0, 0.35, 1) forwards'
       }
     },
   },
