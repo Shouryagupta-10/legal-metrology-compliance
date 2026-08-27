@@ -1,7 +1,6 @@
 import React from 'react';
-import { Scale, ArrowRight, Heart, Linkedin, Github } from 'lucide-react';
+import { Scale, ArrowRight, Linkedin, Github } from 'lucide-react';
 import { sounds } from '../../services/soundEffects';
-import { Reveal } from '../Effects/Reveal';
 
 export const BaselineFooter: React.FC<{
   onOpenAssistant: () => void;
@@ -9,188 +8,175 @@ export const BaselineFooter: React.FC<{
 }> = ({ onOpenAssistant, onOpenHandbook }) => {
   return (
     <footer className="relative overflow-hidden bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] mt-3 py-14 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto shadow-2xl space-y-12">
-      {/* Decorative blobs */}
-      <div className="absolute -top-24 -left-16 w-72 h-72 blob blob-float bg-[var(--coral)]/20 pointer-events-none" />
-      <div className="absolute -bottom-20 -right-20 w-64 h-64 blob blob-float bg-[var(--lime)]/15 pointer-events-none" style={{ animationDelay: '2.2s' }} />
-
       {/* Top CTA Band */}
-      <Reveal variant="up" className="relative z-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 pb-12 border-b border-white/15">
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 pb-12 border-b border-white/15">
         <div>
           <div className="baseline-eyebrow tone-light mb-3">
             <span className="eyebrow-dot" />
-            <span>Let's do this</span>
+            <span>Get Started</span>
           </div>
-          <h2 className="text-4xl sm:text-6xl font-display font-semibold uppercase tracking-tight leading-[0.92]">
-            Ready to make your <span className="text-gradient-candy">packaging bulletproof?</span>
+          <h2 className="text-4xl sm:text-6xl font-medium uppercase tracking-tight leading-[0.92]">
+            Ready to audit your packaging?
           </h2>
         </div>
 
-        {/* Candy Pill Button */}
+        {/* Action Button */}
         <button
           onClick={() => {
             sounds.playClick();
             const el = document.getElementById('studio');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="group px-7 py-3.5 rounded-full btn-candy text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg"
+          className="group px-7 py-3.5 rounded-full bg-white text-[var(--brand-deep)] hover:bg-[var(--brand-light)] hover:text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg btn-tactile"
         >
           <span>Start Inspection</span>
           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
         </button>
-      </Reveal>
+      </div>
 
       {/* 4-Column Navigation Grid */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-12 py-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-12 py-4">
         {/* Brand Column */}
-        <Reveal variant="up" delay={1} className="space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--coral)] to-[var(--sky)] flex items-center justify-center text-white">
+            <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-[var(--brand-light)]">
               <Scale className="w-4 h-4" />
             </div>
-            <span className="text-sm font-display font-semibold tracking-[0.2em] uppercase">
+            <span className="text-sm font-semibold tracking-[0.2em] uppercase font-sans">
               Baseline Metrology
             </span>
           </div>
           <p className="text-xs text-white/65 leading-relaxed">
-            Your friendly AI sidekick for pre-packaged commodity rules under the Legal Metrology (Packaged Commodities) Rules, 2011 — minus the headache.
+            Statutory AI audit platform for pre-packaged commodities under the Legal Metrology (Packaged Commodities) Rules, 2011.
           </p>
           <address className="not-italic text-xs text-white/70 space-y-1 pt-2 font-mono">
             <div>compliance@metrologyguard.ai</div>
             <div>Department of Consumer Affairs, New Delhi</div>
           </address>
-        </Reveal>
+        </div>
 
         {/* Column 1: Statutory Clauses */}
-        <Reveal variant="up" delay={2} className="space-y-3">
-          <h5 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--sunny)]">
-            The Fine Print
+        <div className="space-y-3">
+          <h5 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">
+            Statutory Clauses
           </h5>
           <ul className="space-y-2 text-xs text-white/80">
-            <li><a href="#checklist" className="hover:text-[var(--lime)] transition-colors">Rule 6(1)(a) Mfr / Importer</a></li>
-            <li><a href="#checklist" className="hover:text-[var(--lime)] transition-colors">Rule 6(1)(c) Standard Metric Units</a></li>
-            <li><a href="#checklist" className="hover:text-[var(--lime)] transition-colors">Rule 6(1)(e) MRP &amp; Taxes</a></li>
-            <li><a href="#checklist" className="hover:text-[var(--lime)] transition-colors">Rule 6(1)(n) 2021 USP Rate</a></li>
-            <li><a href="#checklist" className="hover:text-[var(--lime)] transition-colors">Rule 6(1)(f) Consumer Grievance</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(a) Mfr / Importer</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(c) Standard Metric Units</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(e) MRP &amp; Taxes</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(n) 2021 USP Rate</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(f) Consumer Grievance</a></li>
           </ul>
-        </Reveal>
+        </div>
 
         {/* Column 2: Studio Tools */}
-        <Reveal variant="up" delay={3} className="space-y-3">
-          <h5 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--sky)]">
-            Your Toolkit
+        <div className="space-y-3">
+          <h5 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">
+            Inspector Tools
           </h5>
           <ul className="space-y-2 text-xs text-white/80">
-            <li><a href="#studio" className="hover:text-[var(--lime)] transition-colors">2.5x Precision Loupe</a></li>
-            <li><a href="#studio" className="hover:text-[var(--lime)] transition-colors">Rule 7 Millimeter Gauge</a></li>
-            <li><a href="#studio" className="hover:text-[var(--lime)] transition-colors">1-Click Artwork Fix</a></li>
-            <li><a href="#pdp-calc" className="hover:text-[var(--lime)] transition-colors">PDP Geometry Tool</a></li>
-            <li><button onClick={onOpenAssistant} className="hover:text-[var(--lime)] transition-colors text-left">Ask the Legal Officer</button></li>
+            <li><a href="#studio" className="hover:text-white transition-colors">2.5x Precision Loupe</a></li>
+            <li><a href="#studio" className="hover:text-white transition-colors">Rule 7 Millimeter Gauge</a></li>
+            <li><a href="#studio" className="hover:text-white transition-colors">1-Click Artwork Redline</a></li>
+            <li><a href="#pdp-calc" className="hover:text-white transition-colors">PDP Geometry Tool</a></li>
+            <li><button onClick={onOpenAssistant} className="hover:text-white transition-colors text-left">AI Legal Assistant</button></li>
           </ul>
-        </Reveal>
+        </div>
 
         {/* Column 3: Legal Acts */}
-        <Reveal variant="up" delay={4} className="space-y-3">
-          <h5 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--coral)]">
-            The Rulebooks
+        <div className="space-y-3">
+          <h5 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">
+            Statutory Acts
           </h5>
           <ul className="space-y-2 text-xs text-white/80">
-            <li><button onClick={onOpenHandbook} className="hover:text-[var(--lime)] transition-colors text-left">LMPC Rules, 2011</button></li>
-            <li><a href="#analytics" className="hover:text-[var(--lime)] transition-colors">Legal Metrology Act, 2009</a></li>
-            <li><a href="#analytics" className="hover:text-[var(--lime)] transition-colors">Section 36 &amp; 48 Penalties</a></li>
-            <li><a href="#pdp-calc" className="hover:text-[var(--lime)] transition-colors">Schedule II Font Tables</a></li>
+            <li><button onClick={onOpenHandbook} className="hover:text-white transition-colors text-left">LMPC Rules, 2011</button></li>
+            <li><a href="#analytics" className="hover:text-white transition-colors">Legal Metrology Act, 2009</a></li>
+            <li><a href="#analytics" className="hover:text-white transition-colors">Section 36 &amp; 48 Penalties</a></li>
+            <li><a href="#pdp-calc" className="hover:text-white transition-colors">Schedule II Font Tables</a></li>
           </ul>
-        </Reveal>
+        </div>
       </div>
 
-      {/* Team & LinkedIn Member Strip */}
-      <div className="relative z-10 border-t border-white/15 pt-8 space-y-4">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--sunny)]">
-              <Linkedin className="w-3.5 h-3.5 text-[#0a66c2] bg-white rounded-xs" />
-              <span>Project Architects &amp; Engineering Team</span>
-            </div>
-            <p className="text-[11px] text-white/60">
-              Developed for National Legal Metrology Compliance Hackathon / Enterprise Packaging Verification.
-            </p>
+      {/* Bottom Bar & Legal Disclaimers */}
+      <div className="border-t border-white/15 pt-8 space-y-6 text-xs text-white/50 font-mono">
+        {/* Hackathon Disclaimer */}
+        <div className="bg-white/5 p-4 rounded-xl border border-white/10 text-[10px] sm:text-xs leading-relaxed text-white/70">
+          <strong className="text-white">LEGAL DISCLAIMER:</strong> This software is a prototype developed for the <strong className="text-white">Smart India Hackathon (SIH) 2026</strong>. It is designed to assist with packaging compliance audits but is not an official government utility. The calculated Section 36 penalty liabilities and generated Inspection Certificates are simulations. Always consult a registered Legal Metrology Officer before commercial printing.
+        </div>
+
+        {/* Team Credits & LinkedIn Pill Buttons */}
+        <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 pb-2">
+          <div className="shrink-0 flex items-center gap-3">
+            <span>&copy; 2026 Baseline MetrologyGuard AI.</span>
+            <span className="text-white/30 hidden sm:inline">|</span>
+            <span className="text-white/40">PS ID: SIH26034</span>
+            <span className="text-[var(--brand-light)] font-bold">Team ComplianceX</span>
           </div>
 
-          <a
-            href="https://github.com/Shouryagupta-10/legal-metrology-compliance"
-            target="_blank"
-            rel="noreferrer"
-            className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-mono text-white flex items-center gap-2 transition-colors btn-tactile shrink-0"
-          >
-            <Github className="w-3.5 h-3.5" />
-            <span>GitHub Repository</span>
-          </a>
-        </div>
+          <div className="flex flex-wrap items-center gap-2 text-[11px] font-sans font-medium">
+            <a
+              href="https://www.linkedin.com/in/pulkit-sachdev-980809367"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Pulkit Sachdev
+            </a>
 
-        {/* Member Profile Links */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-white/80">
-          <span className="text-[10px] font-mono uppercase text-white/40">Team:</span>
-          
-          <a
-            href="https://www.linkedin.com/in/sameer-aryan-6a699b377"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
-          >
-            <span>Sameer Aryan</span>
-          </a>
-          <span className="text-white/25">•</span>
+            <a
+              href="https://www.linkedin.com/in/sameer-aryan-6a699b377"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Sameer Aryan
+            </a>
 
-          <a
-            href="https://www.linkedin.com/in/shourya-gupta-b83905374"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
-          >
-            <span>Shourya Gupta</span>
-          </a>
-          <span className="text-white/25">•</span>
+            <a
+              href="https://www.linkedin.com/in/shourya-gupta-b83905374"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Shourya Gupta
+            </a>
 
-          <a
-            href="https://www.linkedin.com/in/kirti-gupta-6518533ba"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
-          >
-            <span>Kirti Gupta</span>
-          </a>
-          <span className="text-white/25">•</span>
+            <a
+              href="https://www.linkedin.com/in/kirti-gupta-6518533ba"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Kirti Gupta
+            </a>
 
-          <a
-            href="https://www.linkedin.com/in/aman-sharma-2b9608380"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
-          >
-            <span>Aman Sharma</span>
-          </a>
-          <span className="text-white/25">•</span>
+            <a
+              href="https://www.linkedin.com/in/aman-sharma-2b9608380"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Aman Sharma
+            </a>
 
-          <a
-            href="https://www.linkedin.com/in/akshita-agarwal-1ba358380"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
-          >
-            <span>Akshita Aggarwal</span>
-          </a>
-        </div>
-      </div>
+            <a
+              href="https://www.linkedin.com/in/akshita-agarwal-1ba358380"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Akshita Aggarwal
+            </a>
 
-      {/* Bottom Copyright Bar */}
-      <div className="relative z-10 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50 font-mono">
-        <div className="flex items-center gap-1.5">
-          &copy; 2026 Baseline MetrologyGuard AI. Made with
-          <Heart className="w-3 h-3 fill-[var(--coral)] text-[var(--coral)]" />
-          for statutory packaging compliance. Standard: LMPC Rules 2011 / 2024.
-        </div>
-        <div className="flex items-center gap-6">
-          <button onClick={onOpenHandbook} className="hover:text-white transition-colors">Statutory Rulebook</button>
-          <a href="#studio" className="hover:text-white transition-colors">Packaging Studio</a>
+            <a
+              href="https://github.com/Shouryagupta-10/legal-metrology-compliance"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white font-bold transition-all ml-1"
+            >
+              <Github className="w-3 h-3" /> GitHub Repo
+            </a>
+          </div>
         </div>
       </div>
     </footer>
