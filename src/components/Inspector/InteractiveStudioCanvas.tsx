@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   ZoomIn,
   ZoomOut,
@@ -16,7 +16,11 @@ import {
   Scissors,
   Layers,
   Move,
-  Info
+  Info,
+  SlidersHorizontal,
+  SplitSquareVertical,
+  Crosshair,
+  Keyboard
 } from 'lucide-react';
 import { BoundingBox, LabelImageRecord } from '../../types/compliance';
 import { sounds } from '../../services/soundEffects';
@@ -43,8 +47,12 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
   const [zoom, setZoom] = useState<number>(1);
   const [showBoxes, setShowBoxes] = useState<boolean>(true);
   const [enableLoupe, setEnableLoupe] = useState<boolean>(false);
+  const [loupePower, setLoupePower] = useState<number>(2.5); // 1.5, 2.5, 4.0
   const [enableRuler, setEnableRuler] = useState<boolean>(false);
+  const [isSplitMode, setIsSplitMode] = useState<boolean>(false);
+  const [splitPos, setSplitPos] = useState<number>(50); // 0 to 100%
   const [hoveredBoxId, setHoveredBoxId] = useState<string | null>(null);
+  const [showKeyboardHelp, setShowKeyboardHelp] = useState<boolean>(false);
 
   // Loupe magnifier position
   const [mousePos, setMousePos] = useState<{ x: number; y: number; relX: number; relY: number }>({
@@ -56,15 +64,56 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
 
   // Draggable Ruler state
   const [rulerPos, setRulerPos] = useState<{ x: number; y: number; rotation: number }>({
-    x: 40,
-    y: 40,
+    x: 35,
+    y: 35,
     rotation: 0
   });
   const [isDraggingRuler, setIsDraggingRuler] = useState<boolean>(false);
+  const [isDraggingSplit, setIsDraggingSplit] = useState<boolean>(false);
   const [dragStart, setDragStart] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+
+  // Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input or textarea
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) {
+        return;
+      }
+
+      if (e.key === 'm' || e.key === 'M') {
+        sounds.playClick();
+        setEnableLoupe(prev => !prev);
+      } else if (e.key === 'r' || e.key === 'R') {
+        sounds.playClick();
+        setEnableRuler(prev => !prev);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (onToggleAutoFix) {
+          sounds.playSuccess();
+          onToggleAutoFix();
+        }
+      } else if (e.key === 's' || e.key === 'S') {
+        sounds.playClick();
+        setIsSplitMode(prev => !prev);
+      } else if (e.key === '=' || e.key === '+') {
+        sounds.playClick();
+        setZoom(prev => Math.min(2.5, prev + 0.25));
+      } else if (e.key === '-' || e.key === '_') {
+        sounds.playClick();
+        setZoom(prev => Math.max(0.75, prev - 0.25));
+      } else if (e.key === '0') {
+        sounds.playClick();
+        setZoom(1);
+      } else if (e.key === '?') {
+        setShowKeyboardHelp(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onToggleAutoFix]);
 
   const handleZoomIn = () => {
     sounds.playClick();
@@ -98,6 +147,12 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
       }));
       setDragStart({ x: e.clientX, y: e.clientY });
     }
+
+    if (isDraggingSplit && containerRef.current) {
+      const cRect = containerRef.current.getBoundingClientRect();
+      const pct = Math.max(5, Math.min(95, ((e.clientX - cRect.left) / cRect.width) * 100));
+      setSplitPos(pct);
+    }
   };
 
   const handleRulerMouseDown = (e: React.MouseEvent) => {
@@ -106,8 +161,14 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
     setDragStart({ x: e.clientX, y: e.clientY });
   };
 
+  const handleSplitMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsDraggingSplit(true);
+  };
+
   const handleMouseUp = () => {
     setIsDraggingRuler(false);
+    setIsDraggingSplit(false);
   };
 
   const getStatusBorder = (status: BoundingBox['status'], isActive: boolean, isHovered: boolean) => {
@@ -133,9 +194,9 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
   };
 
   return (
-    <div className="flex flex-col h-full rounded-2xl border border-slate-800 bg-slate-900/90 overflow-hidden shadow-2xl human-panel">
+    <div className="flex flex-col h-full rounded-2xl border border-slate-800 bg-slate-900/95 overflow-hidden shadow-2xl relative">
       {/* Studio Header Toolbar */}
-      <div className="px-4 py-3 border-b border-slate-800 bg-slate-950/80 flex flex-wrap items-center justify-between gap-2">
+      <div className="px-4 py-3 border-b border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
             <Tag className="w-4 h-4" />
@@ -161,12 +222,31 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
                   ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-emerald-500/20 ring-2 ring-emerald-400'
                   : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-indigo-500/20'
               }`}
-              title="Preview Auto-Corrected Packaging Artwork with 100% Legal Metrology Compliance"
+              title="Preview Auto-Corrected Packaging Artwork with 100% Legal Metrology Compliance [Key: F]"
             >
               <Wand2 className="w-3.5 h-3.5" />
-              <span>{isFixApplied ? '✓ Compliant Fix Active' : '1-Click Fix Artwork'}</span>
+              <span>{isFixApplied ? '✓ Auto-Fix Active' : '1-Click Fix'}</span>
+              <kbd className="hidden md:inline-block px-1 py-0.2 bg-black/40 text-[9px] font-mono rounded">F</kbd>
             </button>
           )}
+
+          {/* Interactive Split Comparison Slider */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              setIsSplitMode(!isSplitMode);
+            }}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold btn-tactile flex items-center gap-1 border transition-colors ${
+              isSplitMode
+                ? 'bg-purple-950 text-purple-300 border-purple-500 shadow-sm shadow-purple-500/20'
+                : 'bg-slate-900 text-slate-300 border-slate-800 hover:text-white'
+            }`}
+            title="Toggle Split-Screen Comparison Slider [Key: S]"
+          >
+            <SplitSquareVertical className="w-3.5 h-3.5 text-purple-400" />
+            <span className="hidden sm:inline">Split View</span>
+            <kbd className="hidden md:inline-block px-1 py-0.2 bg-black/40 text-[9px] font-mono rounded">S</kbd>
+          </button>
 
           {/* Interactive Loupe Magnifier */}
           <button
@@ -179,10 +259,11 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
                 ? 'bg-sky-950 text-sky-300 border-sky-500 shadow-sm shadow-sky-500/20'
                 : 'bg-slate-900 text-slate-300 border-slate-800 hover:text-white'
             }`}
-            title="Toggle 2.5x Precision Optical Loupe"
+            title="Toggle 2.5x Precision Optical Loupe [Key: M]"
           >
             <Search className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden sm:inline">2.5x Loupe</span>
+            <span className="hidden sm:inline">{loupePower}x Loupe</span>
+            <kbd className="hidden md:inline-block px-1 py-0.2 bg-black/40 text-[9px] font-mono rounded">M</kbd>
           </button>
 
           {/* Draggable Millimeter Ruler */}
@@ -196,10 +277,11 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
                 ? 'bg-amber-950 text-amber-300 border-amber-500 shadow-sm shadow-amber-500/20'
                 : 'bg-slate-900 text-slate-300 border-slate-800 hover:text-white'
             }`}
-            title="Toggle Draggable Rule 7 Millimeter Ruler"
+            title="Toggle Draggable Rule 7 Millimeter Ruler [Key: R]"
           >
             <Ruler className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden sm:inline">mm Ruler</span>
+            <kbd className="hidden md:inline-block px-1 py-0.2 bg-black/40 text-[9px] font-mono rounded">R</kbd>
           </button>
 
           {/* Action Modals */}
@@ -210,11 +292,13 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
             PDP Tool
           </button>
 
+          {/* Keyboard Shortcuts Help modal */}
           <button
-            onClick={onOpenFieldEditor}
-            className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800 hover:text-white btn-tactile transition-colors"
+            onClick={() => setShowKeyboardHelp(!showKeyboardHelp)}
+            className="p-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-white border border-slate-800 btn-tactile"
+            title="Keyboard Shortcuts [?]"
           >
-            Edit
+            <Keyboard className="w-4 h-4" />
           </button>
 
           {/* Toggle Annotations */}
@@ -238,7 +322,7 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
             <button
               onClick={handleZoomOut}
               className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 btn-tactile"
-              title="Zoom Out"
+              title="Zoom Out [-]"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
@@ -248,20 +332,38 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
             <button
               onClick={handleZoomIn}
               className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 btn-tactile"
-              title="Zoom In"
+              title="Zoom In [+]"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleResetZoom}
               className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 btn-tactile"
-              title="Fit to Artboard"
+              title="Fit to Artboard [0]"
             >
               <Maximize2 className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </div>
+
+      {/* Keyboard Shortcuts Overlay Card */}
+      {showKeyboardHelp && (
+        <div className="absolute top-14 right-4 z-50 bg-slate-950/95 border border-sky-500/40 rounded-xl p-4 shadow-2xl backdrop-blur-md max-w-xs text-xs space-y-2 text-slate-300 animate-in fade-in zoom-in-95">
+          <div className="flex items-center justify-between text-white font-semibold pb-1 border-b border-slate-800">
+            <span>Interactive Shortcuts</span>
+            <button onClick={() => setShowKeyboardHelp(false)} className="text-slate-400 hover:text-white">✕</button>
+          </div>
+          <div className="space-y-1.5 font-mono text-[11px]">
+            <div className="flex justify-between"><span>[M]</span><span className="text-sky-300">Toggle Loupe Magnifier</span></div>
+            <div className="flex justify-between"><span>[R]</span><span className="text-amber-300">Toggle mm Ruler</span></div>
+            <div className="flex justify-between"><span>[F]</span><span className="text-emerald-300">1-Click Auto-Fix Artwork</span></div>
+            <div className="flex justify-between"><span>[S]</span><span className="text-purple-300">Split Comparison View</span></div>
+            <div className="flex justify-between"><span>[+] / [-]</span><span className="text-slate-400">Zoom In / Out</span></div>
+            <div className="flex justify-between"><span>[0]</span><span className="text-slate-400">Reset 100% Zoom</span></div>
+          </div>
+        </div>
+      )}
 
       {/* Main Interactive Canvas Area */}
       <div
@@ -294,6 +396,7 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
                 <button
                   onClick={e => {
                     e.stopPropagation();
+                    sounds.playTick();
                     setRulerPos(p => ({ ...p, rotation: (p.rotation + 45) % 360 }));
                   }}
                   className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white"
@@ -358,13 +461,13 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
               left: `${mousePos.x + 30}px`,
               top: `${mousePos.y - 80}px`
             }}
-            className="absolute z-50 pointer-events-none w-44 h-44 rounded-full border-4 border-sky-400 bg-slate-950 overflow-hidden shadow-2xl ring-4 ring-black/60 hidden md:block"
+            className="absolute z-50 pointer-events-none w-48 h-48 rounded-full border-4 border-sky-400 bg-slate-950 overflow-hidden shadow-2xl ring-4 ring-black/60 hidden md:block"
           >
             {/* Magnified Image */}
             <div
               className="absolute w-[600px] h-[820px] origin-top-left"
               style={{
-                transform: `scale(2.5) translate(-${mousePos.relX}%, -${mousePos.relY}%)`
+                transform: `scale(${loupePower}) translate(-${mousePos.relX}%, -${mousePos.relY}%)`
               }}
             >
               <img
@@ -379,20 +482,20 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
               <div className="h-full w-[1px] bg-sky-400/40 absolute" />
               <div className="w-6 h-6 rounded-full border border-sky-400/80 absolute" />
             </div>
-            <div className="absolute bottom-2 inset-x-0 text-center">
-              <span className="bg-black/80 text-sky-300 font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-sky-500/40">
-                2.5x Optical Zoom
+            <div className="absolute bottom-2 inset-x-0 text-center flex items-center justify-center gap-1">
+              <span className="bg-black/85 text-sky-300 font-mono text-[9px] font-bold px-2 py-0.5 rounded-full border border-sky-500/40">
+                {loupePower}x Zoom ({Math.round(mousePos.relX)}%, {Math.round(mousePos.relY)}%)
               </span>
             </div>
           </div>
         )}
 
-        {/* Artboard Container */}
+        {/* Artboard Container with optional Split View */}
         <div
           className="relative transition-transform duration-150 ease-out origin-center inline-block rounded-2xl overflow-hidden shadow-2xl border border-slate-800/80"
           style={{ transform: `scale(${zoom})` }}
         >
-          {/* Photorealistic Product Packaging Photograph */}
+          {/* Base Product Packaging Photograph */}
           <img
             ref={imageRef}
             src={imageRecord.url}
@@ -401,10 +504,43 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
             crossOrigin="anonymous"
           />
 
-          {/* 1-Click Auto-Fix Artwork Overlay Simulation */}
-          {isFixApplied && (
+          {/* Interactive Split Comparison View */}
+          {isSplitMode && (
+            <div
+              className="absolute inset-0 pointer-events-none overflow-hidden"
+              style={{ clipPath: `polygon(0 0, ${splitPos}% 0, ${splitPos}% 100%, 0 100%)` }}
+            >
+              <div className="absolute inset-0 bg-emerald-950/20 backdrop-blur-[0.5px]">
+                {/* Compliant Badges on Left of Split */}
+                <div className="absolute top-[36%] left-[53%] bg-emerald-900 text-white font-mono font-bold text-xs px-2 py-1 rounded shadow-lg border border-emerald-400">
+                  Net Qty: 75 g ✓ (Fixed)
+                </div>
+                <div className="absolute top-[40%] left-[53%] bg-emerald-900 text-white font-mono font-bold text-xs px-2 py-1 rounded shadow-lg border border-emerald-400">
+                  (Inclusive of all taxes) ✓
+                </div>
+                <div className="absolute top-[48%] left-[70%] bg-emerald-900 text-white font-mono font-bold text-xs px-2 py-1 rounded shadow-lg border border-emerald-400">
+                  USP: ₹ 190.00 / L ✓
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Split View Divider Bar */}
+          {isSplitMode && (
+            <div
+              onMouseDown={handleSplitMouseDown}
+              style={{ left: `${splitPos}%` }}
+              className="absolute inset-y-0 w-1 bg-purple-400 cursor-ew-resize z-40 shadow-2xl flex items-center justify-center -translate-x-1/2"
+            >
+              <div className="w-7 h-7 rounded-full bg-purple-500 border-2 border-white shadow-xl flex items-center justify-center text-white text-[10px] font-bold">
+                ⇄
+              </div>
+            </div>
+          )}
+
+          {/* 1-Click Auto-Fix Artwork Overlay Simulation (when active without split) */}
+          {!isSplitMode && isFixApplied && (
             <div className="absolute inset-0 pointer-events-none bg-emerald-950/10 backdrop-blur-[0.5px]">
-              {/* Dynamic compliant overlay patches */}
               <div className="absolute top-[36%] left-[53%] bg-emerald-900/90 text-white font-mono font-bold text-xs px-2 py-1 rounded shadow-lg border border-emerald-400 animate-pulse">
                 Net Qty: 75 g ✓ (Fixed)
               </div>
@@ -449,61 +585,43 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
                 >
                   {/* Badge Label */}
                   <div
-                    className={`absolute -top-5 left-0 text-[9px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap pointer-events-none ${getBadgeColor(
+                    className={`absolute -top-7 left-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold tracking-wide border whitespace-nowrap z-30 transition-all ${getBadgeColor(
                       box.status
-                    )}`}
+                    )} ${isActive || isHovered ? 'scale-110' : 'opacity-85'}`}
                   >
-                    {isFixApplied ? '✓ Compliant' : box.ruleCitation || box.field}
-                  </div>
-
-                  {/* Tooltip on hover */}
-                  {isHovered && (
-                    <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-slate-900/95 text-slate-100 p-2.5 rounded-lg border border-slate-700 shadow-2xl text-left pointer-events-none backdrop-blur-md">
-                      <div className="flex items-center justify-between gap-1 mb-1">
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-sky-400">
-                          {box.field}
-                        </span>
-                        <span
-                          className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                            isFixApplied || box.status === 'valid'
-                              ? 'bg-emerald-950 text-emerald-300'
-                              : box.status === 'invalid'
-                              ? 'bg-rose-950 text-rose-300'
-                              : 'bg-amber-950 text-amber-300'
-                          }`}
-                        >
-                          {isFixApplied ? 'COMPLIANT' : box.status.toUpperCase()}
-                        </span>
-                      </div>
-                      <p className="text-xs font-mono font-medium text-white mb-1">"{box.text}"</p>
-                      {box.ruleCitation && (
-                        <p className="text-[10px] text-slate-400 font-semibold border-t border-slate-800 pt-1">
-                          Ref: {box.ruleCitation}
-                        </p>
+                    <span className="flex items-center gap-1">
+                      {isFixApplied ? (
+                        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                      ) : box.status === 'valid' ? (
+                        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                      ) : box.status === 'invalid' ? (
+                        <AlertOctagon className="w-2.5 h-2.5 text-rose-400 animate-pulse" />
+                      ) : (
+                        <Sparkles className="w-2.5 h-2.5 text-amber-400" />
                       )}
-                    </div>
-                  )}
+                      <span>{box.field}</span>
+                    </span>
+                  </div>
                 </div>
               );
             })}
         </div>
       </div>
 
-      {/* Footer Legend */}
-      <div className="px-4 py-2.5 border-t border-slate-800 bg-slate-950/90 flex flex-wrap items-center justify-between text-xs text-slate-400">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 border border-emerald-400" />
-            <span className="text-[11px] text-slate-300">Compliant Declaration</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm bg-rose-500 border border-rose-400" />
-            <span className="text-[11px] text-rose-300 font-medium">Statutory Defect</span>
-          </div>
+      {/* Bottom Status Information Bar */}
+      <div className="px-4 py-2 bg-slate-950/90 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+        <div className="flex items-center gap-3">
+          <span>
+            Position: {Math.round(mousePos.relX)}%, {Math.round(mousePos.relY)}%
+          </span>
+          <span className="hidden sm:inline text-slate-600">&bull;</span>
+          <span className="hidden sm:inline">
+            Active Layer: {isFixApplied ? '✓ Auto-Fixed Artwork' : isSplitMode ? '⇄ Split Comparison' : 'Scanned Original'}
+          </span>
         </div>
-        <span className="text-[10px] text-slate-500 font-mono hidden md:inline">
-          Move cursor for 2.5x optical zoom &bull; Drag mm ruler to measure font heights
-        </span>
+        <div className="flex items-center gap-2">
+          <span>Press &apos;?&apos; for shortcuts</span>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Scale, ArrowRight, BookOpen, Layers, ShoppingBag, Sparkles, MessageSquare, Download, Sun, Moon } from 'lucide-react';
+import { Scale, ArrowRight, BookOpen, Layers, ShoppingBag, Sparkles, MessageSquare, Download, Sun, Moon, Volume2, VolumeX, Keyboard } from 'lucide-react';
 import { SampleProduct, ComplianceReport } from '../../types/compliance';
 import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
@@ -31,6 +31,7 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
   onToggleTheme
 }) => {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(sounds.getMuted());
 
   // Auto-advance collection carousel every 3800ms
   useEffect(() => {
@@ -42,6 +43,12 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
   }, [isReady]);
 
   const activeSample = SAMPLE_PRODUCTS[activeSlideIndex];
+
+  const handleToggleMute = () => {
+    const muted = sounds.toggleMute();
+    setIsMuted(muted);
+    if (!muted) sounds.playClick();
+  };
 
   return (
     <section className="relative isolate overflow-hidden bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] min-h-[38rem] h-[calc(100svh-1.5rem)] flex flex-col justify-between p-4 sm:p-8 lg:p-10 shadow-2xl">
@@ -98,14 +105,28 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
           </span>
         </div>
 
-        {/* Right Actions, Theme Toggle & Burger */}
-        <div className="flex items-center gap-2.5">
+        {/* Right Actions, Audio, Theme Toggle & Burger */}
+        <div className="flex items-center gap-2">
+          {/* Audio FX Toggle */}
+          <button
+            onClick={handleToggleMute}
+            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex items-center justify-center transition-all btn-tactile text-white"
+            title={isMuted ? "Enable Tactile Sounds" : "Mute Sound Effects"}
+            aria-label="Toggle sound effects"
+          >
+            {isMuted ? (
+              <VolumeX className="w-4 h-4 text-white/50" />
+            ) : (
+              <Volume2 className="w-4 h-4 text-emerald-300 animate-pulse" />
+            )}
+          </button>
+
           <button
             onClick={() => {
               sounds.playClick();
               onOpenAssistant();
             }}
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-white/90 hover:text-white transition-colors mr-2"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-white/90 hover:text-white transition-colors mr-1"
           >
             <MessageSquare className="w-3.5 h-3.5 text-[var(--brand-light)]" />
             <span>Ask Legal Officer</span>
@@ -235,7 +256,10 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
                 {SAMPLE_PRODUCTS.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => setActiveSlideIndex(i)}
+                    onClick={() => {
+                      sounds.playClick();
+                      setActiveSlideIndex(i);
+                    }}
                     className={`h-1.5 rounded-full transition-all ${
                       i === activeSlideIndex ? 'w-5 bg-white' : 'w-1.5 bg-white/40'
                     }`}
@@ -250,17 +274,24 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
           </div>
 
           {/* Membership / Compliance Metric Card */}
-          <article className="w-full sm:w-56 bg-white/10 border border-white/15 rounded-[var(--radius-card)] p-3.5 backdrop-blur shadow-2xl flex items-center justify-between gap-3">
+          <article
+            onClick={() => {
+              sounds.playClick();
+              const el = document.getElementById('studio');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="w-full sm:w-56 bg-white/10 hover:bg-white/15 cursor-pointer border border-white/15 rounded-[var(--radius-card)] p-3.5 backdrop-blur shadow-2xl flex items-center justify-between gap-3 transition-all hover:scale-102"
+          >
             <div className="space-y-1.5">
               <div className="text-2xl font-medium text-white tracking-tight leading-none font-mono">
                 {report ? `${report.overallScore}%` : '100%'}
               </div>
               {/* Overlapping Dot Indicators */}
               <div className="flex -space-x-1.5 items-center">
-                <span className="w-3.5 h-3.5 rounded-full bg-[#5790e6] border border-[#0f2f63]" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#c2e029] border border-[#0f2f63]" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#0b6e97] border border-[#0f2f63]" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#ffffff] border border-[#0f2f63]" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[#5790e6] border border-[#0f2f63]" title="Rule 6 Declarations" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[#c2e029] border border-[#0f2f63]" title="Rule 7 Font Sizing" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[#0b6e97] border border-[#0f2f63]" title="2021 USP Rate" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[#ffffff] border border-[#0f2f63]" title="Section 36 Compliance" />
               </div>
               <span className="text-[10px] text-white/80 block leading-tight">
                 Statutory Clauses Active
@@ -270,7 +301,7 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
             <img
               src={currentSample.thumbnail}
               alt="Active SKU"
-              className="w-14 h-16 rounded-xl object-cover border border-white/20"
+              className="w-14 h-16 rounded-xl object-cover border border-white/20 shadow-md"
             />
           </article>
         </div>
