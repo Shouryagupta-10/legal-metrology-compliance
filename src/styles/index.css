@@ -35,7 +35,7 @@
   --surface-card: #111c36;
   --ink: #f8fafc;
   --ink-soft: #94a3b8;
-  --ghost-purple: rgba(168, 85, 247, 0.28); /* glowing purple ghost text in dark mode */
+  --ghost-purple: rgba(168, 85, 247, 0.32); /* glowing purple ghost text in dark mode */
   --ghost-purple-solid: #c084fc;
   --hairline: #1e293b;
   --on-brand: #ffffff;
@@ -81,7 +81,7 @@ button {
 /* Luxury Card Inset Framing */
 .baseline-page-frame {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.375rem;
   overflow-x: clip;
 }
 
@@ -117,27 +117,38 @@ button {
   opacity: 1;
 }
 
-/* Ghost heading styling */
+/* Ghost heading styling with responsive scaling and clean wrapping */
 .ghost-heading {
-  font-size: 8.2vw;
-  font-weight: 600;
+  font-size: clamp(2rem, 7.5vw, 6.5rem);
+  font-weight: 700;
   text-transform: uppercase;
-  line-height: 1.02;
+  line-height: 0.96;
   letter-spacing: -0.03em;
   user-select: none;
   pointer-events: none;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .ghost-heading {
+    font-size: clamp(1.5rem, 7.2vw, 2.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
 }
 
 /* Purple Ghost Watermark text */
 .ghost-word-purple {
   color: var(--ghost-purple);
-  text-shadow: 0 0 40px rgba(147, 51, 234, 0.15);
+  text-shadow: 0 0 35px rgba(147, 51, 234, 0.2);
   transition: color 0.5s ease;
+  display: inline-block;
 }
 
 .ghost-word-ink {
   color: var(--ink);
   transition: color 0.5s ease;
+  display: inline-block;
 }
 
 /* Glass & Card Micro-Interactions */
