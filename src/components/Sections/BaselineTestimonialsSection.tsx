@@ -43,16 +43,17 @@ export const BaselineTestimonialsSection: React.FC = () => {
               <span className="text-4xl font-serif text-[var(--brand)] block leading-none select-none">
                 “
               </span>
-              <blockquote className="text-sm sm:text-base text-[var(--ink)] leading-relaxed mt-4 font-normal">
+              {/* Notice the group-hover:text-slate-900 added here! */}
+              <blockquote className="text-sm sm:text-base text-[var(--ink)] group-hover:text-slate-900 leading-relaxed mt-4 font-normal transition-colors duration-300">
                 {item.quote}
               </blockquote>
             </div>
 
-            <figcaption className="mt-8 pt-4 border-t border-[var(--hairline)]">
-              <div className="text-sm font-medium text-[var(--ink)]">
+            <figcaption className="mt-8 pt-4 border-t border-[var(--hairline)] group-hover:border-slate-200 transition-colors duration-300">
+              <div className="text-sm font-medium text-[var(--ink)] group-hover:text-slate-900 transition-colors duration-300">
                 {item.author}
               </div>
-              <div className="text-xs text-[var(--ink-soft)] mt-0.5">
+              <div className="text-xs text-[var(--ink-soft)] group-hover:text-slate-500 mt-0.5 transition-colors duration-300">
                 {item.role}
               </div>
             </figcaption>
@@ -61,4 +62,4 @@ export const BaselineTestimonialsSection: React.FC = () => {
       </ul>
     </section>
   );
-};
+}; 
