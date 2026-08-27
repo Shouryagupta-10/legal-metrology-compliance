@@ -50,6 +50,9 @@ src/
   components/
     Assistant/
       LegalOfficerChat.tsx
+    Auth/
+      LoginModal.tsx
+      UserProfileDashboard.tsx
     Batch/
       BatchAuditModal.tsx
     Compliance/
@@ -58,6 +61,9 @@ src/
       RuleChecklist.tsx
       USPCalculator.tsx
       ViolationAlerts.tsx
+    Effects/
+      CursorFX.tsx
+      Reveal.tsx
     Footer/
       BaselineFooter.tsx
     Handbook/
@@ -114,6 +120,262 @@ vite.config.ts
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/components/Auth/UserProfileDashboard.tsx">
+import React from 'react';
+import { X, User, FileText, Settings, LogOut, ShieldCheck, Clock, Download } from 'lucide-react';
+import { sounds } from '../../services/soundEffects';
+
+interface UserProfileDashboardProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onLogout: () => void;
+}
+
+export const UserProfileDashboard: React.FC<UserProfileDashboardProps> = ({ isOpen, onClose, onLogout }) => {
+  if (!isOpen) return null;
+
+  // Mock data for the hackathon presentation
+  const pastAudits = [
+    { id: 'AUD-092', date: 'Today, 10:42 AM', brand: 'Heritage Foods', status: 'Compliant' },
+    { id: 'AUD-091', date: 'Yesterday', brand: 'Apex Retail', status: 'Non-Compliant' },
+    { id: 'AUD-090', date: 'Aug 24, 2026', brand: 'Bharat Marketplace', status: 'Compliant' },
+  ];
+
+  return (
+    <div className="fixed inset-0 z-[200] flex justify-end">
+      {/* Blurred Backdrop */}
+      <div 
+        className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm transition-opacity"
+        onClick={() => { sounds.playClick(); onClose(); }}
+      />
+
+      {/* Sliding Drawer Panel */}
+      <div className="relative w-full sm:w-[400px] h-full bg-slate-50 dark:bg-[#0c1427] shadow-2xl border-l border-slate-200 dark:border-slate-800 flex flex-col animate-in slide-in-from-right duration-300">
+        
+        {/* Header */}
+        <div className="px-6 py-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-[#111c36]">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <User className="w-5 h-5 text-sky-500" />
+            Auditor Profile
+          </h2>
+          <button 
+            onClick={() => { sounds.playClick(); onClose(); }}
+            className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+          
+          {/* User Info Card */}
+          <div className="bg-white dark:bg-[#111c36] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 border border-sky-200 dark:border-sky-500/30">
+              <ShieldCheck className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                Verified via WhatsApp
+              </div>
+              <div className="font-mono text-lg font-black text-slate-900 dark:text-white">
+                +91 98765 43210
+              </div>
+              <div className="text-xs text-sky-600 dark:text-sky-400 font-medium mt-0.5">
+                Authorized LMPC Auditor
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white dark:bg-[#111c36] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center shadow-sm">
+              <div className="text-2xl font-black text-slate-900 dark:text-white">124</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mt-1">Total Audits</div>
+            </div>
+            <div className="bg-white dark:bg-[#111c36] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center shadow-sm">
+              <div className="text-2xl font-black text-rose-500">3</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mt-1">Pending Notices</div>
+            </div>
+          </div>
+
+          {/* Recent Reports Section */}
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-4 flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Recent Audit Reports
+            </h3>
+            <div className="space-y-3">
+              {pastAudits.map((audit, i) => (
+                <div key={i} className="group bg-white dark:bg-[#111c36] p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-sky-500/50 transition-colors cursor-pointer flex items-center justify-between">
+                  <div>
+                    <div className="font-bold text-sm text-slate-900 dark:text-white mb-0.5">{audit.brand}</div>
+                    <div className="text-[10px] text-slate-500 font-mono">{audit.id} • {audit.date}</div>
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${audit.status === 'Compliant' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' : 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400'}`}>
+                      {audit.status}
+                    </span>
+                    <Download className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-500 transition-colors" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button className="w-full mt-4 py-2 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
+              View All Reports &rarr;
+            </button>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111c36] grid grid-cols-2 gap-3">
+          <button className="flex items-center justify-center gap-2 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors">
+            <Settings className="w-4 h-4" />
+            Settings
+          </button>
+          <button 
+            onClick={() => { sounds.playClick(); onLogout(); onClose(); }}
+            className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 text-xs font-bold transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/Effects/CursorFX.tsx">
+import React, { useEffect, useRef } from 'react';
+
+/**
+ * Global playful cursor: a soft gradient spotlight that follows the pointer
+ * with slight lag, plus a small dot that snaps to the pointer and grows over
+ * clickable elements. Desktop only (hidden on touch/coarse pointers via CSS).
+ */
+export const CursorFX: React.FC = () => {
+  const glowRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let glowX = mouseX;
+    let glowY = mouseY;
+    let raf = 0;
+
+    const handleMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+      }
+
+      const target = e.target as HTMLElement;
+      const isInteractive = !!target.closest('button, a, [role="button"], input, .cursor-hover-target');
+      if (dotRef.current) {
+        dotRef.current.classList.toggle('cursor-dot-hover', isInteractive);
+      }
+    };
+
+    const animate = () => {
+      glowX += (mouseX - glowX) * 0.08;
+      glowY += (mouseY - glowY) * 0.08;
+      if (glowRef.current) {
+        glowRef.current.style.transform = `translate(${glowX}px, ${glowY}px) translate(-50%, -50%)`;
+      }
+      raf = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener('mousemove', handleMove);
+    raf = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <>
+      <div ref={glowRef} className="cursor-glow" aria-hidden="true" />
+      <div ref={dotRef} className="cursor-dot" aria-hidden="true" />
+    </>
+  );
+};
+</file>
+
+<file path="src/components/Effects/Reveal.tsx">
+import React, { useEffect, useRef, useState } from 'react';
+
+interface RevealProps {
+  children: React.ReactNode;
+  as?: keyof JSX.IntrinsicElements;
+  className?: string;
+  variant?: 'up' | 'scale' | 'left' | 'right';
+  delay?: 0 | 1 | 2 | 3 | 4;
+  /** re-run every time the element scrolls into view instead of once */
+  repeat?: boolean;
+}
+
+/**
+ * Scroll-triggered reveal wrapper. Wrap any block in <Reveal> to have it
+ * animate in (fade + motion) the moment it enters the viewport.
+ */
+export const Reveal: React.FC<RevealProps> = ({
+  children,
+  as = 'div',
+  className = '',
+  variant = 'up',
+  delay = 0,
+  repeat = false
+}) => {
+  const ref = useRef<HTMLElement | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setInView(true);
+            if (!repeat) observer.unobserve(entry.target);
+          } else if (repeat) {
+            setInView(false);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [repeat]);
+
+  const variantClass =
+    variant === 'scale' ? 'reveal-scale' : variant === 'left' ? 'reveal-left' : variant === 'right' ? 'reveal-right' : 'reveal-up';
+
+  const Tag = as as any;
+
+  return (
+    <Tag
+      ref={ref}
+      className={`${variantClass} ${delay ? `delay-${delay}` : ''} ${inView ? 'in-view' : ''} ${className}`}
+    >
+      {children}
+    </Tag>
+  );
+};
+</file>
 
 <file path="src/components/Assistant/LegalOfficerChat.tsx">
 import React, { useState } from 'react';
@@ -311,231 +573,191 @@ export const LegalOfficerChat: React.FC<{ isOpen: boolean; onClose: () => void }
 };
 </file>
 
-<file path="src/components/Batch/BatchAuditModal.tsx">
-import React, { useState } from 'react';
-import { Sparkles, X, Download, CheckCircle2, XCircle, AlertTriangle, Layers, Play } from 'lucide-react';
-import { SampleProduct, ComplianceReport } from '../../types/compliance';
-import { SAMPLE_PRODUCTS } from '../../services/sampleData';
-import { evaluateCompliance } from '../../services/ruleEngine';
+<file path="src/components/Auth/LoginModal.tsx">
+import React, { useState, useRef, useEffect } from 'react';
+import { Phone, MessageCircle, ShieldCheck, X, ArrowRight, Loader2 } from 'lucide-react';
+import { sounds } from '../../services/soundEffects';
 
-interface BatchAuditModalProps {
+interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectSingleReport: (sample: SampleProduct) => void;
+  onLoginSuccess: () => void; // Call this when backend says OTP is correct
 }
 
-export const BatchAuditModal: React.FC<BatchAuditModalProps> = ({
-  isOpen,
-  onClose,
-  onSelectSingleReport
-}) => {
-  const [isRunning, setIsRunning] = useState(false);
-  const [completedCount, setCompletedCount] = useState(SAMPLE_PRODUCTS.length);
+export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess }) => {
+  const [step, setStep] = useState<'phone' | 'otp'>('phone');
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [isLoading, setIsLoading] = useState(false);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const batchResults = SAMPLE_PRODUCTS.map(sample => {
-    const report = evaluateCompliance({
-      productName: sample.name,
-      brandName: sample.brand,
-      categoryName: sample.category,
-      declarations: sample.declarations,
-      pdpInput: {
-        packageShape: sample.pdpDefaults.shape,
-        heightMm: sample.pdpDefaults.heightMm,
-        widthMm: sample.pdpDefaults.widthMm,
-        depthMm: sample.pdpDefaults.depthMm,
-        measuredNumeralHeightMm: sample.pdpDefaults.measuredFontHeightMm
-      },
-      labelImages: sample.labelImages
-    });
-    return {
-      sample,
-      report
-    };
-  });
-
-  const total = batchResults.length;
-  const compliant = batchResults.filter(b => b.report.overallStatus === 'COMPLIANT').length;
-  const nonCompliant = batchResults.filter(b => b.report.overallStatus === 'NON_COMPLIANT').length;
-
-  const exportCSV = () => {
-    const headers = [
-      'Product ID',
-      'Product Name',
-      'Brand',
-      'Category',
-      'Compliance Status',
-      'Score (%)',
-      'Passed Rules',
-      'Violations Count',
-      'Net Quantity',
-      'Declared MRP',
-      'Taxes Declared',
-      'USP Rate',
-      'Consumer Care Email',
-      'PIN Code'
-    ];
-
-    const rows = batchResults.map(({ report, sample }) => [
-      `"${report.inspectionId}"`,
-      `"${report.productName}"`,
-      `"${report.brandName}"`,
-      `"${report.categoryName}"`,
-      `"${report.overallStatus}"`,
-      report.overallScore,
-      report.passedRulesCount,
-      report.failedRulesCount,
-      `"${report.declarations.netQuantityValue || ''} ${report.declarations.netQuantityUnit || ''}"`,
-      report.declarations.mrpValue || 0,
-      report.declarations.isTaxesInclusiveDeclared ? 'YES' : 'NO',
-      report.declarations.declaredUspValue || 'N/A',
-      `"${report.declarations.consumerCareEmail || 'MISSING'}"`,
-      `"${report.declarations.manufacturerPin || 'MISSING'}"`
-    ]);
-
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Legal_Metrology_Batch_Audit_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // Reset state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setStep('phone');
+      setPhone('');
+      setOtp(['', '', '', '', '', '']);
+      setIsLoading(false);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
+  // Simulate Backend Call: Send WhatsApp OTP
+  const handleSendOTP = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (phone.length < 10) return;
+    
+    sounds.playClick();
+    setIsLoading(true);
+    
+    // TODO: Connect to your backend API here to trigger WhatsApp MSG91/Twilio
+    setTimeout(() => {
+      setIsLoading(false);
+      setStep('otp');
+    }, 1500);
+  };
+
+  // Simulate Backend Call: Verify OTP
+  const handleVerifyOTP = (e: React.FormEvent) => {
+    e.preventDefault();
+    const otpString = otp.join('');
+    if (otpString.length < 6) return;
+
+    sounds.playClick();
+    setIsLoading(true);
+
+    // TODO: Connect to your backend API here to verify OTP
+    setTimeout(() => {
+      setIsLoading(false);
+      sounds.playSuccess();
+      onLoginSuccess();
+      onClose();
+    }, 1500);
+  };
+
+  // Auto-focus magic for the 6-digit OTP boxes
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^[0-9]*$/.test(value)) return;
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    if (value !== '' && index < 5) otpRefs.current[index + 1]?.focus();
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && otp[index] === '' && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-      <div className="relative w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="font-bold text-white text-base">Bulk Legal Metrology Batch Auditor</h3>
-              <p className="text-xs text-slate-400">Automated multi-SKU catalogue compliance sweep</p>
-            </div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Blurred Backdrop */}
+      <div 
+        className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Modal Container */}
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 rounded-full transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        <div className="p-8 sm:p-10">
+                    <div className="w-12 h-12 bg-[#25D366]/10 dark:bg-[#25D366]/20 text-[#25D366] rounded-2xl flex items-center justify-center mb-6 border border-[#25D366]/20">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+            </svg>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={exportCSV}
-              className="px-3 py-1.5 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-600 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Export CSV Audit Log
-            </button>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            {step === 'phone' ? 'Secure Access' : 'Verify WhatsApp'}
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-8">
+            {step === 'phone' 
+              ? 'Enter your mobile number to receive a secure login code via WhatsApp.'
+              : `We sent a 6-digit code to +91 ${phone}`
+            }
+          </p>
 
-            <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Content Body */}
-        <div className="p-6 max-h-[75vh] overflow-y-auto space-y-5">
-          {/* Summary KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
-              <div className="text-[10px] font-bold uppercase text-slate-400">Catalogue SKUs Audited</div>
-              <div className="text-2xl font-black text-white mt-1 font-mono">{total} Items</div>
-            </div>
-
-            <div className="bg-emerald-950/30 p-3.5 rounded-xl border border-emerald-800/50">
-              <div className="text-[10px] font-bold uppercase text-emerald-400">Compliant Packages</div>
-              <div className="text-2xl font-black text-emerald-400 mt-1 font-mono">
-                {compliant} ({Math.round((compliant / total) * 100)}%)
+          {/* STEP 1: ENTER PHONE */}
+          {step === 'phone' && (
+            <form onSubmit={handleSendOTP} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Mobile Number
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 text-slate-400 font-medium">+91</div>
+                  <input
+                    type="tel"
+                    maxLength={10}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-xl pl-12 pr-4 py-3.5 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-mono text-lg"
+                    placeholder="99999 00000"
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="bg-rose-950/30 p-3.5 rounded-xl border border-rose-800/50">
-              <div className="text-[10px] font-bold uppercase text-rose-400">Statutory Violations</div>
-              <div className="text-2xl font-black text-rose-400 mt-1 font-mono">
-                {nonCompliant} ({Math.round((nonCompliant / total) * 100)}%)
+              <button
+                type="submit"
+                disabled={phone.length < 10 || isLoading}
+                className="w-full bg-[#25D366] hover:bg-[#1ebd5c] disabled:opacity-50 text-white rounded-xl py-3.5 font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#25D366]/20"
+              >
+                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <MessageCircle className="w-5 h-5" />}
+                Send Code via WhatsApp
+              </button>
+            </form>
+          )}
+
+          {/* STEP 2: ENTER OTP */}
+          {step === 'otp' && (
+            <form onSubmit={handleVerifyOTP} className="space-y-6">
+              <div className="flex justify-between gap-2 sm:gap-3">
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(el) => (otpRefs.current[index] = el)}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                    className="w-12 h-14 sm:w-14 sm:h-16 text-center text-2xl font-bold font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-sky-500 outline-none text-slate-900 dark:text-white transition-all"
+                    required
+                  />
+                ))}
               </div>
-            </div>
 
-            <div className="bg-amber-950/30 p-3.5 rounded-xl border border-amber-800/50">
-              <div className="text-[10px] font-bold uppercase text-amber-400">Potential Liability Risk</div>
-              <div className="text-xl font-black text-amber-400 mt-1 font-mono">
-                ₹ {(nonCompliant * 50000).toLocaleString('en-IN')}
+              <button
+                type="submit"
+                disabled={otp.join('').length < 6 || isLoading}
+                className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 disabled:opacity-50 rounded-xl py-3.5 font-bold flex items-center justify-center gap-2 transition-all"
+              >
+                {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify & Login'}
+                {!isLoading && <ArrowRight className="w-4 h-4" />}
+              </button>
+
+              <div className="text-center">
+                <button 
+                  type="button"
+                  onClick={() => setStep('phone')}
+                  className="text-xs font-medium text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors"
+                >
+                  Change mobile number
+                </button>
               </div>
-            </div>
-          </div>
-
-          {/* Batch Table */}
-          <div className="border border-slate-800 rounded-xl overflow-hidden">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950 text-[10px] text-slate-400 uppercase font-mono border-b border-slate-800">
-                <tr>
-                  <th className="p-3">Product Name</th>
-                  <th className="p-3">Category</th>
-                  <th className="p-3">Net Qty & MRP</th>
-                  <th className="p-3">Score</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/80 bg-slate-900/50">
-                {batchResults.map(({ sample, report }) => {
-                  const isPass = report.overallStatus === 'COMPLIANT';
-                  return (
-                    <tr key={sample.id} className="hover:bg-slate-850/50">
-                      <td className="p-3">
-                        <div className="font-bold text-white line-clamp-1">{sample.name}</div>
-                        <div className="text-[10px] text-slate-400">{sample.brand}</div>
-                      </td>
-                      <td className="p-3 text-slate-300">{sample.category}</td>
-                      <td className="p-3 font-mono text-slate-300">
-                        {report.declarations.netQuantityValue} {report.declarations.netQuantityUnit} &bull; ₹ {report.declarations.mrpValue}
-                      </td>
-                      <td className="p-3 font-mono font-bold">
-                        <span className={report.overallScore >= 80 ? 'text-emerald-400' : 'text-rose-400'}>
-                          {report.overallScore}%
-                        </span>
-                      </td>
-                      <td className="p-3">
-                        <span
-                          className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full inline-flex items-center gap-1 ${
-                            isPass
-                              ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
-                              : 'bg-rose-950 text-rose-300 border border-rose-800'
-                          }`}
-                        >
-                          {isPass ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                          {report.overallStatus}
-                        </span>
-                      </td>
-                      <td className="p-3 text-right">
-                        <button
-                          onClick={() => {
-                            onSelectSingleReport(sample);
-                            onClose();
-                          }}
-                          className="px-2.5 py-1 rounded bg-slate-800 hover:bg-sky-600 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors"
-                        >
-                          Inspect
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="px-6 py-3.5 bg-slate-950/80 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-          <span>Batch audit completed for {SAMPLE_PRODUCTS.length} packaged commodities</span>
-          <button
-            onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs"
-          >
-            Close
-          </button>
+            </form>
+          )}
         </div>
       </div>
     </div>
@@ -667,121 +889,6 @@ export const CompoundingSimulator: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
-</file>
-
-<file path="src/components/Footer/BaselineFooter.tsx">
-import React from 'react';
-import { Scale, ArrowRight } from 'lucide-react';
-import { sounds } from '../../services/soundEffects';
-
-export const BaselineFooter: React.FC<{
-  onOpenAssistant: () => void;
-  onOpenHandbook: () => void;
-}> = ({ onOpenAssistant, onOpenHandbook }) => {
-  return (
-    <footer className="bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] mt-3 py-14 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto shadow-2xl space-y-12">
-      {/* Top CTA Band */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 pb-12 border-b border-white/15">
-        <div>
-          <div className="baseline-eyebrow tone-light mb-3">
-            <span className="eyebrow-dot" />
-            <span>Get Started</span>
-          </div>
-          <h2 className="text-4xl sm:text-6xl font-medium uppercase tracking-tight leading-[0.92]">
-            Ready to audit your packaging?
-          </h2>
-        </div>
-
-        {/* Light Pill Button */}
-        <button
-          onClick={() => {
-            sounds.playClick();
-            const el = document.getElementById('studio');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-          className="group px-7 py-3.5 rounded-full bg-white text-[var(--brand-deep)] hover:bg-[var(--brand-light)] hover:text-white text-xs font-medium uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg btn-tactile"
-        >
-          <span>Start Inspection</span>
-          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-        </button>
-      </div>
-
-      {/* 4-Column Navigation Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-12 py-4">
-        {/* Brand Column */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-[var(--brand-light)]">
-              <Scale className="w-4 h-4" />
-            </div>
-            <span className="text-sm font-medium tracking-[0.2em] uppercase font-sans">
-              Baseline Metrology
-            </span>
-          </div>
-          <p className="text-xs text-white/65 leading-relaxed">
-            Statutory AI audit platform for pre-packaged commodities under the Legal Metrology (Packaged Commodities) Rules, 2011.
-          </p>
-          <address className="not-italic text-xs text-white/70 space-y-1 pt-2 font-mono">
-            <div>compliance@metrologyguard.ai</div>
-            <div>Department of Consumer Affairs, New Delhi</div>
-          </address>
-        </div>
-
-        {/* Column 1: Statutory Clauses */}
-        <div className="space-y-3">
-          <h5 className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/50">
-            Statutory Clauses
-          </h5>
-          <ul className="space-y-2 text-xs text-white/80">
-            <li><a href="#checklist" className="hover:text-white">Rule 6(1)(a) Mfr / Importer</a></li>
-            <li><a href="#checklist" className="hover:text-white">Rule 6(1)(c) Standard Metric Units</a></li>
-            <li><a href="#checklist" className="hover:text-white">Rule 6(1)(e) MRP &amp; Taxes</a></li>
-            <li><a href="#checklist" className="hover:text-white">Rule 6(1)(n) 2021 USP Rate</a></li>
-            <li><a href="#checklist" className="hover:text-white">Rule 6(1)(f) Consumer Grievance</a></li>
-          </ul>
-        </div>
-
-        {/* Column 2: Studio Tools */}
-        <div className="space-y-3">
-          <h5 className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/50">
-            Inspector Tools
-          </h5>
-          <ul className="space-y-2 text-xs text-white/80">
-            <li><a href="#studio" className="hover:text-white">2.5x Precision Loupe</a></li>
-            <li><a href="#studio" className="hover:text-white">Rule 7 Millimeter Gauge</a></li>
-            <li><a href="#studio" className="hover:text-white">1-Click Artwork Redline</a></li>
-            <li><a href="#pdp-calc" className="hover:text-white">PDP Geometry Tool</a></li>
-            <li><button onClick={onOpenAssistant} className="hover:text-white text-left">AI Legal Assistant</button></li>
-          </ul>
-        </div>
-
-        {/* Column 3: Legal Acts */}
-        <div className="space-y-3">
-          <h5 className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/50">
-            Statutory Acts
-          </h5>
-          <ul className="space-y-2 text-xs text-white/80">
-            <li><button onClick={onOpenHandbook} className="hover:text-white text-left">LMPC Rules, 2011</button></li>
-            <li><a href="#analytics" className="hover:text-white">Legal Metrology Act, 2009</a></li>
-            <li><a href="#analytics" className="hover:text-white">Section 36 &amp; 48 Penalties</a></li>
-            <li><a href="#pdp-calc" className="hover:text-white">Schedule II Font Tables</a></li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-white/15 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50 font-mono">
-        <div>
-          &copy; 2026 Baseline MetrologyGuard AI. Standard: LMPC Rules 2011 / 2024.
-        </div>
-        <div className="flex items-center gap-6">
-          <button onClick={onOpenHandbook} className="hover:text-white">Statutory Rulebook</button>
-          <a href="#studio" className="hover:text-white">Packaging Studio</a>
-        </div>
-      </div>
-    </footer>
   );
 };
 </file>
@@ -1853,23 +1960,29 @@ export const BaselineLoader: React.FC<BaselineLoaderProps> = ({ onReady }) => {
         isExiting ? '-translate-y-[105%]' : 'translate-y-0'
       }`}
     >
+      {/* Candy blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="blob blob-float w-72 h-72 bg-[var(--coral)]/25 -top-10 -left-10" />
+        <div className="blob blob-float w-64 h-64 bg-[var(--sky)]/20 -bottom-16 -right-10" style={{ animationDelay: '1.2s' }} />
+      </div>
+
       {/* Brand Wordmark with Scale Icon */}
       <div className="flex items-center gap-3 animate-word-slide">
-        <div className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-[var(--brand-light)]">
+        <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[var(--coral)] to-[var(--brand-light)] flex items-center justify-center text-white shadow-lg">
           <Scale className="w-5 h-5" />
         </div>
-        <span className="text-2xl font-medium tracking-[0.2em] uppercase font-sans">
+        <span className="text-2xl font-display font-semibold tracking-[0.2em] uppercase">
           Baseline Metrology
         </span>
       </div>
 
       {/* 1px Minimalist Progress Track */}
-      <div className="w-40 h-[1px] rounded-full bg-white/20 overflow-hidden relative">
-        <div className="h-full bg-white origin-left animate-progress" />
+      <div className="w-40 h-[3px] rounded-full bg-white/20 overflow-hidden relative">
+        <div className="h-full origin-left animate-progress" style={{ background: 'linear-gradient(90deg, var(--coral), var(--lime))' }} />
       </div>
 
       <div className="text-[10px] text-white/50 uppercase tracking-[0.25em] font-mono">
-        LMPC Rules 2011 &bull; Statutory Intelligence
+        LMPC Rules 2011 &bull; Loading the good stuff
       </div>
     </div>
   );
@@ -2530,118 +2643,164 @@ export const EcommerceScraperModal: React.FC<EcommerceScraperModalProps> = ({
 <file path="src/components/Sections/BaselineStatsSection.tsx">
 import React from 'react';
 import { CompoundingSimulator } from '../Compliance/CompoundingSimulator';
+import { Reveal } from '../Effects/Reveal';
 
 export const BaselineStatsSection: React.FC = () => {
   const stats = [
-    { value: "10/10", label: "Mandatory Declarations Verified" },
-    { value: "Table 1", label: "Schedule II Font Height Minimums" },
-    { value: "₹25K–1L", label: "Section 36 Compounding Fine Scale" },
-    { value: "2021/22", label: "Mandatory Unit Sale Price (USP) Law" }
+    { value: "10/10", label: "Mandatory declarations, double-checked", color: "var(--lime)", emoji: "✅" },
+    { value: "Table 1", label: "Font-height rules, made bite-sized", color: "var(--sky)", emoji: "🔍" },
+    { value: "₹25K–1L", label: "Fines you'll never have to pay", color: "var(--coral)", emoji: "🛡️" },
+    { value: "2021/22", label: "The USP law, finally in your corner", color: "var(--sunny)", emoji: "⚡" }
   ];
 
   return (
-    <section className="bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] mt-3 py-16 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto shadow-2xl space-y-12">
+    <section className="relative overflow-hidden bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] mt-3 py-16 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto shadow-2xl space-y-12">
+      {/* Decorative blobs */}
+      <div className="absolute -top-20 -right-20 w-64 h-64 blob blob-float bg-[var(--sky)]/20 pointer-events-none" />
+      <div className="absolute -bottom-24 -left-16 w-56 h-56 blob blob-float bg-[var(--coral)]/20 pointer-events-none" style={{ animationDelay: '2s' }} />
+
       {/* Header */}
-      <div className="max-w-2xl">
+      <Reveal variant="up" className="max-w-2xl relative z-10">
         <div className="baseline-eyebrow tone-light mb-3">
           <span className="eyebrow-dot" />
-          <span>By the numbers</span>
+          <span>By the numbers, no boring stuff</span>
         </div>
-        <h2 className="text-4xl sm:text-5xl font-medium uppercase tracking-tight leading-[0.95]">
-          A statutory engine that keeps score
+        <h2 className="text-4xl sm:text-5xl font-display font-semibold uppercase tracking-tight leading-[0.95]">
+          A compliance engine that <span className="text-gradient-candy">keeps score</span>
         </h2>
         <p className="text-xs sm:text-sm text-white/70 mt-3 font-mono">
-          Rigorous enforcement across all legal clauses of the Legal Metrology (Packaged Commodities) Rules, 2011 and Legal Metrology Act, 2009.
+          Every clause of the Legal Metrology (Packaged Commodities) Rules, 2011 — checked, colour-coded and ready to ship.
         </p>
-      </div>
+      </Reveal>
 
-      {/* 4-Up Stats Grid */}
-      <dl className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 border-t border-white/20 pt-8">
+      {/* 4-Up Stats Grid — playful cards */}
+      <dl className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10">
         {stats.map((item, idx) => (
-          <div key={idx} className="space-y-2">
-            <dt className="sr-only">{item.label}</dt>
-            <dd className="text-4xl sm:text-6xl font-medium tracking-tight font-mono text-white">
-              {item.value}
-            </dd>
-            <p className="text-xs text-white/65 font-medium leading-snug">
-              {item.label}
-            </p>
-          </div>
+          <Reveal key={idx} variant="scale" delay={(idx + 1) as 1 | 2 | 3 | 4}>
+            <div
+              className="pop-card group h-full rounded-[var(--radius-card)] p-5 sm:p-6 bg-white/10 border border-white/15 backdrop-blur cursor-default"
+              style={{ boxShadow: `0 0 0 1px transparent` }}
+            >
+              <span className="text-2xl float-idle inline-block" style={{ animationDelay: `${idx * 0.3}s` }}>
+                {item.emoji}
+              </span>
+              <dt className="sr-only">{item.label}</dt>
+              <dd
+                className="text-3xl sm:text-5xl font-display font-semibold tracking-tight mt-2"
+                style={{ color: item.color }}
+              >
+                {item.value}
+              </dd>
+              <p className="text-xs text-white/70 font-medium leading-snug mt-2">
+                {item.label}
+              </p>
+            </div>
+          </Reveal>
         ))}
       </dl>
 
       {/* Embedded Interactive Compounding Sandbox */}
-      <div className="pt-6 border-t border-white/15">
+      <Reveal variant="up" className="pt-6 border-t border-white/15 relative z-10">
         <CompoundingSimulator />
-      </div>
+      </Reveal>
     </section>
   );
 };
 </file>
 
-<file path="src/components/Sections/BaselineTestimonialsSection.tsx">
-import React from 'react';
+<file path="src/components/Navbar.tsx">
+import React, { useState } from 'react';
+import { Scale, BookOpen, Layers, ShoppingBag, Download, RefreshCw, Sparkles, MessageSquare, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
+import { ComplianceReport } from '../types/compliance';
+import { exportComplianceReportPDF } from '../services/pdfExportService';
+import { sounds } from '../services/soundEffects';
 
-export const BaselineTestimonialsSection: React.FC = () => {
-  const testimonials = [
-    {
-      quote: "Our FMCG packaging design iterations now clear legal compliance in minutes instead of weeks. The on-canvas Schedule II font gauge caught a critical Table 1 violation before 500k units went to print.",
-      author: "Priya Sharma",
-      role: "VP Quality & Packaging, Heritage Consumer Brands"
-    },
-    {
-      quote: "The Unit Sale Price calculator and 1-click artwork redline feature completely eliminated show-cause notices for our retail product line across 4 states.",
-      author: "Rajesh Kulkarni",
-      role: "Head of Regulatory & Compliance, Apex Foods Ltd."
-    },
-    {
-      quote: "A game changer for e-commerce catalog audits. Scanning 200+ vendor listings under Rule 6(10) takes seconds and outputs publication-ready statutory inspection certificates.",
-      author: "Anand Sen",
-      role: "Lead Legal Counsel, Bharat Marketplace"
-    }
-  ];
+interface NavbarProps {
+  report: ComplianceReport | null;
+  activeTab: 'audit' | 'ecommerce' | 'batch' | 'handbook';
+  setActiveTab: (tab: 'audit' | 'ecommerce' | 'batch' | 'handbook') => void;
+  onOpenHandbook: () => void;
+  onReset: () => void;
+  onOpenBatchModal: () => void;
+  onOpenAssistant: () => void;
+  isDark: boolean;
+  toggleTheme: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({
+  report, activeTab, setActiveTab, onOpenHandbook, onReset, onOpenBatchModal, onOpenAssistant, isDark, toggleTheme
+}) => {
+  const [isMuted, setIsMuted] = useState(sounds.getMuted());
 
   return (
-    <section id="testimonials" className="py-20 sm:py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="max-w-2xl">
-        <div className="baseline-eyebrow tone-dark mb-3">
-          <span className="eyebrow-dot" />
-          <span>Statutory Auditing Impact</span>
-        </div>
-        <h2 className="text-4xl sm:text-5xl font-medium uppercase tracking-tight leading-[0.95] text-[var(--ink)]">
-          Trusted across FMCG &amp; retail brands
-        </h2>
-      </div>
-
-      {/* 3-Up Grid */}
-      <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-        {testimonials.map((item, idx) => (
-          <li
-            key={idx}
-            className="group rounded-[var(--radius-card)] bg-[var(--surface)] p-6 sm:p-7 border border-[var(--hairline)] flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:bg-white"
-          >
-            <div>
-              <span className="text-4xl font-serif text-[var(--brand)] block leading-none select-none">
-                “
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-[#090d16]/90 backdrop-blur-md shadow-sm transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        {/* Brand */}
+        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setActiveTab('audit')}>
+          <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center shadow-md shadow-sky-600/20">
+            <Scale className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-slate-900 dark:text-white tracking-tight">MetrologyGuard AI</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300">
+                LMPC 2011
               </span>
-              <blockquote className="text-sm sm:text-base text-[var(--ink)] leading-relaxed mt-4 font-normal">
-                {item.quote}
-              </blockquote>
             </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
+              Statutory Compliance & Vision Verification Studio
+            </p>
+          </div>
+        </div>
 
-            <figcaption className="mt-8 pt-4 border-t border-[var(--hairline)]">
-              <div className="text-sm font-medium text-[var(--ink)]">
-                {item.author}
-              </div>
-              <div className="text-xs text-[var(--ink-soft)] mt-0.5">
-                {item.role}
-              </div>
-            </figcaption>
-          </li>
-        ))}
-      </ul>
-    </section>
+        {/* Center Nav Modes */}
+        <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
+          <button onClick={() => setActiveTab('audit')}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'audit' ? 'bg-white dark:bg-sky-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}>
+            <Layers className="w-4 h-4" /> Audit Studio
+          </button>
+          <button onClick={() => setActiveTab('ecommerce')}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'ecommerce' ? 'bg-white dark:bg-sky-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}>
+            <ShoppingBag className="w-4 h-4" /> E-Commerce
+          </button>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2">
+          <button onClick={onOpenAssistant} className="px-3 py-2 rounded-lg text-xs font-bold bg-slate-100 dark:bg-sky-950/80 text-slate-700 dark:text-sky-300 border border-transparent dark:border-sky-800 hover:bg-slate-200 dark:hover:bg-sky-900 flex items-center gap-1.5 transition-colors">
+            <MessageSquare className="w-4 h-4 text-sky-600 dark:text-sky-400" /> <span className="hidden sm:inline">Ask Officer</span>
+          </button>
+
+          {report && (
+            <button onClick={() => exportComplianceReportPDF(report)} className="px-3 py-2 rounded-lg text-xs font-bold bg-emerald-600 dark:bg-emerald-950/70 text-white dark:text-emerald-300 border border-transparent dark:border-emerald-700/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 flex items-center gap-1.5 shadow-sm transition-colors">
+              <Download className="w-4 h-4" /> <span className="hidden sm:inline">Export PDF</span>
+            </button>
+          )}
+
+          <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+
+          {/* Theme Toggle Button */}
+          <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Light/Dark Mode">
+            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+          </button>
+
+          <button onClick={onOpenHandbook} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <BookOpen className="w-4 h-4" />
+          </button>
+          <button onClick={() => { const m = sounds.toggleMute(); setIsMuted(m); }} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </button>
+          <button onClick={onReset} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </header>
   );
 };
 </file>
@@ -5120,18 +5279,558 @@ MIT License. Designed for regulatory authorities, FMCG packaging QA, and commerc
 }
 </file>
 
-<file path="vite.config.ts">
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+<file path="src/components/Batch/BatchAuditModal.tsx">
+import React from 'react';
+import { Sparkles, X, Download, CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, FileSpreadsheet } from 'lucide-react';
+import { SampleProduct } from '../../types/compliance';
+import { SAMPLE_PRODUCTS } from '../../services/sampleData';
+import { evaluateCompliance } from '../../services/ruleEngine';
+import { sounds } from '../../services/soundEffects';
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-    host: true
-  }
-});
+interface BatchAuditModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelectSingleReport: (sample: SampleProduct) => void;
+}
+
+export const BatchAuditModal: React.FC<BatchAuditModalProps> = ({
+  isOpen,
+  onClose,
+  onSelectSingleReport
+}) => {
+  const batchResults = SAMPLE_PRODUCTS.map(sample => {
+    const report = evaluateCompliance({
+      productName: sample.name,
+      brandName: sample.brand,
+      categoryName: sample.category,
+      declarations: sample.declarations,
+      pdpInput: {
+        packageShape: sample.pdpDefaults.shape,
+        heightMm: sample.pdpDefaults.heightMm,
+        widthMm: sample.pdpDefaults.widthMm,
+        depthMm: sample.pdpDefaults.depthMm,
+        measuredNumeralHeightMm: sample.pdpDefaults.measuredFontHeightMm
+      },
+      labelImages: sample.labelImages
+    });
+    return {
+      sample,
+      report
+    };
+  });
+
+  const total = batchResults.length;
+  const compliant = batchResults.filter(b => b.report.overallStatus === 'COMPLIANT').length;
+  const nonCompliant = batchResults.filter(b => b.report.overallStatus === 'NON_COMPLIANT').length;
+  const compliantPct = total > 0 ? Math.round((compliant / total) * 100) : 0;
+  const nonCompliantPct = total > 0 ? Math.round((nonCompliant / total) * 100) : 0;
+
+  const exportCSV = () => {
+    sounds.playSuccess();
+    const headers = [
+      'Inspection ID',
+      'Product Name',
+      'Brand',
+      'Category',
+      'Compliance Status',
+      'Score (%)',
+      'Passed Rules',
+      'Violations Count',
+      'Net Quantity',
+      'Declared MRP (INR)',
+      'Taxes Declared',
+      'USP Rate',
+      'Consumer Care Email',
+      'PIN Code'
+    ];
+
+    const rows = batchResults.map(({ report }) => [
+      `"${report.inspectionId}"`,
+      `"${report.productName}"`,
+      `"${report.brandName}"`,
+      `"${report.categoryName}"`,
+      `"${report.overallStatus}"`,
+      report.overallScore,
+      report.passedRulesCount,
+      report.failedRulesCount,
+      `"${report.declarations.netQuantityValue || ''} ${report.declarations.netQuantityUnit || ''}"`,
+      report.declarations.mrpValue || 0,
+      report.declarations.isTaxesInclusiveDeclared ? 'YES' : 'NO',
+      report.declarations.declaredUspValue || 'N/A',
+      `"${report.declarations.consumerCareEmail || 'MISSING'}"`,
+      `"${report.declarations.manufacturerPin || 'MISSING'}"`
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Legal_Metrology_Batch_Audit_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-xl animate-fade-in">
+      <div className="relative w-full max-w-5xl bg-[#0d1222] border border-white/15 rounded-[2rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh] text-white">
+        
+        {/* Glow ambient background accents */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Modal Header */}
+        <div className="relative z-10 px-6 sm:px-8 py-5 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/5 backdrop-blur-md">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-400/30 text-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/10 shrink-0">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400">
+                  Automated Multi-SKU Sweep
+                </span>
+                <span className="text-white/30">•</span>
+                <span className="text-[10px] font-mono text-white/50">LMPC Rules, 2011</span>
+              </div>
+              <h3 className="font-bold text-lg sm:text-xl text-white tracking-tight">
+                Bulk Legal Metrology Batch Auditor
+              </h3>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 self-end sm:self-center">
+            <button
+              onClick={exportCSV}
+              className="px-4 py-2 rounded-full bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white border border-emerald-500/40 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 transition-all btn-tactile shadow-md"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Export CSV Audit</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playClick();
+                onClose();
+              }}
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-white/70 hover:text-white flex items-center justify-center transition-colors btn-tactile"
+              aria-label="Close modal"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Scrollable Content Body */}
+        <div className="relative z-10 p-6 sm:p-8 overflow-y-auto space-y-6 flex-1">
+          
+          {/* Summary KPIs Row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+            
+            {/* Audited SKUs */}
+            <div className="bg-white/5 p-4 sm:p-5 rounded-2xl border border-white/10 space-y-1 backdrop-blur-md">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-white/50 block">
+                Catalogue Audited
+              </span>
+              <div className="text-2xl sm:text-3xl font-mono font-bold text-white">
+                {total} <span className="text-xs text-white/40 font-sans font-normal">SKUs</span>
+              </div>
+            </div>
+
+            {/* Compliant Packages */}
+            <div className="bg-emerald-950/40 p-4 sm:p-5 rounded-2xl border border-emerald-500/30 space-y-1 backdrop-blur-md">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400">
+                  Fully Compliant
+                </span>
+                <span className="text-xs font-mono font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/40">
+                  {compliantPct}%
+                </span>
+              </div>
+              <div className="text-2xl sm:text-3xl font-mono font-bold text-emerald-400">
+                {compliant} <span className="text-xs text-emerald-300/60 font-sans font-normal">Items</span>
+              </div>
+            </div>
+
+            {/* Statutory Violations */}
+            <div className="bg-rose-950/40 p-4 sm:p-5 rounded-2xl border border-rose-500/30 space-y-1 backdrop-blur-md">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-400">
+                  Defect Notice
+                </span>
+                <span className="text-xs font-mono font-bold text-rose-300 bg-rose-950/80 px-2 py-0.5 rounded-full border border-rose-500/40">
+                  {nonCompliantPct}%
+                </span>
+              </div>
+              <div className="text-2xl sm:text-3xl font-mono font-bold text-rose-400">
+                {nonCompliant} <span className="text-xs text-rose-300/60 font-sans font-normal">Items</span>
+              </div>
+            </div>
+
+            {/* Potential Liability Risk */}
+            <div className="bg-amber-950/40 p-4 sm:p-5 rounded-2xl border border-amber-500/30 space-y-1 backdrop-blur-md">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400 block">
+                Section 36 Exposure
+              </span>
+              <div className="text-xl sm:text-2xl font-mono font-bold text-amber-300">
+                ₹ {(nonCompliant * 50000).toLocaleString('en-IN')}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Catalogue Table */}
+          <div className="border border-white/10 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-md shadow-xl">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead className="bg-black/40 text-[10px] text-white/50 uppercase font-mono border-b border-white/10 tracking-wider">
+                  <tr>
+                    <th className="py-3.5 px-4">Packaging Specimen</th>
+                    <th className="py-3.5 px-4">Statutory Category</th>
+                    <th className="py-3.5 px-4">Net Quantity &amp; MRP</th>
+                    <th className="py-3.5 px-4 text-center">Score</th>
+                    <th className="py-3.5 px-4 text-center">Legal Status</th>
+                    <th className="py-3.5 px-4 text-right">Workbench Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10">
+                  {batchResults.map(({ sample, report }, idx) => {
+                    const isPass = report.overallStatus === 'COMPLIANT';
+                    return (
+                      <tr
+                        key={sample.id}
+                        className="hover:bg-white/10 transition-colors group"
+                      >
+                        {/* Specimen Info with Thumbnail */}
+                        <td className="py-3.5 px-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-11 h-11 rounded-xl overflow-hidden bg-black/50 border border-white/15 shrink-0">
+                              <img
+                                src={sample.thumbnail}
+                                alt={sample.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-semibold text-white text-xs sm:text-sm line-clamp-1 group-hover:text-purple-300 transition-colors">
+                                {sample.name}
+                              </div>
+                              <div className="text-[10px] font-mono text-white/50 mt-0.5 flex items-center gap-1.5">
+                                <span>{sample.brand}</span>
+                                <span>•</span>
+                                <span>SKU #0{idx + 1}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Category */}
+                        <td className="py-3.5 px-4">
+                          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/80">
+                            {sample.category}
+                          </span>
+                        </td>
+
+                        {/* Net Qty & MRP */}
+                        <td className="py-3.5 px-4 font-mono text-white/90">
+                          <div className="font-semibold">
+                            {report.declarations.netQuantityValue} {report.declarations.netQuantityUnit}
+                          </div>
+                          <div className="text-[10px] text-white/50">
+                            ₹{report.declarations.mrpValue}
+                          </div>
+                        </td>
+
+                        {/* Score Gauge */}
+                        <td className="py-3.5 px-4 text-center">
+                          <span
+                            className={`font-mono font-bold text-xs px-2.5 py-1 rounded-full border ${
+                              report.overallScore >= 90
+                                ? 'text-emerald-300 bg-emerald-950/60 border-emerald-500/40'
+                                : 'text-rose-300 bg-rose-950/60 border-rose-500/40'
+                            }`}
+                          >
+                            {report.overallScore}%
+                          </span>
+                        </td>
+
+                        {/* Legal Status */}
+                        <td className="py-3.5 px-4 text-center">
+                          <span
+                            className={`text-[9px] font-mono font-bold px-3 py-1 rounded-full inline-flex items-center gap-1.5 uppercase tracking-wider ${
+                              isPass
+                                ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 shadow-xs'
+                                : 'bg-rose-950/90 text-rose-300 border border-rose-500/50 shadow-xs'
+                            }`}
+                          >
+                            {isPass ? (
+                              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                            ) : (
+                              <AlertTriangle className="w-3 h-3 text-rose-400" />
+                            )}
+                            <span>{isPass ? 'COMPLIANT' : 'DEFECTIVE'}</span>
+                          </span>
+                        </td>
+
+                        {/* Action Link */}
+                        <td className="py-3.5 px-4 text-right">
+                          <button
+                            onClick={() => {
+                              sounds.playClick();
+                              onSelectSingleReport(sample);
+                              onClose();
+                              const el = document.getElementById('studio');
+                              if (el) el.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white text-white hover:text-black text-xs font-semibold uppercase tracking-wider transition-all btn-tactile shadow-sm flex items-center gap-1.5 ml-auto"
+                          >
+                            <span>Inspect</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Modal Footer */}
+        <div className="relative z-10 px-6 sm:px-8 py-4 bg-black/40 border-t border-white/10 flex items-center justify-between text-xs text-white/50 font-mono">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Catalogue verification verified against Schedule II tables</span>
+          </div>
+
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onClose();
+            }}
+            className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition-colors btn-tactile"
+          >
+            Close Deck
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/Compliance/ComplianceScoreCard.tsx">
+import React from 'react';
+import { ShieldCheck, ShieldAlert, AlertTriangle, Scale, CheckCircle2, XCircle, Award } from 'lucide-react';
+import { ComplianceReport } from '../../types/compliance';
+
+interface ComplianceScoreCardProps {
+  report: ComplianceReport;
+}
+
+export const ComplianceScoreCard: React.FC<ComplianceScoreCardProps> = ({ report }) => {
+  const isCompliant = report.overallStatus === 'COMPLIANT';
+  const isWarning = report.overallStatus === 'WARNING';
+
+  const categories = [
+    { key: 'mandatory_declarations', label: 'Rule 6 Mandatory Declarations', total: 0, passed: 0, code: 'R6' },
+    { key: 'weights_and_measures', label: 'Weights & Metric Units', total: 0, passed: 0, code: 'R11' },
+    { key: 'pricing_and_usp', label: 'Pricing & 2021 Unit Sale Price', total: 0, passed: 0, code: 'USP' },
+    { key: 'consumer_grievance', label: 'Consumer Redressal Details', total: 0, passed: 0, code: 'R6(1)(n)' },
+    { key: 'pdp_and_typography', label: 'PDP & Schedule II Font Heights', total: 0, passed: 0, code: 'Table 1' }
+  ];
+
+  categories.forEach(cat => {
+    const rules = report.ruleResults.filter(r => r.category === cat.key && r.status !== 'NOT_APPLICABLE');
+    cat.total = rules.length;
+    cat.passed = rules.filter(r => r.status === 'PASS').length;
+  });
+
+  // Calculate circumference for circular gauge
+  const radius = 38;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (report.overallScore / 100) * circumference;
+
+  return (
+    <div className="rounded-[1.75rem] border border-[var(--hairline)] bg-[var(--surface-card)] p-6 sm:p-8 shadow-sm space-y-6 transition-colors duration-300">
+      {/* Top Banner Status with Radial Score Ring */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-[var(--hairline)]">
+        {/* Left SKU Details */}
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+                isCompliant
+                  ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50'
+                  : isWarning
+                  ? 'bg-amber-950/90 text-amber-300 border border-amber-500/50'
+                  : 'bg-rose-950/90 text-rose-300 border border-rose-500/50'
+              }`}
+            >
+              {report.overallStatus.replace('_', ' ')}
+            </span>
+            <span className="text-xs font-mono text-[var(--ink-soft)]">
+              Protocol #{report.inspectionId} &bull; Standard: LMPC 2011
+            </span>
+          </div>
+
+          <div>
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--ink)]">
+              {report.productName}
+            </h3>
+            <p className="text-xs sm:text-sm text-[var(--ink-soft)] font-medium mt-0.5">
+              Brand: <span className="text-[var(--ink)] font-semibold">{report.brandName}</span> &bull; Category: {report.categoryName}
+            </p>
+          </div>
+        </div>
+
+        {/* Right Radial Compliance Meter */}
+        <div className="flex items-center gap-4 bg-[var(--surface)] p-3.5 pr-6 rounded-[1.25rem] border border-[var(--hairline)] self-start sm:self-auto shrink-0 shadow-xs">
+          {/* Circular SVG Ring */}
+          <div className="relative w-20 h-20 flex items-center justify-center">
+            <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+              {/* Background Track */}
+              <circle
+                cx="50"
+                cy="50"
+                r={radius}
+                className="stroke-[var(--hairline)] fill-none"
+                strokeWidth="8"
+              />
+              {/* Animated Progress Arc */}
+              <circle
+                cx="50"
+                cy="50"
+                r={radius}
+                className={`fill-none transition-all duration-1000 ease-out ${
+                  report.overallScore >= 90
+                    ? 'stroke-emerald-500'
+                    : report.overallScore >= 70
+                    ? 'stroke-amber-500'
+                    : 'stroke-rose-500'
+                }`}
+                strokeWidth="8"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+              />
+            </svg>
+
+            {/* Score Text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+              <span className="text-xl font-bold font-mono text-[var(--ink)] leading-none">
+                {report.overallScore}%
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--ink-soft)]">
+              Statutory Index
+            </div>
+            <div className="text-xs font-semibold text-[var(--ink)] mt-0.5">
+              {report.overallScore >= 90
+                ? 'Full Statutory Clearance'
+                : report.overallScore >= 70
+                ? 'Minor Discrepancies'
+                : 'Defect Notice Required'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 4 Metric Counters */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+        <div className="bg-[var(--surface)] p-4 rounded-[1.25rem] border border-[var(--hairline)]">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--ink-soft)]">
+            Clauses Verified
+          </span>
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-[var(--ink)] mt-1">
+            {report.totalRulesChecked}
+          </div>
+        </div>
+
+        <div className="bg-[var(--surface)] p-4 rounded-[1.25rem] border border-[var(--hairline)]">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+            Passed Rules
+          </span>
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+            {report.passedRulesCount}
+          </div>
+        </div>
+
+        <div className="bg-[var(--surface)] p-4 rounded-[1.25rem] border border-[var(--hairline)]">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+            Violations
+          </span>
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-rose-600 dark:text-rose-400 mt-1">
+            {report.failedRulesCount}
+          </div>
+        </div>
+
+        <div className="bg-[var(--surface)] p-4 rounded-[1.25rem] border border-[var(--hairline)]">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+            Warnings
+          </span>
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-amber-600 dark:text-amber-400 mt-1">
+            {report.warningRulesCount}
+          </div>
+        </div>
+      </div>
+
+      {/* Category Health Breakdown Matrix */}
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink-soft)]">
+            Statutory Category Verification Breakdown
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {categories.map((cat, idx) => {
+            const pct = cat.total > 0 ? Math.round((cat.passed / cat.total) * 100) : 100;
+            const isFull = pct === 100;
+
+            return (
+              <div
+                key={idx}
+                className="bg-[var(--surface)] p-3.5 rounded-[1.25rem] border border-[var(--hairline)] space-y-2.5 shadow-xs"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-[var(--surface-card)] text-[var(--brand)] border border-[var(--hairline)]">
+                      {cat.code}
+                    </span>
+                    <h5 className="font-semibold text-xs text-[var(--ink)] mt-1 line-clamp-1">
+                      {cat.label}
+                    </h5>
+                  </div>
+                  <span className="font-mono text-xs font-bold text-[var(--ink)] shrink-0">
+                    {cat.passed}/{cat.total}
+                  </span>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="w-full h-1.5 bg-[var(--hairline)] rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-700 ${
+                      isFull ? 'bg-emerald-500' : pct > 50 ? 'bg-amber-500' : 'bg-rose-500'
+                    }`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
 </file>
 
 <file path="src/components/Compliance/RuleChecklist.tsx">
@@ -6311,22 +7010,28 @@ export const FullscreenMenu: React.FC<FullscreenMenuProps> = ({
   if (!isOpen) return null;
 
   const navLinks = [
-    { label: 'Packaging Studio', tab: 'audit', anchor: '#studio' },
-    { label: 'Rule 6 Checklist', tab: 'audit', anchor: '#checklist' },
-    { label: 'E-Commerce Verifier', tab: 'ecommerce', anchor: '#ecommerce' },
-    { label: 'Batch Catalogue Audit', tab: 'batch', anchor: '#batch' },
-    { label: 'LMPC Statutory Rulebook', tab: 'handbook', anchor: '#rulebook' }
+    { label: 'Packaging Playground', tab: 'audit', anchor: '#studio', color: 'var(--coral)' },
+    { label: 'Rule 6 Cheat Sheet', tab: 'audit', anchor: '#checklist', color: 'var(--lime)' },
+    { label: 'E-Commerce Verifier', tab: 'ecommerce', anchor: '#ecommerce', color: 'var(--sky)' },
+    { label: 'Batch Catalogue Sweep', tab: 'batch', anchor: '#batch', color: 'var(--sunny)' },
+    { label: 'The Rulebook', tab: 'handbook', anchor: '#rulebook', color: 'var(--bubble-pink)' }
   ];
 
   return (
-    <div className="fixed inset-0 z-[150] bg-[var(--brand-deep)] text-white flex flex-col justify-between p-4 sm:p-8 animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[150] bg-[var(--brand-deep)] text-white flex flex-col justify-between p-4 sm:p-8 animate-in fade-in duration-300 overflow-hidden">
+      {/* Candy blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="blob blob-float w-96 h-96 bg-[var(--coral)]/15 -top-20 -left-20" />
+        <div className="blob blob-float w-80 h-80 bg-[var(--sky)]/15 -bottom-24 -right-16" style={{ animationDelay: '1.8s' }} />
+      </div>
+
       {/* Top Header Row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[var(--brand-light)]">
+          <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-[var(--coral)] to-[var(--brand-light)] flex items-center justify-center text-white">
             <Scale className="w-4 h-4" />
           </div>
-          <span className="text-sm font-medium tracking-[0.2em] uppercase font-sans">
+          <span className="text-sm font-display font-semibold tracking-[0.2em] uppercase">
             Baseline Metrology
           </span>
         </div>
@@ -6360,7 +7065,7 @@ export const FullscreenMenu: React.FC<FullscreenMenuProps> = ({
       </div>
 
       {/* Center Nav Links */}
-      <div className="max-w-4xl mx-auto w-full my-auto py-8 flex flex-col gap-3 sm:gap-4">
+      <div className="max-w-4xl mx-auto w-full my-auto py-8 flex flex-col gap-3 sm:gap-4 relative z-10">
         {navLinks.map((item, index) => (
           <a
             key={index}
@@ -6373,16 +7078,22 @@ export const FullscreenMenu: React.FC<FullscreenMenuProps> = ({
               const el = document.querySelector(item.anchor);
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="group text-4xl sm:text-6xl lg:text-7xl font-medium tracking-tight hover:text-[var(--brand-light)] transition-colors flex items-center justify-between border-b border-white/10 pb-3"
+            className="group font-display text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight transition-colors flex items-center justify-between border-b border-white/10 pb-3"
+            style={{ transitionDelay: `${index * 40}ms` }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = item.color; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = ''; }}
           >
             <span>{item.label}</span>
-            <ArrowUpRight className="w-6 h-6 sm:w-10 sm:h-10 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all text-[var(--brand-light)]" />
+            <ArrowUpRight
+              className="w-6 h-6 sm:w-10 sm:h-10 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:rotate-12 transition-all"
+              style={{ color: item.color }}
+            />
           </a>
         ))}
       </div>
 
       {/* Bottom Footer Action Row */}
-      <div className="border-t border-white/15 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/70">
+      <div className="border-t border-white/15 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/70 relative z-10">
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
@@ -6390,7 +7101,7 @@ export const FullscreenMenu: React.FC<FullscreenMenuProps> = ({
               onClose();
               onOpenAssistant();
             }}
-            className="px-6 py-3 rounded-full bg-white text-[var(--brand-deep)] hover:bg-[var(--brand-light)] hover:text-white font-medium uppercase tracking-wider text-xs transition-colors shadow-lg"
+            className="px-6 py-3 rounded-full btn-candy font-bold uppercase tracking-wider text-xs shadow-lg"
           >
             Ask Legal Officer AI
           </button>
@@ -6655,99 +7366,89 @@ export const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
 };
 </file>
 
-<file path="src/components/Navbar.tsx">
-import React, { useState } from 'react';
-import { Scale, BookOpen, Layers, ShoppingBag, Download, RefreshCw, Sparkles, MessageSquare, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
-import { ComplianceReport } from '../types/compliance';
-import { exportComplianceReportPDF } from '../services/pdfExportService';
-import { sounds } from '../services/soundEffects';
+<file path="src/components/Sections/BaselineTestimonialsSection.tsx">
+import React from 'react';
+import { Star } from 'lucide-react';
+import { Reveal } from '../Effects/Reveal';
 
-interface NavbarProps {
-  report: ComplianceReport | null;
-  activeTab: 'audit' | 'ecommerce' | 'batch' | 'handbook';
-  setActiveTab: (tab: 'audit' | 'ecommerce' | 'batch' | 'handbook') => void;
-  onOpenHandbook: () => void;
-  onReset: () => void;
-  onOpenBatchModal: () => void;
-  onOpenAssistant: () => void;
-  isDark: boolean;
-  toggleTheme: () => void;
-}
-
-export const Navbar: React.FC<NavbarProps> = ({
-  report, activeTab, setActiveTab, onOpenHandbook, onReset, onOpenBatchModal, onOpenAssistant, isDark, toggleTheme
-}) => {
-  const [isMuted, setIsMuted] = useState(sounds.getMuted());
+export const BaselineTestimonialsSection: React.FC = () => {
+  const testimonials = [
+    {
+      quote: "Our packaging redesigns now clear compliance in minutes, not weeks. The on-canvas font gauge caught a critical violation before 500k units hit print — pure magic.",
+      author: "Priya Sharma",
+      role: "VP Quality & Packaging, Heritage Consumer Brands",
+      color: "var(--coral)",
+      emoji: "🎯"
+    },
+    {
+      quote: "The Unit Sale Price calculator and one-click artwork fix wiped out show-cause notices across four states. I actually look forward to audits now.",
+      author: "Rajesh Kulkarni",
+      role: "Head of Regulatory & Compliance, Apex Foods Ltd.",
+      color: "var(--sky)",
+      emoji: "🚀"
+    },
+    {
+      quote: "A total game changer for e-commerce catalog audits. Scanning 200+ vendor listings takes seconds and spits out publication-ready inspection certificates.",
+      author: "Anand Sen",
+      role: "Lead Legal Counsel, Bharat Marketplace",
+      color: "var(--lime-deep)",
+      emoji: "✨"
+    }
+  ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-[#090d16]/90 backdrop-blur-md shadow-sm transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        
-        {/* Brand */}
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setActiveTab('audit')}>
-          <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center shadow-md shadow-sky-600/20">
-            <Scale className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-slate-900 dark:text-white tracking-tight">MetrologyGuard AI</span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300">
-                LMPC 2011
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
-              Statutory Compliance & Vision Verification Studio
-            </p>
-          </div>
+    <section id="testimonials" className="py-20 sm:py-24 px-4 sm:px-8 max-w-7xl mx-auto">
+      {/* Header */}
+      <Reveal variant="up" className="max-w-2xl">
+        <div className="baseline-eyebrow tone-dark mb-3">
+          <span className="eyebrow-dot" />
+          <span>People actually love using this</span>
         </div>
+        <h2 className="text-4xl sm:text-5xl font-display font-semibold uppercase tracking-tight leading-[0.95] text-[var(--ink)]">
+          Trusted (and enjoyed) across <span className="text-gradient-candy">FMCG &amp; retail</span>
+        </h2>
+      </Reveal>
 
-        {/* Center Nav Modes */}
-        <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
-          <button onClick={() => setActiveTab('audit')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'audit' ? 'bg-white dark:bg-sky-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-            }`}>
-            <Layers className="w-4 h-4" /> Audit Studio
-          </button>
-          <button onClick={() => setActiveTab('ecommerce')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'ecommerce' ? 'bg-white dark:bg-sky-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-            }`}>
-            <ShoppingBag className="w-4 h-4" /> E-Commerce
-          </button>
-        </div>
+      {/* 3-Up Grid */}
+      <ul className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+        {testimonials.map((item, idx) => (
+          <Reveal key={idx} variant="up" delay={(idx + 1) as 1 | 2 | 3}>
+            <li
+              className="pop-card group h-full rounded-[var(--radius-card)] bg-[var(--surface)] p-6 sm:p-7 border-2 flex flex-col justify-between shadow-sm"
+              style={{ borderColor: 'var(--hairline)' }}
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span
+                    className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-sm float-idle-slow"
+                    style={{ backgroundColor: item.color, animationDelay: `${idx * 0.4}s` }}
+                  >
+                    {item.emoji}
+                  </span>
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 5 }).map((_, s) => (
+                      <Star key={s} className="w-3.5 h-3.5 fill-[var(--sunny)] text-[var(--sunny)]" />
+                    ))}
+                  </div>
+                </div>
+                <blockquote className="text-sm sm:text-base text-[var(--ink)] leading-relaxed font-normal">
+                  &ldquo;{item.quote}&rdquo;
+                </blockquote>
+              </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2">
-          <button onClick={onOpenAssistant} className="px-3 py-2 rounded-lg text-xs font-bold bg-slate-100 dark:bg-sky-950/80 text-slate-700 dark:text-sky-300 border border-transparent dark:border-sky-800 hover:bg-slate-200 dark:hover:bg-sky-900 flex items-center gap-1.5 transition-colors">
-            <MessageSquare className="w-4 h-4 text-sky-600 dark:text-sky-400" /> <span className="hidden sm:inline">Ask Officer</span>
-          </button>
-
-          {report && (
-            <button onClick={() => exportComplianceReportPDF(report)} className="px-3 py-2 rounded-lg text-xs font-bold bg-emerald-600 dark:bg-emerald-950/70 text-white dark:text-emerald-300 border border-transparent dark:border-emerald-700/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 flex items-center gap-1.5 shadow-sm transition-colors">
-              <Download className="w-4 h-4" /> <span className="hidden sm:inline">Export PDF</span>
-            </button>
-          )}
-
-          <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-
-          {/* Theme Toggle Button */}
-          <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Light/Dark Mode">
-            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-          </button>
-
-          <button onClick={onOpenHandbook} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <BookOpen className="w-4 h-4" />
-          </button>
-          <button onClick={() => { const m = sounds.toggleMute(); setIsMuted(m); }} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-          </button>
-          <button onClick={onReset} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <RefreshCw className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </header>
+              <figcaption className="mt-8 pt-4 border-t border-[var(--hairline)]">
+                <div className="text-sm font-semibold text-[var(--ink)]">
+                  {item.author}
+                </div>
+                <div className="text-xs text-[var(--ink-soft)] mt-0.5">
+                  {item.role}
+                </div>
+              </figcaption>
+            </li>
+          </Reveal>
+        ))}
+      </ul>
+    </section>
   );
 };
 </file>
@@ -6899,528 +7600,26 @@ export const sounds = new SoundEffectsService();
 }
 </file>
 
-<file path="src/components/Compliance/ComplianceScoreCard.tsx">
-import React from 'react';
-import { ShieldCheck, ShieldAlert, AlertTriangle, Scale, CheckCircle2, XCircle, Award } from 'lucide-react';
-import { ComplianceReport } from '../../types/compliance';
+<file path="vite.config.ts">
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-interface ComplianceScoreCardProps {
-  report: ComplianceReport;
-}
-
-export const ComplianceScoreCard: React.FC<ComplianceScoreCardProps> = ({ report }) => {
-  const isCompliant = report.overallStatus === 'COMPLIANT';
-  const isWarning = report.overallStatus === 'WARNING';
-
-  const categories = [
-    { key: 'mandatory_declarations', label: 'Rule 6 Mandatory Declarations', total: 0, passed: 0, code: 'R6' },
-    { key: 'weights_and_measures', label: 'Weights & Metric Units', total: 0, passed: 0, code: 'R11' },
-    { key: 'pricing_and_usp', label: 'Pricing & 2021 Unit Sale Price', total: 0, passed: 0, code: 'USP' },
-    { key: 'consumer_grievance', label: 'Consumer Redressal Details', total: 0, passed: 0, code: 'R6(1)(n)' },
-    { key: 'pdp_and_typography', label: 'PDP & Schedule II Font Heights', total: 0, passed: 0, code: 'Table 1' }
-  ];
-
-  categories.forEach(cat => {
-    const rules = report.ruleResults.filter(r => r.category === cat.key && r.status !== 'NOT_APPLICABLE');
-    cat.total = rules.length;
-    cat.passed = rules.filter(r => r.status === 'PASS').length;
-  });
-
-  // Calculate circumference for circular gauge
-  const radius = 38;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (report.overallScore / 100) * circumference;
-
-  return (
-    <div className="rounded-[1.75rem] border border-[var(--hairline)] bg-[var(--surface-card)] p-6 sm:p-8 shadow-sm space-y-6 transition-colors duration-300">
-      {/* Top Banner Status with Radial Score Ring */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-[var(--hairline)]">
-        {/* Left SKU Details */}
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={`text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                isCompliant
-                  ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50'
-                  : isWarning
-                  ? 'bg-amber-950/90 text-amber-300 border border-amber-500/50'
-                  : 'bg-rose-950/90 text-rose-300 border border-rose-500/50'
-              }`}
-            >
-              {report.overallStatus.replace('_', ' ')}
-            </span>
-            <span className="text-xs font-mono text-[var(--ink-soft)]">
-              Protocol #{report.inspectionId} &bull; Standard: LMPC 2011
-            </span>
-          </div>
-
-          <div>
-            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--ink)]">
-              {report.productName}
-            </h3>
-            <p className="text-xs sm:text-sm text-[var(--ink-soft)] font-medium mt-0.5">
-              Brand: <span className="text-[var(--ink)] font-semibold">{report.brandName}</span> &bull; Category: {report.categoryName}
-            </p>
-          </div>
-        </div>
-
-        {/* Right Radial Compliance Meter */}
-        <div className="flex items-center gap-4 bg-[var(--surface)] p-3.5 pr-6 rounded-[1.25rem] border border-[var(--hairline)] self-start sm:self-auto shrink-0 shadow-xs">
-          {/* Circular SVG Ring */}
-          <div className="relative w-20 h-20 flex items-center justify-center">
-            <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-              {/* Background Track */}
-              <circle
-                cx="50"
-                cy="50"
-                r={radius}
-                className="stroke-[var(--hairline)] fill-none"
-                strokeWidth="8"
-              />
-              {/* Animated Progress Arc */}
-              <circle
-                cx="50"
-                cy="50"
-                r={radius}
-                className={`fill-none transition-all duration-1000 ease-out ${
-                  report.overallScore >= 90
-                    ? 'stroke-emerald-500'
-                    : report.overallScore >= 70
-                    ? 'stroke-amber-500'
-                    : 'stroke-rose-500'
-                }`}
-                strokeWidth="8"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                strokeLinecap="round"
-              />
-            </svg>
-
-            {/* Score Text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-              <span className="text-xl font-bold font-mono text-[var(--ink)] leading-none">
-                {report.overallScore}%
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[var(--ink-soft)]">
-              Statutory Index
-            </div>
-            <div className="text-xs font-semibold text-[var(--ink)] mt-0.5">
-              {report.overallScore >= 90
-                ? 'Full Statutory Clearance'
-                : report.overallScore >= 70
-                ? 'Minor Discrepancies'
-                : 'Defect Notice Required'}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 4 Metric Counters */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div className="bg-[var(--surface)] p-4 rounded-[1.25rem] border border-[var(--hairline)]">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--ink-soft)]">
-            Clauses Verified
-          </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[var(--ink)] mt-1">
-            {report.totalRulesChecked}
-          </div>
-        </div>
-
-        <div className="bg-[var(--surface)] p-4 rounded-[1.25rem] border border-[var(--hairline)]">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-            Passed Rules
-          </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-            {report.passedRulesCount}
-          </div>
-        </div>
-
-        <div className="bg-[var(--surface)] p-4 rounded-[1.25rem] border border-[var(--hairline)]">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
-            Violations
-          </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-rose-600 dark:text-rose-400 mt-1">
-            {report.failedRulesCount}
-          </div>
-        </div>
-
-        <div className="bg-[var(--surface)] p-4 rounded-[1.25rem] border border-[var(--hairline)]">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-            Warnings
-          </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-amber-600 dark:text-amber-400 mt-1">
-            {report.warningRulesCount}
-          </div>
-        </div>
-      </div>
-
-      {/* Category Health Breakdown Matrix */}
-      <div className="space-y-3 pt-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink-soft)]">
-            Statutory Category Verification Breakdown
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {categories.map((cat, idx) => {
-            const pct = cat.total > 0 ? Math.round((cat.passed / cat.total) * 100) : 100;
-            const isFull = pct === 100;
-
-            return (
-              <div
-                key={idx}
-                className="bg-[var(--surface)] p-3.5 rounded-[1.25rem] border border-[var(--hairline)] space-y-2.5 shadow-xs"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-[var(--surface-card)] text-[var(--brand)] border border-[var(--hairline)]">
-                      {cat.code}
-                    </span>
-                    <h5 className="font-semibold text-xs text-[var(--ink)] mt-1 line-clamp-1">
-                      {cat.label}
-                    </h5>
-                  </div>
-                  <span className="font-mono text-xs font-bold text-[var(--ink)] shrink-0">
-                    {cat.passed}/{cat.total}
-                  </span>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="w-full h-1.5 bg-[var(--hairline)] rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-700 ${
-                      isFull ? 'bg-emerald-500' : pct > 50 ? 'bg-amber-500' : 'bg-rose-500'
-                    }`}
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-};
-</file>
-
-<file path="src/components/Hero/BaselineHero.tsx">
-import React, { useState, useEffect } from 'react';
-import { Scale, ArrowRight, BookOpen, Layers, ShoppingBag, Sparkles, MessageSquare, Download, Sun, Moon, Volume2, VolumeX, Keyboard } from 'lucide-react';
-import { SampleProduct, ComplianceReport } from '../../types/compliance';
-import { SAMPLE_PRODUCTS } from '../../services/sampleData';
-import { sounds } from '../../services/soundEffects';
-import { exportComplianceReportPDF } from '../../services/pdfExportService';
-
-interface BaselineHeroProps {
-  currentSample: SampleProduct;
-  onSelectSample: (sample: SampleProduct) => void;
-  report: ComplianceReport | null;
-  onOpenMenu: () => void;
-  onOpenAssistant: () => void;
-  onOpenHandbook: () => void;
-  onOpenBatchModal: () => void;
-  isReady: boolean;
-  theme: 'light' | 'dark';
-  onToggleTheme: () => void;
-}
-
-export const BaselineHero: React.FC<BaselineHeroProps> = ({
-  currentSample,
-  onSelectSample,
-  report,
-  onOpenMenu,
-  onOpenAssistant,
-  onOpenHandbook,
-  onOpenBatchModal,
-  isReady,
-  theme,
-  onToggleTheme
-}) => {
-  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(sounds.getMuted());
-
-  // Auto-advance collection carousel every 3800ms
-  useEffect(() => {
-    if (!isReady) return;
-    const timer = setInterval(() => {
-      setActiveSlideIndex(prev => (prev + 1) % SAMPLE_PRODUCTS.length);
-    }, 3800);
-    return () => clearInterval(timer);
-  }, [isReady]);
-
-  const activeSample = SAMPLE_PRODUCTS[activeSlideIndex];
-
-  const handleToggleMute = () => {
-    const muted = sounds.toggleMute();
-    setIsMuted(muted);
-    if (!muted) sounds.playClick();
-  };
-
-  return (
-    <section className="relative isolate overflow-hidden bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] min-h-[38rem] h-[calc(100svh-1.5rem)] flex flex-col justify-between p-4 sm:p-8 lg:p-10 shadow-2xl">
-      {/* Background Parallax Plate */}
-      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        <img
-          src="/samples/rice.jpg"
-          alt="Packaging Backdrop"
-          className="w-full h-full object-cover object-center opacity-25 scale-105 filter blur-[2px]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2f63]/85 via-[#0f2f63]/50 to-[#0f2f63]/90" />
-      </div>
-
-      {/* Top Header Navbar */}
-      <header className="flex items-center justify-between gap-4 text-xs">
-        {/* Left Nav */}
-        <nav className="hidden lg:flex items-center gap-6 text-white/80 font-medium">
-          <a
-            href="#studio"
-            className="hover:text-white transition-colors flex items-center gap-1.5"
-          >
-            <Layers className="w-3.5 h-3.5 text-[var(--brand-light)]" />
-            <span>Packaging Studio</span>
-          </a>
-          <a
-            href="#checklist"
-            className="hover:text-white transition-colors"
-          >
-            Rule 6 Checklist
-          </a>
-          <button
-            onClick={onOpenHandbook}
-            className="hover:text-white transition-colors flex items-center gap-1"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-[var(--brand-light)]" />
-            <span>Statutory Rulebook</span>
-          </button>
-          <button
-            onClick={onOpenBatchModal}
-            className="hover:text-white transition-colors flex items-center gap-1 text-amber-300"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Batch Sweep</span>
-          </button>
-        </nav>
-
-        {/* Center Brand Identity */}
-        <div className="flex items-center gap-2.5 mx-auto lg:mx-0">
-          <div className="w-7 h-7 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-[var(--brand-light)] shadow-inner">
-            <Scale className="w-4 h-4" />
-          </div>
-          <span className="text-base font-medium tracking-[0.2em] uppercase font-sans">
-            Baseline Metrology
-          </span>
-        </div>
-
-        {/* Right Actions, Audio, Theme Toggle & Burger */}
-        <div className="flex items-center gap-2">
-          {/* Audio FX Toggle */}
-          <button
-            onClick={handleToggleMute}
-            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex items-center justify-center transition-all btn-tactile text-white"
-            title={isMuted ? "Enable Tactile Sounds" : "Mute Sound Effects"}
-            aria-label="Toggle sound effects"
-          >
-            {isMuted ? (
-              <VolumeX className="w-4 h-4 text-white/50" />
-            ) : (
-              <Volume2 className="w-4 h-4 text-emerald-300 animate-pulse" />
-            )}
-          </button>
-
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onOpenAssistant();
-            }}
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-white/90 hover:text-white transition-colors mr-1"
-          >
-            <MessageSquare className="w-3.5 h-3.5 text-[var(--brand-light)]" />
-            <span>Ask Legal Officer</span>
-          </button>
-
-          {report && (
-            <button
-              onClick={() => {
-                sounds.playSuccess();
-                exportComplianceReportPDF(report);
-              }}
-              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500 hover:text-white text-xs font-semibold transition-colors shadow-sm"
-            >
-              <Download className="w-3 h-3" />
-              <span>Export Notice</span>
-            </button>
-          )}
-
-          {/* Theme Toggle Button (Light/Dark) */}
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onToggleTheme();
-            }}
-            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex items-center justify-center transition-all btn-tactile text-white"
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-4 h-4 text-amber-300 transition-transform hover:rotate-45" />
-            ) : (
-              <Moon className="w-4 h-4 text-sky-200 transition-transform hover:-rotate-12" />
-            )}
-          </button>
-
-          {/* Minimalist 2-Bar Burger Button */}
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onOpenMenu();
-            }}
-            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex flex-col items-center justify-center gap-1.5 transition-all btn-tactile"
-            aria-label="Open navigation menu"
-          >
-            <span className="w-4 h-[1.5px] bg-white rounded-full" />
-            <span className="w-4 h-[1.5px] bg-white rounded-full" />
-          </button>
-        </div>
-      </header>
-
-      {/* Center Giant Word Title */}
-      <div className="my-auto py-6">
-        <h1 className="text-[11vw] font-medium uppercase tracking-[-0.03em] leading-[0.88] select-none">
-          <span className="clip-word-box mr-4 sm:mr-8">
-            <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '100ms' }}>
-              OWN
-            </span>
-          </span>
-          <span className="clip-word-box mr-4 sm:mr-8">
-            <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '240ms' }}>
-              THE
-            </span>
-          </span>
-          <span className="clip-word-box">
-            <span className={`reveal-word text-[var(--brand-light)] ${isReady ? 'active' : ''}`} style={{ transitionDelay: '380ms' }}>
-              BENCHMARK
-            </span>
-          </span>
-        </h1>
-        <p className="text-xs sm:text-sm text-white/70 font-mono uppercase tracking-[0.25em] mt-4">
-          Statutory Packaging Intelligence &bull; Legal Metrology Rules, 2011
-        </p>
-      </div>
-
-      {/* Bottom Row: Tagline & Benchmark Carousel */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 pt-4 border-t border-white/15">
-        {/* Tagline */}
-        <div className="space-y-1">
-          <p className="text-2xl sm:text-3xl font-medium uppercase tracking-tight leading-[0.95] text-white/90">
-            <span className="clip-line-box block">
-              <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '450ms' }}>
-                SCAN. AUDIT.
-              </span>
-            </span>
-            <span className="clip-line-box block text-[var(--brand-light)]">
-              <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '560ms' }}>
-                STAY COMPLIANT.
-              </span>
-            </span>
-          </p>
-        </div>
-
-        {/* Right Cluster: Auto-advancing Collection Slider & Health Card */}
-        <div className="flex items-end gap-3 w-full sm:w-auto">
-          {/* Collection Slider Card */}
-          <div className="hidden md:flex flex-col gap-2 w-64 bg-white/10 border border-white/15 rounded-[var(--radius-card)] p-3 backdrop-blur shadow-2xl">
-            <div className="flex items-center gap-3">
-              <img
-                src={activeSample.thumbnail}
-                alt={activeSample.name}
-                className="w-12 h-12 rounded-xl object-cover border border-white/20 shrink-0"
-              />
-              <div className="flex-1 min-w-0">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-[var(--brand-light)] block truncate">
-                  {activeSample.category}
-                </span>
-                <h5 className="text-xs font-medium uppercase text-white truncate">
-                  {activeSample.name}
-                </h5>
-                <button
-                  onClick={() => {
-                    sounds.playClick();
-                    onSelectSample(activeSample);
-                    const el = document.getElementById('studio');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="text-[10px] text-white/80 hover:text-white underline tracking-wide mt-0.5 flex items-center gap-1"
-                >
-                  <span>Inspect sample &rarr;</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Carousel Dots */}
-            <div className="flex items-center justify-between pt-1 border-t border-white/10">
-              <div className="flex items-center gap-1.5">
-                {SAMPLE_PRODUCTS.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      sounds.playClick();
-                      setActiveSlideIndex(i);
-                    }}
-                    className={`h-1.5 rounded-full transition-all ${
-                      i === activeSlideIndex ? 'w-5 bg-white' : 'w-1.5 bg-white/40'
-                    }`}
-                    aria-label={`Slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-              <span className="text-[9px] font-mono text-white/50">
-                0{activeSlideIndex + 1} / 0{SAMPLE_PRODUCTS.length}
-              </span>
-            </div>
-          </div>
-
-          {/* Membership / Compliance Metric Card */}
-          <article
-            onClick={() => {
-              sounds.playClick();
-              const el = document.getElementById('studio');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="w-full sm:w-56 bg-white/10 hover:bg-white/15 cursor-pointer border border-white/15 rounded-[var(--radius-card)] p-3.5 backdrop-blur shadow-2xl flex items-center justify-between gap-3 transition-all hover:scale-102"
-          >
-            <div className="space-y-1.5">
-              <div className="text-2xl font-medium text-white tracking-tight leading-none font-mono">
-                {report ? `${report.overallScore}%` : '100%'}
-              </div>
-              {/* Overlapping Dot Indicators */}
-              <div className="flex -space-x-1.5 items-center">
-                <span className="w-3.5 h-3.5 rounded-full bg-[#5790e6] border border-[#0f2f63]" title="Rule 6 Declarations" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#c2e029] border border-[#0f2f63]" title="Rule 7 Font Sizing" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#0b6e97] border border-[#0f2f63]" title="2021 USP Rate" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#ffffff] border border-[#0f2f63]" title="Section 36 Compliance" />
-              </div>
-              <span className="text-[10px] text-white/80 block leading-tight">
-                Statutory Clauses Active
-              </span>
-            </div>
-
-            <img
-              src={currentSample.thumbnail}
-              alt="Active SKU"
-              className="w-14 h-16 rounded-xl object-cover border border-white/20 shadow-md"
-            />
-          </article>
-        </div>
-      </div>
-    </section>
-  );
-};
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 5173,
+    host: true,
+    cors: true,
+    allowedHosts: true
+  },
+  preview: {
+    port: 5173,
+    host: true,
+    cors: true,
+    allowedHosts: true
+  }
+});
 </file>
 
 <file path="index.html">
@@ -7430,12 +7629,13 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563c9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M4.8 5.6A9 9 0 0 0 4.8 18.4'/><path d='M19.2 5.6a9 9 0 0 1 0 12.8'/></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Baseline MetrologyGuard | Legal Metrology (LMPC 2011) Packaging Compliance Studio</title>
-    
-    <!-- Google Fonts: Onest, Syne, Plus Jakarta Sans, JetBrains Mono -->
+    <title>Baseline MetrologyGuard | Your Friendly Packaging Compliance Sidekick</title>
+    <meta name="description" content="Scan it. Score it. Ship it compliant. The playful way to nail Legal Metrology packaging rules." />
+
+    <!-- Google Fonts: Onest, Syne, Fredoka, Plus Jakarta Sans, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Syne:wght@600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
@@ -7476,10 +7676,16 @@ export default {
         ghost: 'var(--ghost)',
         hairline: 'var(--hairline)',
         'on-brand': 'var(--on-brand)',
+        coral: { DEFAULT: 'var(--coral)', deep: 'var(--coral-deep)' },
+        lime: { DEFAULT: 'var(--lime)', deep: 'var(--lime-deep)' },
+        sunny: { DEFAULT: 'var(--sunny)', deep: 'var(--sunny-deep)' },
+        sky: { DEFAULT: 'var(--sky)', deep: 'var(--sky-deep)' },
+        bubble: { pink: 'var(--bubble-pink)' },
       },
       fontFamily: {
         sans: ['Onest', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
+        display: ['Fredoka', 'Syne', 'Onest', 'sans-serif'],
       },
       borderRadius: {
         card: 'var(--radius-card)',
@@ -7499,12 +7705,23 @@ export default {
         'progress-fill': {
           '0%': { transform: 'scaleX(0)' },
           '100%': { transform: 'scaleX(1)' }
+        },
+        'bounce-in': {
+          '0%': { transform: 'scale(0.3)', opacity: '0' },
+          '60%': { transform: 'scale(1.08)', opacity: '1' },
+          '100%': { transform: 'scale(1)' }
+        },
+        'pop-spin': {
+          '0%': { transform: 'rotate(0deg) scale(0.8)', opacity: '0' },
+          '100%': { transform: 'rotate(360deg) scale(1)', opacity: '1' }
         }
       },
       animation: {
         'word-slide': 'word-slide-up 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'curtain-slide': 'curtain-exit 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards',
-        'progress': 'progress-fill 1.28s cubic-bezier(0.65, 0, 0.35, 1) forwards'
+        'progress': 'progress-fill 1.28s cubic-bezier(0.65, 0, 0.35, 1) forwards',
+        'bounce-in': 'bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        'pop-spin': 'pop-spin 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
       }
     },
   },
@@ -7512,29 +7729,548 @@ export default {
 }
 </file>
 
+<file path="src/components/Footer/BaselineFooter.tsx">
+import React from 'react';
+import { Scale, ArrowRight, Linkedin, Github } from 'lucide-react';
+import { sounds } from '../../services/soundEffects';
+
+export const BaselineFooter: React.FC<{
+  onOpenAssistant: () => void;
+  onOpenHandbook: () => void;
+}> = ({ onOpenAssistant, onOpenHandbook }) => {
+  return (
+    <footer className="relative overflow-hidden bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] mt-3 py-14 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto shadow-2xl space-y-12">
+      {/* Top CTA Band */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 pb-12 border-b border-white/15">
+        <div>
+          <div className="baseline-eyebrow tone-light mb-3">
+            <span className="eyebrow-dot" />
+            <span>Get Started</span>
+          </div>
+          <h2 className="text-4xl sm:text-6xl font-medium uppercase tracking-tight leading-[0.92]">
+            Ready to audit your packaging?
+          </h2>
+        </div>
+
+        {/* Action Button */}
+        <button
+          onClick={() => {
+            sounds.playClick();
+            const el = document.getElementById('studio');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="group px-7 py-3.5 rounded-full bg-white text-[var(--brand-deep)] hover:bg-[var(--brand-light)] hover:text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg btn-tactile"
+        >
+          <span>Start Inspection</span>
+          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+        </button>
+      </div>
+
+      {/* 4-Column Navigation Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 sm:gap-12 py-4">
+        {/* Brand Column */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-[var(--brand-light)]">
+              <Scale className="w-4 h-4" />
+            </div>
+            <span className="text-sm font-semibold tracking-[0.2em] uppercase font-sans">
+              Baseline Metrology
+            </span>
+          </div>
+          <p className="text-xs text-white/65 leading-relaxed">
+            Statutory AI audit platform for pre-packaged commodities under the Legal Metrology (Packaged Commodities) Rules, 2011.
+          </p>
+          <address className="not-italic text-xs text-white/70 space-y-1 pt-2 font-mono">
+            <div>compliance@metrologyguard.ai</div>
+            <div>Department of Consumer Affairs, New Delhi</div>
+          </address>
+        </div>
+
+        {/* Column 1: Statutory Clauses */}
+        <div className="space-y-3">
+          <h5 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">
+            Statutory Clauses
+          </h5>
+          <ul className="space-y-2 text-xs text-white/80">
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(a) Mfr / Importer</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(c) Standard Metric Units</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(e) MRP &amp; Taxes</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(n) 2021 USP Rate</a></li>
+            <li><a href="#checklist" className="hover:text-white transition-colors">Rule 6(1)(f) Consumer Grievance</a></li>
+          </ul>
+        </div>
+
+        {/* Column 2: Studio Tools */}
+        <div className="space-y-3">
+          <h5 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">
+            Inspector Tools
+          </h5>
+          <ul className="space-y-2 text-xs text-white/80">
+            <li><a href="#studio" className="hover:text-white transition-colors">2.5x Precision Loupe</a></li>
+            <li><a href="#studio" className="hover:text-white transition-colors">Rule 7 Millimeter Gauge</a></li>
+            <li><a href="#studio" className="hover:text-white transition-colors">1-Click Artwork Redline</a></li>
+            <li><a href="#pdp-calc" className="hover:text-white transition-colors">PDP Geometry Tool</a></li>
+            <li><button onClick={onOpenAssistant} className="hover:text-white transition-colors text-left">AI Legal Assistant</button></li>
+          </ul>
+        </div>
+
+        {/* Column 3: Legal Acts */}
+        <div className="space-y-3">
+          <h5 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50">
+            Statutory Acts
+          </h5>
+          <ul className="space-y-2 text-xs text-white/80">
+            <li><button onClick={onOpenHandbook} className="hover:text-white transition-colors text-left">LMPC Rules, 2011</button></li>
+            <li><a href="#analytics" className="hover:text-white transition-colors">Legal Metrology Act, 2009</a></li>
+            <li><a href="#analytics" className="hover:text-white transition-colors">Section 36 &amp; 48 Penalties</a></li>
+            <li><a href="#pdp-calc" className="hover:text-white transition-colors">Schedule II Font Tables</a></li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Bottom Bar & Legal Disclaimers */}
+      <div className="border-t border-white/15 pt-8 space-y-6 text-xs text-white/50 font-mono">
+        {/* Hackathon Disclaimer */}
+        <div className="bg-white/5 p-4 rounded-xl border border-white/10 text-[10px] sm:text-xs leading-relaxed text-white/70">
+          <strong className="text-white">LEGAL DISCLAIMER:</strong> This software is a prototype developed for the <strong className="text-white">Smart India Hackathon (SIH) 2026</strong>. It is designed to assist with packaging compliance audits but is not an official government utility. The calculated Section 36 penalty liabilities and generated Inspection Certificates are simulations. Always consult a registered Legal Metrology Officer before commercial printing.
+        </div>
+
+        {/* Team Credits & LinkedIn Pill Buttons */}
+        <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 pb-2">
+          <div className="shrink-0 flex items-center gap-3">
+            <span>&copy; 2026 Baseline MetrologyGuard AI.</span>
+            <span className="text-white/30 hidden sm:inline">|</span>
+            <span className="text-white/40">PS ID: SIH26034</span>
+            <span className="text-[var(--brand-light)] font-bold">Team ComplianceX</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 text-[11px] font-sans font-medium">
+            <a
+              href="https://www.linkedin.com/in/pulkit-sachdev-980809367"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Pulkit Sachdev
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/sameer-aryan-6a699b377"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Sameer Aryan
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/shourya-gupta-b83905374"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Shourya Gupta
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/kirti-gupta-6518533ba"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Kirti Gupta
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/aman-sharma-2b9608380"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Aman Sharma
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/akshita-agarwal-1ba358380"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/80 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300"
+            >
+              <Linkedin className="w-3 h-3 text-[#0A66C2]" /> Akshita Aggarwal
+            </a>
+
+            <a
+              href="https://github.com/Shouryagupta-10/legal-metrology-compliance"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white font-bold transition-all ml-1"
+            >
+              <Github className="w-3 h-3" /> GitHub Repo
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+</file>
+
+<file path="src/components/Hero/BaselineHero.tsx">
+import React, { useState, useEffect } from 'react';
+import { Scale, BookOpen, Layers, Sparkles, MessageSquare, Download, Sun, Moon, Volume2, VolumeX, PartyPopper } from 'lucide-react';
+import { SampleProduct, ComplianceReport } from '../../types/compliance';
+import { SAMPLE_PRODUCTS } from '../../services/sampleData';
+import { sounds } from '../../services/soundEffects';
+import { exportComplianceReportPDF } from '../../services/pdfExportService';
+
+interface BaselineHeroProps {
+  currentSample: SampleProduct;
+  onSelectSample: (sample: SampleProduct) => void;
+  report: ComplianceReport | null;
+  onOpenMenu: () => void;
+  onOpenAssistant: () => void;
+  onOpenHandbook: () => void;
+  onOpenBatchModal: () => void;
+  isReady: boolean;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
+  onOpenLogin: () => void;
+}
+
+export const BaselineHero: React.FC<BaselineHeroProps> = ({
+  currentSample,
+  onSelectSample,
+  report,
+  onOpenMenu,
+  onOpenAssistant,
+  onOpenHandbook,
+  onOpenBatchModal,
+  isReady,
+  theme,
+  onToggleTheme,
+  onOpenLogin
+}) => {
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(sounds.getMuted());
+
+  // Auto-advance collection carousel every 3800ms
+  useEffect(() => {
+    if (!isReady) return;
+    const timer = setInterval(() => {
+      setActiveSlideIndex(prev => (prev + 1) % SAMPLE_PRODUCTS.length);
+    }, 3800);
+    return () => clearInterval(timer);
+  }, [isReady]);
+
+  const activeSample = SAMPLE_PRODUCTS[activeSlideIndex];
+
+  const handleToggleMute = () => {
+    const muted = sounds.toggleMute();
+    setIsMuted(muted);
+    if (!muted) sounds.playClick();
+  };
+
+  return (
+    <section className="relative isolate overflow-hidden bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] min-h-[38rem] h-[calc(100svh-1.5rem)] flex flex-col justify-between p-4 sm:p-8 lg:p-10 shadow-2xl">
+      {/* Candy Gradient Backdrop */}
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(120% 90% at 8% 0%, rgba(255,93,115,0.55) 0%, transparent 55%), radial-gradient(110% 90% at 95% 8%, rgba(38,208,206,0.45) 0%, transparent 50%), radial-gradient(140% 100% at 50% 120%, rgba(199,240,0,0.28) 0%, transparent 55%), linear-gradient(160deg, var(--brand-deep) 0%, #2a1259 55%, #1a0d3a 100%)'
+          }}
+        />
+        {/* Morphing blobs */}
+        <div className="blob blob-float w-72 h-72 sm:w-96 sm:h-96 bg-[var(--coral)]/30 -top-16 -left-16" />
+        <div className="blob blob-float w-64 h-64 sm:w-80 sm:h-80 bg-[var(--sky)]/25 -bottom-24 -right-10" style={{ animationDelay: '1.5s' }} />
+        <div className="blob blob-float w-40 h-40 bg-[var(--lime)]/20 top-1/3 right-1/4" style={{ animationDelay: '3s' }} />
+      </div>
+
+      {/* Top Header Navbar */}
+      <header className="flex items-center justify-between gap-4 text-xs">
+        {/* Left Nav */}
+        <nav className="hidden lg:flex items-center gap-6 text-white/85 font-semibold">
+          <a
+            href="#studio"
+            className="hover:text-[var(--lime)] transition-colors flex items-center gap-1.5"
+          >
+            <Layers className="w-3.5 h-3.5 text-[var(--lime)]" />
+            <span>Packaging Playground</span>
+          </a>
+          <a
+            href="#checklist"
+            className="hover:text-[var(--lime)] transition-colors"
+          >
+            Rule 6 Cheat Sheet
+          </a>
+          <button
+            onClick={onOpenHandbook}
+            className="hover:text-[var(--lime)] transition-colors flex items-center gap-1"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-[var(--sky)]" />
+            <span>The Rulebook</span>
+          </button>
+          <button
+            onClick={onOpenBatchModal}
+            className="hover:text-white transition-colors flex items-center gap-1 text-[var(--sunny)] wiggle-on-hover"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[var(--sunny)]" />
+            <span>Batch Sweep</span>
+          </button>
+        </nav>
+
+        {/* Center Brand Identity */}
+        <div className="flex items-center gap-2.5 mx-auto lg:mx-0">
+          <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-[var(--coral)] to-[var(--brand-light)] flex items-center justify-center text-white shadow-lg shadow-black/20 float-idle">
+            <Scale className="w-4 h-4" />
+          </div>
+          <span className="text-base font-display font-semibold tracking-[0.15em] uppercase">
+            Baseline Metrology
+          </span>
+        </div>
+
+        {/* Right Actions, Audio, Theme Toggle & Burger */}
+        <div className="flex items-center gap-2">
+          {/* Audio FX Toggle */}
+          <button
+            onClick={handleToggleMute}
+            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex items-center justify-center transition-all btn-tactile text-white"
+            title={isMuted ? "Enable Tactile Sounds" : "Mute Sound Effects"}
+            aria-label="Toggle sound effects"
+          >
+            {isMuted ? (
+              <VolumeX className="w-4 h-4 text-white/50" />
+            ) : (
+              <Volume2 className="w-4 h-4 text-[var(--lime)] animate-pulse" />
+            )}
+          </button>
+
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onOpenAssistant();
+            }}
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-white/90 hover:text-[var(--lime)] transition-colors mr-1"
+          >
+            <MessageSquare className="w-3.5 h-3.5 text-[var(--sky)]" />
+            <span>Ask Legal Officer</span>
+          </button>
+
+          {report && (
+            <button
+              onClick={() => {
+                sounds.playSuccess();
+                exportComplianceReportPDF(report);
+              }}
+              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full btn-candy text-xs font-bold transition-all shadow-lg"
+            >
+              <Download className="w-3 h-3" />
+              <span>Export Notice</span>
+            </button>
+          )}
+          {/* WhatsApp Sign In Button */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onOpenLogin();
+            }}
+            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-white text-[#0f2f63] hover:bg-sky-50 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider transition-colors shadow-lg ml-auto mr-2 sm:ml-2 sm:mr-1"
+          >
+            Sign In
+          </button>
+          {/* Theme Toggle Button (Light/Dark) */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onToggleTheme();
+            }}
+            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex items-center justify-center transition-all btn-tactile text-white"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-4 h-4 text-[var(--sunny)] transition-transform hover:rotate-45" />
+            ) : (
+              <Moon className="w-4 h-4 text-[var(--sky)] transition-transform hover:-rotate-12" />
+            )}
+          </button>
+
+          {/* Minimalist 2-Bar Burger Button */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onOpenMenu();
+            }}
+            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex flex-col items-center justify-center gap-1.5 transition-all btn-tactile"
+            aria-label="Open navigation menu"
+          >
+            <span className="w-4 h-[1.5px] bg-white rounded-full" />
+            <span className="w-4 h-[1.5px] bg-white rounded-full" />
+          </button>
+        </div>
+      </header>
+
+      {/* Center Giant Word Title */}
+      <div className="my-auto py-6">
+        <h1 className="font-display text-[11vw] font-semibold uppercase tracking-[-0.02em] leading-[0.88] select-none">
+          <span className="clip-word-box mr-4 sm:mr-8">
+            <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '100ms' }}>
+              OWN
+            </span>
+          </span>
+          <span className="clip-word-box mr-4 sm:mr-8">
+            <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '240ms' }}>
+              THE
+            </span>
+          </span>
+          <span className="clip-word-box">
+            <span className={`reveal-word text-gradient-candy ${isReady ? 'active' : ''}`} style={{ transitionDelay: '380ms' }}>
+              BENCHMARK
+            </span>
+          </span>
+        </h1>
+        <p className="text-xs sm:text-sm text-white/75 font-mono uppercase tracking-[0.25em] mt-4 flex items-center gap-2">
+          <PartyPopper className="w-3.5 h-3.5 text-[var(--sunny)]" />
+          Compliance shouldn't feel like homework &bull; Legal Metrology Rules, 2011
+        </p>
+      </div>
+
+      {/* Bottom Row: Tagline & Benchmark Carousel */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 pt-4 border-t border-white/15">
+        {/* Tagline */}
+        <div className="space-y-1">
+          <p className="text-2xl sm:text-3xl font-display font-semibold uppercase tracking-tight leading-[0.95] text-white/95">
+            <span className="clip-line-box block">
+              <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '450ms' }}>
+                SCAN. AUDIT.
+              </span>
+            </span>
+            <span className="clip-line-box block text-[var(--lime)]">
+              <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '560ms' }}>
+                STAY UNSTOPPABLE.
+              </span>
+            </span>
+          </p>
+        </div>
+
+        {/* Right Cluster: Auto-advancing Collection Slider & Health Card */}
+        <div className="flex items-end gap-3 w-full sm:w-auto">
+          {/* Collection Slider Card */}
+          <div className="hidden md:flex flex-col gap-2 w-64 bg-white/10 border border-white/15 rounded-[var(--radius-card)] p-3 backdrop-blur shadow-2xl hover:bg-white/15 transition-colors">
+            <div className="flex items-center gap-3">
+              <img
+                src={activeSample.thumbnail}
+                alt={activeSample.name}
+                className="w-12 h-12 rounded-xl object-cover border border-white/20 shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--sunny)] block truncate">
+                  {activeSample.category}
+                </span>
+                <h5 className="text-xs font-semibold uppercase text-white truncate">
+                  {activeSample.name}
+                </h5>
+                <button
+                  onClick={() => {
+                    sounds.playClick();
+                    onSelectSample(activeSample);
+                    const el = document.getElementById('studio');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="text-[10px] text-white/80 hover:text-[var(--lime)] underline tracking-wide mt-0.5 flex items-center gap-1"
+                >
+                  <span>Poke at this sample &rarr;</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Carousel Dots */}
+            <div className="flex items-center justify-between pt-1 border-t border-white/10">
+              <div className="flex items-center gap-1.5">
+                {SAMPLE_PRODUCTS.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      sounds.playClick();
+                      setActiveSlideIndex(i);
+                    }}
+                    className={`h-1.5 rounded-full transition-all ${
+                      i === activeSlideIndex ? 'w-5 bg-[var(--lime)]' : 'w-1.5 bg-white/40'
+                    }`}
+                    aria-label={`Slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+              <span className="text-[9px] font-mono text-white/50">
+                0{activeSlideIndex + 1} / 0{SAMPLE_PRODUCTS.length}
+              </span>
+            </div>
+          </div>
+
+          {/* Membership / Compliance Metric Card */}
+          <article
+            onClick={() => {
+              sounds.playClick();
+              const el = document.getElementById('studio');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="w-full sm:w-56 bg-white/10 hover:bg-white/15 cursor-pointer border border-white/15 rounded-[var(--radius-card)] p-3.5 backdrop-blur shadow-2xl flex items-center justify-between gap-3 transition-all hover:-translate-y-1"
+          >
+            <div className="space-y-1.5">
+              <div className="text-2xl font-display font-semibold text-white tracking-tight leading-none">
+                {report ? `${report.overallScore}%` : '100%'}
+              </div>
+              {/* Overlapping Dot Indicators */}
+              <div className="flex -space-x-1.5 items-center">
+                <span className="w-3.5 h-3.5 rounded-full bg-[var(--sky)] border border-[var(--brand-deep)]" title="Rule 6 Declarations" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[var(--lime)] border border-[var(--brand-deep)]" title="Rule 7 Font Sizing" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[var(--coral)] border border-[var(--brand-deep)]" title="2021 USP Rate" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[var(--sunny)] border border-[var(--brand-deep)]" title="Section 36 Compliance" />
+              </div>
+              <span className="text-[10px] text-white/80 block leading-tight">
+                Statutory Clauses, Handled
+              </span>
+            </div>
+
+            <img
+              src={currentSample.thumbnail}
+              alt="Active SKU"
+              className="w-14 h-16 rounded-xl object-cover border border-white/20 shadow-md"
+            />
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+};
+</file>
+
 <file path="src/components/Sections/BaselineTrustSection.tsx">
 import React, { useState, useRef } from 'react';
 import { ShieldCheck, ArrowLeft, ArrowRight, Sparkles, Sliders, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
+import { Reveal } from '../Effects/Reveal';
 
 const TRUST_SLIDES = [
   {
-    headline: ["STATUTORY", "ASSURANCE", "LEGAL", "METROLOGY"],
+    headline: ["TOTALLY", "LEGIT", "LOOKS", "GOOD"],
     sample: SAMPLE_PRODUCTS[0],
     inspectorRole: "Rule 6 & 11 Verified",
     statusBadge: "100% Compliant",
     statusColor: "text-emerald-400"
   },
   {
-    headline: ["PACKAGED", "COMMODITY", "RULES", "VERIFIED"],
+    headline: ["UH", "OH", "FIX", "THIS"],
     sample: SAMPLE_PRODUCTS[1],
     inspectorRole: "Defect Audit & Redline",
     statusBadge: "3 Violations",
     statusColor: "text-rose-400"
   },
   {
-    headline: ["SCHEDULE", "TABLE-ONE", "SECTION", "PENALTIES"],
+    headline: ["ALMOST", "THERE", "ONE", "GAP"],
     sample: SAMPLE_PRODUCTS[3],
     inspectorRole: "2021 USP Enforcement",
     statusBadge: "USP Missing",
@@ -7611,25 +8347,25 @@ export const BaselineTrustSection: React.FC<{
   return (
     <section className="relative isolate overflow-visible bg-[var(--background)] py-12 sm:py-20 px-3 sm:px-8 max-w-7xl mx-auto transition-colors duration-300">
       {/* Top Badges Row */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-6 relative z-20 w-full">
+      <Reveal variant="up" className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-6 relative z-20 w-full">
         {/* 100% Circular Assurance Badge */}
         <div
           onClick={() => {
             sounds.playSuccess();
           }}
-          className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-[var(--surface)] border border-[var(--hairline)] flex flex-col items-center justify-center text-center p-2.5 sm:p-3 shadow-sm shrink-0 cursor-pointer hover:scale-105 transition-transform"
+          className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-[var(--lime)] to-[var(--sky)] border border-[var(--hairline)] flex flex-col items-center justify-center text-center p-2.5 sm:p-3 shadow-lg shrink-0 cursor-pointer hover:scale-110 hover:rotate-6 transition-transform wiggle-on-hover"
         >
-          <span className="text-xl sm:text-3xl font-medium tracking-tight text-[var(--ink)] font-mono leading-none">
+          <span className="text-xl sm:text-3xl font-display font-semibold tracking-tight text-[var(--brand-deep)] leading-none">
             100%
           </span>
-          <span className="text-[9px] sm:text-[10px] text-[var(--ink-soft)] uppercase tracking-wider max-w-[8em] leading-tight mt-1">
-            Statutory Rule Adherence
+          <span className="text-[9px] sm:text-[10px] text-[var(--brand-deep)]/80 uppercase tracking-wider max-w-[8em] leading-tight mt-1 font-bold">
+            Rules, Nailed
           </span>
         </div>
 
         {/* Informational Badge Card */}
         <article className="w-full sm:max-w-md bg-[var(--surface)] border border-[var(--hairline)] rounded-[var(--radius-card)] p-4 sm:p-5 flex items-start gap-3 sm:gap-4 shadow-sm">
-          <div className="rounded-xl bg-[var(--surface-card)] border border-[var(--hairline)] px-2.5 sm:px-3 py-1 sm:py-1.5 text-sm sm:text-base font-mono font-medium text-[var(--ink)] shadow-xs shrink-0">
+          <div className="rounded-xl bg-[var(--surface-card)] border border-[var(--hairline)] px-2.5 sm:px-3 py-1 sm:py-1.5 text-sm sm:text-base font-mono font-medium text-[var(--brand)] shadow-xs shrink-0">
             #0{activeSlide + 1}
           </div>
           <div className="space-y-1 min-w-0 flex-1">
@@ -7642,11 +8378,11 @@ export const BaselineTrustSection: React.FC<{
               </span>
             </div>
             <p className="text-[11px] sm:text-xs text-[var(--ink-soft)] leading-relaxed">
-              Every commercial packaging SKU is audited against mandatory declarations and Schedule II font height tables.
+              Every SKU gets the full once-over: declarations, font-height tables, the works — before it ever hits shelves.
             </p>
           </div>
         </article>
-      </div>
+      </Reveal>
 
       {/* Oversized PURPLE Ghost Heading Watermark with Complete Vertical Clearance */}
       <div className="mt-8 sm:mt-14 select-none pointer-events-none relative z-0 w-full overflow-visible px-1 sm:px-2">
@@ -7770,42 +8506,66 @@ export const BaselineTrustSection: React.FC<{
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --brand: #2563c9;       /* primary royal blue */
-  --brand-deep: #0f2f63;  /* deep navy — hero/stats/footer base */
-  --brand-light: #5790e6; /* light blue accent / focus ring */
-  --accent-teal: #0b6e97; /* caption tint */
-  --surface: #f4f4f4;     /* off-white section bg */
+  --background: #fffdf8;
+  --foreground: #171123;
+
+  /* Playful brand palette — violet + coral + lime */
+  --brand: #7c3aed;         /* vivid violet */
+  --brand-deep: #4c1d95;    /* deep grape */
+  --brand-light: #c4b5fd;   /* soft lilac */
+
+  --coral: #ff5d73;         /* hot coral */
+  --coral-deep: #d6294a;
+  --lime: #c7f000;          /* zesty lime */
+  --lime-deep: #7fa300;
+  --sunny: #ffc93c;         /* sunny yellow */
+  --sunny-deep: #e0a300;
+  --sky: #26d0ce;           /* candy teal */
+  --sky-deep: #0f9c9a;
+  --bubble-pink: #ff8fd6;
+
+  --accent-teal: var(--sky);
+  --surface: #f6f1ff;       /* soft lilac-tinted off-white */
   --surface-card: #ffffff;
-  --ink: #0a0a0a;         /* near-black headings */
-  --ink-soft: #717784;    /* muted body */
-  --ghost-purple: rgba(147, 51, 234, 0.25); /* purple ghost watermark text */
-  --ghost-purple-solid: #9333ea;
-  --hairline: #e6e8ec;    /* subtle borders */
-  --on-brand: #ffffff;    /* text on navy */
+  --ink: #171123;
+  --ink-soft: #6b6178;
+  --ghost-purple: rgba(124, 58, 237, 0.16);
+  --ghost-purple-solid: #7c3aed;
+  --hairline: #ece4fb;
+  --on-brand: #ffffff;
 
   /* radii */
-  --radius-card: 1.5rem;
-  --radius-card-lg: 2rem;
+  --radius-card: 1.75rem;
+  --radius-card-lg: 2.25rem;
   --radius-pill: 62.5rem;
 }
 
 [data-theme="dark"], .dark {
-  --background: #060911;
-  --foreground: #f8fafc;
-  --brand: #3b82f6;
-  --brand-deep: #081a38;
-  --brand-light: #60a5fa;
-  --accent-teal: #38bdf8;
-  --surface: #0c1427;
-  --surface-card: #111c36;
-  --ink: #f8fafc;
-  --ink-soft: #94a3b8;
-  --ghost-purple: rgba(168, 85, 247, 0.35); /* glowing purple ghost text in dark mode */
-  --ghost-purple-solid: #c084fc;
-  --hairline: #1e293b;
-  --on-brand: #ffffff;
+  --background: #0d0817;
+  --foreground: #f6f1ff;
+  --brand: #a78bfa;
+  --brand-deep: #1e1033;
+  --brand-light: #c4b5fd;
+
+  --coral: #ff7b8f;
+  --coral-deep: #ff4d6a;
+  --lime: #d6ff3d;
+  --lime-deep: #a6cc00;
+  --sunny: #ffd166;
+  --sunny-deep: #ffbf3d;
+  --sky: #4fe3e0;
+  --sky-deep: #26bdba;
+  --bubble-pink: #ffabe6;
+
+  --accent-teal: var(--sky);
+  --surface: #150c26;
+  --surface-card: #1c1230;
+  --ink: #f6f1ff;
+  --ink-soft: #a99cc2;
+  --ghost-purple: rgba(196, 181, 253, 0.22);
+  --ghost-purple-solid: #c4b5fd;
+  --hairline: #2c1c48;
+  --on-brand: #171123;
 }
 
 /* Adaptive REM Grid */
@@ -7834,6 +8594,11 @@ body {
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: default;
+}
+
+.font-display {
+  font-family: 'Fredoka', 'Syne', 'Onest', system-ui, sans-serif;
 }
 
 :focus-visible {
@@ -7874,13 +8639,13 @@ button {
 
 .reveal-word {
   display: inline-block;
-  transform: translateY(115%);
+  transform: translateY(115%) rotate(3deg);
   opacity: 0;
   transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-word.active {
-  transform: translateY(0%);
+  transform: translateY(0%) rotate(0deg);
   opacity: 1;
 }
 
@@ -7910,7 +8675,7 @@ button {
 /* Purple Ghost Watermark text */
 .ghost-word-purple {
   color: var(--ghost-purple);
-  text-shadow: 0 0 35px rgba(147, 51, 234, 0.25);
+  text-shadow: 0 0 35px rgba(124, 58, 237, 0.2);
   transition: color 0.5s ease;
   display: inline-block;
   white-space: nowrap;
@@ -7925,7 +8690,7 @@ button {
 
 /* Glass & Card Micro-Interactions */
 .glass-panel-navy {
-  background: rgba(15, 47, 99, 0.45);
+  background: rgba(76, 29, 149, 0.45);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -7935,7 +8700,7 @@ button {
   background: var(--surface-card);
   backdrop-filter: blur(12px);
   border: 1px solid var(--hairline);
-  box-shadow: 0 10px 30px -10px rgba(15, 47, 99, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.12);
 }
 
 .human-panel {
@@ -7943,11 +8708,15 @@ button {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--hairline);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(23, 17, 35, 0.08);
 }
 
 .btn-tactile {
-  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-tactile:hover {
+  transform: translateY(-2px) scale(1.02);
 }
 
 .btn-tactile:active {
@@ -7960,45 +8729,288 @@ button {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.22em;
 }
 
 .baseline-eyebrow.tone-dark {
-  color: var(--ink-soft);
+  color: var(--brand);
 }
 .baseline-eyebrow.tone-dark .eyebrow-dot {
-  background-color: var(--brand);
+  background-color: var(--coral);
 }
 
 .baseline-eyebrow.tone-light {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
 }
 .baseline-eyebrow.tone-light .eyebrow-dot {
-  background-color: var(--brand-light);
+  background-color: var(--lime);
 }
 
 .eyebrow-dot {
-  width: 0.375rem;
-  height: 0.375rem;
+  width: 0.4375rem;
+  height: 0.4375rem;
   border-radius: var(--radius-pill);
+  animation: dot-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: var(--surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--hairline);
+  background: linear-gradient(180deg, var(--brand), var(--coral));
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--ink-soft);
+  background: var(--brand-deep);
+}
+
+/* ============================================================
+   PLAYFUL DESIGN SYSTEM ADD-ONS
+   ============================================================ */
+
+/* Gradient text */
+.text-gradient-candy {
+  background: linear-gradient(90deg, var(--coral), var(--brand), var(--sky));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 6s ease infinite;
+}
+
+@keyframes gradient-pan {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Blobby background shapes */
+.blob {
+  position: absolute;
+  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
+  filter: blur(2px);
+  opacity: 0.55;
+  animation: blob-morph 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes blob-morph {
+  0%, 100% { border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%; transform: rotate(0deg) scale(1); }
+  33% { border-radius: 60% 40% 30% 70% / 55% 65% 35% 45%; transform: rotate(8deg) scale(1.05); }
+  66% { border-radius: 35% 65% 55% 45% / 40% 30% 70% 60%; transform: rotate(-6deg) scale(0.97); }
+}
+
+.blob-float {
+  animation: blob-morph 9s ease-in-out infinite, blob-drift 12s ease-in-out infinite;
+}
+
+@keyframes blob-drift {
+  0%, 100% { margin-top: 0px; margin-left: 0px; }
+  50% { margin-top: -18px; margin-left: 14px; }
+}
+
+/* Floaty idle bounce for decorative icons */
+.float-idle {
+  animation: float-idle 4.5s ease-in-out infinite;
+}
+@keyframes float-idle {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(3deg); }
+}
+
+.float-idle-slow {
+  animation: float-idle 7s ease-in-out infinite;
+}
+
+.wiggle-on-hover:hover {
+  animation: wiggle 0.5s ease-in-out;
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+/* Sticker-style pop card */
+.pop-card {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.3s ease;
+}
+.pop-card:hover {
+  transform: translateY(-8px) rotate(-1deg) scale(1.02);
+  box-shadow: 0 24px 48px -12px rgba(124, 58, 237, 0.35);
+}
+
+.pop-card:nth-child(even):hover {
+  transform: translateY(-8px) rotate(1deg) scale(1.02);
+}
+
+/* Tilt-on-hover 3D press */
+.tilt-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transform-style: preserve-3d;
+}
+
+/* Marquee ribbon */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 22s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Scroll reveal (JS toggles .in-view via IntersectionObserver) */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.85) rotate(-3deg);
+  transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.reveal-scale.in-view {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-48px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(48px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-right.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stagger children helper (use inline style delay via nth-child in components) */
+.reveal-up.delay-1 { transition-delay: 0.08s; }
+.reveal-up.delay-2 { transition-delay: 0.16s; }
+.reveal-up.delay-3 { transition-delay: 0.24s; }
+.reveal-up.delay-4 { transition-delay: 0.32s; }
+
+/* Cursor spotlight glow (mounted globally, follows pointer) */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, rgba(255, 93, 115, 0.06) 45%, transparent 70%);
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  mix-blend-mode: normal;
+}
+
+/* Custom pointer dot that trails the cursor (desktop only) */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--coral);
+  pointer-events: none;
+  z-index: 4;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
+  will-change: transform;
+}
+
+.cursor-dot.cursor-dot-hover {
+  width: 40px;
+  height: 40px;
+  background: rgba(124, 58, 237, 0.18);
+  border: 2px solid var(--brand);
+}
+
+@media (max-width: 1024px) {
+  .cursor-glow, .cursor-dot { display: none; }
+}
+
+/* Confetti-worthy playful button */
+.btn-candy {
+  background: linear-gradient(120deg, var(--coral), var(--brand));
+  color: white;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background-position 0.6s ease;
+  background-size: 160% 160%;
+  background-position: 0% 50%;
+}
+.btn-candy:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 14px 28px -8px rgba(255, 93, 115, 0.55);
+  background-position: 100% 50%;
+}
+.btn-candy:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Dashed squiggle divider */
+.squiggle-divider {
+  height: 14px;
+  background-image: radial-gradient(circle at 7px 7px, var(--brand-light) 3px, transparent 3px);
+  background-size: 20px 14px;
+  background-repeat: repeat-x;
+  opacity: 0.6;
+}
+
+/* Chip / pill tag */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 </file>
 
@@ -8006,7 +9018,7 @@ button {
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import Lenis from 'lenis';
-
+import { LoginModal } from './components/Auth/LoginModal';
 import {
   SampleProduct,
   ComplianceReport,
@@ -8021,6 +9033,7 @@ import { evaluateCompliance } from './services/ruleEngine';
 import { performOcr } from './services/clientOcr';
 import { sounds } from './services/soundEffects';
 
+import { CursorFX } from './components/Effects/CursorFX';
 import { BaselineLoader } from './components/Loader/BaselineLoader';
 import { BaselineHero } from './components/Hero/BaselineHero';
 import { FullscreenMenu } from './components/Navigation/FullscreenMenu';
@@ -8079,7 +9092,7 @@ export const App: React.FC = () => {
   const [isPDPToolOpen, setIsPDPToolOpen] = useState<boolean>(false);
   const [isFieldEditorOpen, setIsFieldEditorOpen] = useState<boolean>(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
-
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   // Theme Sync effect
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -8272,6 +9285,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white transition-colors duration-300">
+      {/* 0. Playful cursor spotlight + trailing dot (desktop only) */}
+      <CursorFX />
+
       {/* 1. Opening Intro Loader */}
       <BaselineLoader onReady={() => setIsLoaderReady(true)} />
 
@@ -8302,6 +9318,7 @@ export const App: React.FC = () => {
           isReady={isLoaderReady}
           theme={theme}
           onToggleTheme={handleToggleTheme}
+          onOpenLogin={() => setIsLoginOpen(true)}
         />
 
         {/* 4. Trust & Enforcement Section with PURPLE Ghost Typography */}
@@ -8319,23 +9336,23 @@ export const App: React.FC = () => {
             <div>
               <div className="baseline-eyebrow tone-dark mb-2">
                 <span className="eyebrow-dot" />
-                <span>Statutory Verification Studio</span>
+                <span>Your Packaging Playground</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)]">
-                Packaging Proofing &amp; Vision Audit
+              <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight text-[var(--ink)]">
+                Poke, Prod &amp; Perfect Your Label
               </h2>
             </div>
 
             <div className="flex items-center gap-2.5">
               <button
                 onClick={() => setIsFieldEditorOpen(true)}
-                className="px-4 py-2.5 rounded-full border border-[var(--hairline)] bg-[var(--surface-card)] text-xs font-semibold uppercase tracking-wider text-[var(--ink)] hover:bg-[var(--surface)] transition-all btn-tactile shadow-xs"
+                className="px-4 py-2.5 rounded-full border-2 border-[var(--hairline)] bg-[var(--surface-card)] text-xs font-bold uppercase tracking-wider text-[var(--ink)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all btn-tactile shadow-xs"
               >
                 Edit Extracted Fields
               </button>
               <button
                 onClick={() => setIsPDPToolOpen(true)}
-                className="px-4 py-2.5 rounded-full bg-[var(--brand)] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[var(--brand-deep)] transition-all btn-tactile shadow-md"
+                className="px-4 py-2.5 rounded-full btn-candy text-xs font-bold uppercase tracking-wider shadow-md"
               >
                 PDP Geometry Tool
               </button>
@@ -8521,6 +9538,14 @@ export const App: React.FC = () => {
           />
         </>
       )}
+       <LoginModal 
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLoginSuccess={() => {
+          alert("Successfully Logged In via WhatsApp!");
+          setIsLoginOpen(false);
+        }}
+      />
     </div>
   );
 };
