@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import Lenis from 'lenis';
-
+import { LoginModal } from './components/Auth/LoginModal';
 import {
   SampleProduct,
   ComplianceReport,
@@ -74,7 +74,7 @@ export const App: React.FC = () => {
   const [isPDPToolOpen, setIsPDPToolOpen] = useState<boolean>(false);
   const [isFieldEditorOpen, setIsFieldEditorOpen] = useState<boolean>(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
-
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   // Theme Sync effect
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -297,6 +297,7 @@ export const App: React.FC = () => {
           isReady={isLoaderReady}
           theme={theme}
           onToggleTheme={handleToggleTheme}
+          onOpenLogin={() => setIsLoginOpen(true)}
         />
 
         {/* 4. Trust & Enforcement Section with PURPLE Ghost Typography */}
@@ -516,6 +517,14 @@ export const App: React.FC = () => {
           />
         </>
       )}
+       <LoginModal 
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLoginSuccess={() => {
+          alert("Successfully Logged In via WhatsApp!");
+          setIsLoginOpen(false);
+        }}
+      />
     </div>
   );
 };

@@ -16,6 +16,7 @@ interface BaselineHeroProps {
   isReady: boolean;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  onOpenLogin: () => void;
 }
 
 export const BaselineHero: React.FC<BaselineHeroProps> = ({
@@ -28,7 +29,8 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
   onOpenBatchModal,
   isReady,
   theme,
-  onToggleTheme
+  onToggleTheme,
+  onOpenLogin
 }) => {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(sounds.getMuted());
@@ -144,7 +146,16 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
               <span>Export Notice</span>
             </button>
           )}
-
+          {/* WhatsApp Sign In Button */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onOpenLogin();
+            }}
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white text-[#0f2f63] hover:bg-sky-50 text-xs font-extrabold uppercase tracking-wider transition-colors shadow-lg ml-2 mr-1"
+          >
+            Sign In
+          </button>
           {/* Theme Toggle Button (Light/Dark) */}
           <button
             onClick={() => {
