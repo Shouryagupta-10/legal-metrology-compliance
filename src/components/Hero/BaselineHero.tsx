@@ -152,7 +152,7 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
               sounds.playClick();
               onOpenLogin();
             }}
-            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white text-[#0f2f63] hover:bg-sky-50 text-xs font-extrabold uppercase tracking-wider transition-colors shadow-lg ml-2 mr-1"
+            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-white text-[#0f2f63] hover:bg-sky-50 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider transition-colors shadow-lg ml-auto mr-2 sm:ml-2 sm:mr-1"
           >
             Sign In
           </button>
