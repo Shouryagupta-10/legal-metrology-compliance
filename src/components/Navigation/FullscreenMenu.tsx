@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Scale, X, ArrowUpRight } from 'lucide-react';
+import { Scale, X, ArrowUpRight, Sun, Moon } from 'lucide-react';
 import { sounds } from '../../services/soundEffects';
 
 interface FullscreenMenuProps {
@@ -7,13 +7,17 @@ interface FullscreenMenuProps {
   onClose: () => void;
   onSelectTab: (tab: 'audit' | 'ecommerce' | 'batch' | 'handbook') => void;
   onOpenAssistant: () => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
 export const FullscreenMenu: React.FC<FullscreenMenuProps> = ({
   isOpen,
   onClose,
   onSelectTab,
-  onOpenAssistant
+  onOpenAssistant,
+  theme,
+  onToggleTheme
 }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -46,17 +50,32 @@ export const FullscreenMenu: React.FC<FullscreenMenuProps> = ({
           </span>
         </div>
 
-        {/* Rotating X Close Button */}
-        <button
-          onClick={() => {
-            sounds.playClick();
-            onClose();
-          }}
-          className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition-all group btn-tactile"
-          aria-label="Close menu"
-        >
-          <X className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90 text-white" />
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onToggleTheme();
+            }}
+            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition-all btn-tactile text-white"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-sky-200" />}
+          </button>
+
+          {/* Rotating X Close Button */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onClose();
+            }}
+            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition-all group btn-tactile"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90 text-white" />
+          </button>
+        </div>
       </div>
 
       {/* Center Nav Links */}

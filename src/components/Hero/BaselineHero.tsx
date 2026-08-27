@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Scale, ArrowRight, BookOpen, Layers, ShoppingBag, Sparkles, MessageSquare, Download } from 'lucide-react';
+import { Scale, ArrowRight, BookOpen, Layers, ShoppingBag, Sparkles, MessageSquare, Download, Sun, Moon } from 'lucide-react';
 import { SampleProduct, ComplianceReport } from '../../types/compliance';
 import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
@@ -14,6 +14,8 @@ interface BaselineHeroProps {
   onOpenHandbook: () => void;
   onOpenBatchModal: () => void;
   isReady: boolean;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
 export const BaselineHero: React.FC<BaselineHeroProps> = ({
@@ -24,7 +26,9 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
   onOpenAssistant,
   onOpenHandbook,
   onOpenBatchModal,
-  isReady
+  isReady,
+  theme,
+  onToggleTheme
 }) => {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
@@ -94,14 +98,14 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
           </span>
         </div>
 
-        {/* Right Actions & Burger */}
-        <div className="flex items-center gap-3">
+        {/* Right Actions, Theme Toggle & Burger */}
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => {
               sounds.playClick();
               onOpenAssistant();
             }}
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-white/90 hover:text-white transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-white/90 hover:text-white transition-colors mr-2"
           >
             <MessageSquare className="w-3.5 h-3.5 text-[var(--brand-light)]" />
             <span>Ask Legal Officer</span>
@@ -119,6 +123,23 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
               <span>Export Notice</span>
             </button>
           )}
+
+          {/* Theme Toggle Button (Light/Dark) */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onToggleTheme();
+            }}
+            className="w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex items-center justify-center transition-all btn-tactile text-white"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-4 h-4 text-amber-300 transition-transform hover:rotate-45" />
+            ) : (
+              <Moon className="w-4 h-4 text-sky-200 transition-transform hover:-rotate-12" />
+            )}
+          </button>
 
           {/* Minimalist 2-Bar Burger Button */}
           <button

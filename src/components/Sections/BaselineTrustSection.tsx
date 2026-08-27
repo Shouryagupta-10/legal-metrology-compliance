@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
 
@@ -39,7 +39,7 @@ export const BaselineTrustSection: React.FC<{
   const current = TRUST_SLIDES[activeSlide];
 
   return (
-    <section className="relative isolate overflow-hidden bg-[var(--background)] py-16 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto">
+    <section className="relative isolate overflow-hidden bg-[var(--background)] py-16 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto transition-colors duration-300">
       {/* Top Badges Row */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-20">
         {/* 100% Circular Assurance Badge */}
@@ -54,7 +54,7 @@ export const BaselineTrustSection: React.FC<{
 
         {/* Informational Badge Card */}
         <article className="max-w-md bg-[var(--surface)] border border-[var(--hairline)] rounded-[var(--radius-card)] p-4 sm:p-5 flex items-start gap-4 shadow-sm">
-          <div className="rounded-xl bg-white border border-[var(--hairline)] px-3 py-1.5 text-base font-mono font-medium text-[var(--ink)] shadow-xs">
+          <div className="rounded-xl bg-[var(--surface-card)] border border-[var(--hairline)] px-3 py-1.5 text-base font-mono font-medium text-[var(--ink)] shadow-xs">
             #01
           </div>
           <div>
@@ -68,14 +68,14 @@ export const BaselineTrustSection: React.FC<{
         </article>
       </div>
 
-      {/* Oversized Ghost Heading Watermark */}
+      {/* Oversized PURPLE Ghost Heading Watermark */}
       <div className="mt-12 sm:mt-16 text-center select-none pointer-events-none relative z-0">
         <h2 className="ghost-heading">
           <div className="flex justify-between items-center">
-            <span className="ghost-word-dim transition-all duration-700">
+            <span className="ghost-word-purple transition-all duration-700">
               {current.headline[0]}
             </span>
-            <span className="ghost-word-dim transition-all duration-700">
+            <span className="ghost-word-purple transition-all duration-700">
               {current.headline[1]}
             </span>
           </div>
@@ -83,7 +83,7 @@ export const BaselineTrustSection: React.FC<{
             <span className="ghost-word-ink transition-all duration-700">
               {current.headline[2]}
             </span>
-            <span className="ghost-word-dim transition-all duration-700">
+            <span className="ghost-word-purple transition-all duration-700">
               {current.headline[3]}
             </span>
           </div>
@@ -99,7 +99,7 @@ export const BaselineTrustSection: React.FC<{
             const el = document.getElementById('studio');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="cursor-pointer group relative w-48 sm:w-60 aspect-[3/4] rounded-[var(--radius-card)] bg-[var(--brand-deep)] overflow-hidden shadow-2xl transition-all duration-500 hover:scale-105"
+          className="cursor-pointer group relative w-48 sm:w-60 aspect-[3/4] rounded-[var(--radius-card)] bg-[var(--brand-deep)] overflow-hidden shadow-2xl transition-all duration-500 hover:scale-105 ring-1 ring-purple-500/30"
           style={{ transform: 'rotate(6deg)' }}
         >
           <img
@@ -108,10 +108,11 @@ export const BaselineTrustSection: React.FC<{
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
           {/* Glass Caption at Bottom */}
-          <figcaption className="absolute inset-x-2.5 bottom-2.5 rounded-xl bg-[#0f2f63]/60 backdrop-blur-md p-2.5 text-white border border-white/20">
+          <figcaption className="absolute inset-x-2.5 bottom-2.5 rounded-xl bg-[#0f2f63]/75 backdrop-blur-md p-2.5 text-white border border-white/20">
             <div className="text-xs font-medium truncate">{current.sample.name}</div>
-            <div className="text-[10px] text-white/70 tracking-wider uppercase font-mono">
-              {current.inspectorRole}
+            <div className="text-[10px] text-purple-300 tracking-wider uppercase font-mono flex items-center gap-1">
+              <Sparkles className="w-2.5 h-2.5 text-purple-400" />
+              <span>{current.inspectorRole}</span>
             </div>
           </figcaption>
         </figure>
@@ -122,7 +123,7 @@ export const BaselineTrustSection: React.FC<{
         {/* Prev Button */}
         <button
           onClick={handlePrev}
-          className="w-12 h-12 rounded-full border border-[var(--hairline)] hover:border-[var(--ink)] text-[var(--ink)] flex items-center justify-center transition-colors btn-tactile"
+          className="w-12 h-12 rounded-full border border-[var(--hairline)] hover:border-[var(--ink)] text-[var(--ink)] bg-[var(--surface-card)] flex items-center justify-center transition-colors btn-tactile shadow-xs"
           aria-label="Previous benchmark"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -138,7 +139,7 @@ export const BaselineTrustSection: React.FC<{
                 setActiveSlide(idx);
               }}
               className={`h-1.5 rounded-full transition-all ${
-                idx === activeSlide ? 'w-6 bg-[var(--ink)]' : 'w-2 bg-[var(--ghost)]'
+                idx === activeSlide ? 'w-6 bg-purple-500' : 'w-2 bg-[var(--hairline)]'
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
@@ -148,7 +149,7 @@ export const BaselineTrustSection: React.FC<{
         {/* Next Button */}
         <button
           onClick={handleNext}
-          className="w-12 h-12 rounded-full bg-[var(--ink)] text-white hover:bg-[var(--brand-deep)] flex items-center justify-center transition-colors btn-tactile shadow-md"
+          className="w-12 h-12 rounded-full bg-[var(--ink)] text-[var(--background)] hover:bg-[var(--brand-deep)] hover:text-white flex items-center justify-center transition-colors btn-tactile shadow-md"
           aria-label="Next benchmark"
         >
           <ArrowRight className="w-5 h-5" />

@@ -40,6 +40,13 @@ import { RulebookModal } from './components/Handbook/RulebookModal';
 import { LegalOfficerChat } from './components/Assistant/LegalOfficerChat';
 
 export const App: React.FC = () => {
+  // Theme State: 'light' | 'dark'
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || saved === 'light') return saved;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
+
   const [currentSample, setCurrentSample] = useState<SampleProduct>(SAMPLE_PRODUCTS[0]);
   const [currentReport, setCurrentReport] = useState<ComplianceReport | null>(null);
   const [activeTab, setActiveTab] = useState<'audit' | 'ecommerce' | 'batch' | 'handbook'>('audit');
@@ -67,6 +74,17 @@ export const App: React.FC = () => {
   const [isPDPToolOpen, setIsPDPToolOpen] = useState<boolean>(false);
   const [isFieldEditorOpen, setIsFieldEditorOpen] = useState<boolean>(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
+
+  // Theme Sync effect
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const handleToggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Initialize Lenis & Adaptive Scale-up Grid
   useEffect(() => {
@@ -248,7 +266,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white transition-colors duration-300">
       {/* 1. Opening Intro Loader */}
       <BaselineLoader onReady={() => setIsLoaderReady(true)} />
 
@@ -258,6 +276,8 @@ export const App: React.FC = () => {
         onClose={() => setIsMenuOpen(false)}
         onSelectTab={setActiveTab}
         onOpenAssistant={() => setIsAssistantOpen(true)}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Inset Main Frame (0.5rem - 0.75rem padding) */}
@@ -275,9 +295,11 @@ export const App: React.FC = () => {
           onOpenHandbook={() => setIsHandbookOpen(true)}
           onOpenBatchModal={() => setIsBatchModalOpen(true)}
           isReady={isLoaderReady}
+          theme={theme}
+          onToggleTheme={handleToggleTheme}
         />
 
-        {/* 4. Trust & Enforcement Section with Ghost Typography */}
+        {/* 4. Trust & Enforcement Section with PURPLE Ghost Typography */}
         <BaselineTrustSection
           onSelectSample={sample => {
             sounds.playClick();
@@ -286,7 +308,7 @@ export const App: React.FC = () => {
         />
 
         {/* 5. Main Packaging Inspection Studio */}
-        <section id="studio" className="bg-[var(--surface)] rounded-[var(--radius-card-lg)] p-4 sm:p-8 lg:p-10 border border-[var(--hairline)] shadow-sm space-y-8">
+        <section id="studio" className="bg-[var(--surface)] rounded-[var(--radius-card-lg)] p-4 sm:p-8 lg:p-10 border border-[var(--hairline)] shadow-sm space-y-8 transition-colors duration-300">
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[var(--hairline)] pb-6">
             <div>
@@ -302,7 +324,7 @@ export const App: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsFieldEditorOpen(true)}
-                className="px-4 py-2 rounded-full border border-[var(--hairline)] bg-white text-xs font-medium uppercase tracking-wider text-[var(--ink)] hover:bg-[var(--surface)] transition-all btn-tactile shadow-xs"
+                className="px-4 py-2 rounded-full border border-[var(--hairline)] bg-[var(--surface-card)] text-xs font-medium uppercase tracking-wider text-[var(--ink)] hover:bg-[var(--surface)] transition-all btn-tactile shadow-xs"
               >
                 Edit Extracted Fields
               </button>

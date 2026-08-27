@@ -13,7 +13,8 @@
   --surface-card: #ffffff;
   --ink: #0a0a0a;         /* near-black headings */
   --ink-soft: #717784;    /* muted body */
-  --ghost: #d7dae1;       /* oversized ghost text */
+  --ghost-purple: rgba(147, 51, 234, 0.22); /* purple ghost watermark text */
+  --ghost-purple-solid: #9333ea;
   --hairline: #e6e8ec;    /* subtle borders */
   --on-brand: #ffffff;    /* text on navy */
 
@@ -23,11 +24,29 @@
   --radius-pill: 62.5rem;
 }
 
+[data-theme="dark"], .dark {
+  --background: #060911;
+  --foreground: #f8fafc;
+  --brand: #3b82f6;
+  --brand-deep: #081a38;
+  --brand-light: #60a5fa;
+  --accent-teal: #38bdf8;
+  --surface: #0c1427;
+  --surface-card: #111c36;
+  --ink: #f8fafc;
+  --ink-soft: #94a3b8;
+  --ghost-purple: rgba(168, 85, 247, 0.28); /* glowing purple ghost text in dark mode */
+  --ghost-purple-solid: #c084fc;
+  --hairline: #1e293b;
+  --on-brand: #ffffff;
+}
+
 /* Adaptive REM Grid */
 html {
   font-size: 16px;
   box-sizing: border-box;
   scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 *, *::before, *::after {
@@ -47,6 +66,7 @@ body {
   font-family: 'Onest', system-ui, -apple-system, sans-serif;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 :focus-visible {
@@ -100,7 +120,7 @@ button {
 /* Ghost heading styling */
 .ghost-heading {
   font-size: 8.2vw;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   line-height: 1.02;
   letter-spacing: -0.03em;
@@ -108,12 +128,16 @@ button {
   pointer-events: none;
 }
 
-.ghost-word-dim {
-  color: var(--ghost);
+/* Purple Ghost Watermark text */
+.ghost-word-purple {
+  color: var(--ghost-purple);
+  text-shadow: 0 0 40px rgba(147, 51, 234, 0.15);
+  transition: color 0.5s ease;
 }
 
 .ghost-word-ink {
   color: var(--ink);
+  transition: color 0.5s ease;
 }
 
 /* Glass & Card Micro-Interactions */
@@ -125,18 +149,18 @@ button {
 }
 
 .glass-card-light {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--surface-card);
   backdrop-filter: blur(12px);
   border: 1px solid var(--hairline);
   box-shadow: 0 10px 30px -10px rgba(15, 47, 99, 0.08);
 }
 
 .human-panel {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--surface-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--hairline);
-  box-shadow: 0 4px 20px -2px rgba(15, 47, 99, 0.06);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
 }
 
 .btn-tactile {
@@ -184,12 +208,12 @@ button {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f4f4f4;
+  background: var(--surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: #d7dae1;
+  background: var(--hairline);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #717784;
+  background: var(--ink-soft);
 }
