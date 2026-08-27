@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import Lenis from 'lenis';
-import { LoginModal } from './components/Auth/LoginModal';
+import { Box, Layers, Sparkles } from 'lucide-react';
+
 import {
   SampleProduct,
   ComplianceReport,
@@ -17,6 +18,7 @@ import { performOcr } from './services/clientOcr';
 import { sounds } from './services/soundEffects';
 
 import { CursorFX } from './components/Effects/CursorFX';
+import { LoginModal } from './components/Auth/LoginModal';
 import { BaselineLoader } from './components/Loader/BaselineLoader';
 import { BaselineHero } from './components/Hero/BaselineHero';
 import { FullscreenMenu } from './components/Navigation/FullscreenMenu';
@@ -29,6 +31,7 @@ import { MultiImageUploader } from './components/Scanner/MultiImageUploader';
 import { CameraModal } from './components/Scanner/CameraModal';
 import { EcommerceScraperModal } from './components/Scanner/EcommerceScraperModal';
 import { InteractiveStudioCanvas } from './components/Inspector/InteractiveStudioCanvas';
+import { Packaging3DLab } from './components/ThreeD/Packaging3DLab';
 import { PDPMeasurementTool } from './components/Inspector/PDPMeasurementTool';
 import { FieldEditorModal } from './components/Inspector/FieldEditorModal';
 import { ComplianceScoreCard } from './components/Compliance/ComplianceScoreCard';
@@ -51,6 +54,9 @@ export const App: React.FC = () => {
   const [currentSample, setCurrentSample] = useState<SampleProduct>(SAMPLE_PRODUCTS[0]);
   const [currentReport, setCurrentReport] = useState<ComplianceReport | null>(null);
   const [activeTab, setActiveTab] = useState<'audit' | 'ecommerce' | 'batch' | 'handbook'>('audit');
+
+  // Studio Mode: 2D Optical Proofing Canvas vs 3D Virtual Packaging Lab
+  const [studioMode, setStudioMode] = useState<'2d' | '3d'>('2d');
 
   const [isLoaderReady, setIsLoaderReady] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -76,6 +82,7 @@ export const App: React.FC = () => {
   const [isFieldEditorOpen, setIsFieldEditorOpen] = useState<boolean>(false);
   const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+
   // Theme Sync effect
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -268,13 +275,13 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white transition-colors duration-300">
-      {/* 0. Playful cursor spotlight + trailing dot (desktop only) */}
+      {/* 1. Global Custom Playful Cursor */}
       <CursorFX />
 
-      {/* 1. Opening Intro Loader */}
+      {/* 2. Opening Intro Loader */}
       <BaselineLoader onReady={() => setIsLoaderReady(true)} />
 
-      {/* 2. Fullscreen Menu Overlay */}
+      {/* 3. Fullscreen Menu Overlay */}
       <FullscreenMenu
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
@@ -286,7 +293,7 @@ export const App: React.FC = () => {
 
       {/* Inset Main Frame */}
       <main className="baseline-page-frame space-y-4">
-        {/* 3. Hero Section (Deep Navy Card) */}
+        {/* 4. Hero Section */}
         <BaselineHero
           currentSample={currentSample}
           onSelectSample={sample => {
@@ -304,7 +311,7 @@ export const App: React.FC = () => {
           onOpenLogin={() => setIsLoginOpen(true)}
         />
 
-        {/* 4. Trust & Enforcement Section with PURPLE Ghost Typography */}
+        {/* 5. Trust & Enforcement Section with PURPLE Ghost Typography */}
         <BaselineTrustSection
           onSelectSample={sample => {
             sounds.playClick();
@@ -312,32 +319,69 @@ export const App: React.FC = () => {
           }}
         />
 
-        {/* 5. Main Packaging Inspection Studio */}
+        {/* 6. Main Packaging Inspection Studio */}
         <section id="studio" className="bg-[var(--surface)] rounded-[var(--radius-card-lg)] p-5 sm:p-8 lg:p-12 border border-[var(--hairline)] shadow-sm space-y-8 transition-colors duration-300">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[var(--hairline)] pb-6">
+          
+          {/* Header Bar with 2D vs 3D Mode Toggle */}
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[var(--hairline)] pb-6">
             <div>
               <div className="baseline-eyebrow tone-dark mb-2">
                 <span className="eyebrow-dot" />
-                <span>Your Packaging Playground</span>
+                <span>Statutory Verification Studio</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-display font-semibold tracking-tight text-[var(--ink)]">
-                Poke, Prod &amp; Perfect Your Label
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)]">
+                Packaging Proofing &amp; Vision Audit
               </h2>
             </div>
 
-            <div className="flex items-center gap-2.5">
+            {/* Studio Action Controls */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              
+              {/* 2D vs 3D Workbench Mode Switcher */}
+              <div className="flex items-center gap-1 bg-[var(--surface-card)] p-1 rounded-full border border-[var(--hairline)] shadow-xs">
+                <button
+                  onClick={() => {
+                    sounds.playClick();
+                    setStudioMode('2d');
+                  }}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all btn-tactile ${
+                    studioMode === '2d'
+                      ? 'bg-[var(--brand)] text-white shadow-sm'
+                      : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>2D Redline</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    sounds.playClick();
+                    setStudioMode('3d');
+                  }}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all btn-tactile ${
+                    studioMode === '3d'
+                      ? 'bg-purple-600 text-white shadow-sm'
+                      : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+                  }`}
+                >
+                  <Box className="w-3.5 h-3.5" />
+                  <span>3D Virtual Lab</span>
+                </button>
+              </div>
+
               <button
                 onClick={() => setIsFieldEditorOpen(true)}
-                className="px-4 py-2.5 rounded-full border-2 border-[var(--hairline)] bg-[var(--surface-card)] text-xs font-bold uppercase tracking-wider text-[var(--ink)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all btn-tactile shadow-xs"
+                className="px-4 py-2 rounded-full border border-[var(--hairline)] bg-[var(--surface-card)] text-xs font-semibold uppercase tracking-wider text-[var(--ink)] hover:bg-[var(--surface)] transition-all btn-tactile shadow-xs"
               >
-                Edit Extracted Fields
+                Edit Fields
               </button>
+              
               <button
                 onClick={() => setIsPDPToolOpen(true)}
-                className="px-4 py-2.5 rounded-full btn-candy text-xs font-bold uppercase tracking-wider shadow-md"
+                className="px-4 py-2 rounded-full bg-[var(--brand)] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[var(--brand-deep)] transition-all btn-tactile shadow-md"
               >
-                PDP Geometry Tool
+                PDP Tool
               </button>
             </div>
           </div>
@@ -372,33 +416,42 @@ export const App: React.FC = () => {
                 </div>
               </div>
 
-              {/* Studio Canvas + Statutory Checklist */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                <div className="lg:col-span-5 h-[640px]">
-                  <InteractiveStudioCanvas
-                    imageRecord={currentSample.labelImages[0]}
-                    activeBoundingBoxId={activeBoundingBoxId}
-                    onSelectBoundingBox={handleSelectBoundingBox}
-                    onOpenPDPTool={() => setIsPDPToolOpen(true)}
-                    onOpenFieldEditor={() => setIsFieldEditorOpen(true)}
-                    isFixApplied={isFixApplied}
-                    onToggleAutoFix={
-                      currentReport.overallStatus === 'NON_COMPLIANT' || isFixApplied
-                        ? handleToggleAutoFix
-                        : undefined
-                    }
+              {/* Dynamic Studio Workbench: 2D vs 3D */}
+              {studioMode === '3d' ? (
+                <div className="space-y-6">
+                  <Packaging3DLab
+                    currentSample={currentSample}
+                    report={currentReport}
                   />
                 </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                  <div className="lg:col-span-5 h-[640px]">
+                    <InteractiveStudioCanvas
+                      imageRecord={currentSample.labelImages[0]}
+                      activeBoundingBoxId={activeBoundingBoxId}
+                      onSelectBoundingBox={handleSelectBoundingBox}
+                      onOpenPDPTool={() => setIsPDPToolOpen(true)}
+                      onOpenFieldEditor={() => setIsFieldEditorOpen(true)}
+                      isFixApplied={isFixApplied}
+                      onToggleAutoFix={
+                        currentReport.overallStatus === 'NON_COMPLIANT' || isFixApplied
+                          ? handleToggleAutoFix
+                          : undefined
+                      }
+                    />
+                  </div>
 
-                <div id="checklist" className="lg:col-span-7 space-y-6">
-                  <RuleChecklist
-                    ruleResults={currentReport.ruleResults}
-                    activeRuleId={activeRuleId}
-                    onSelectRule={handleSelectRule}
-                  />
-                  <USPCalculator />
+                  <div id="checklist" className="lg:col-span-7 space-y-6">
+                    <RuleChecklist
+                      ruleResults={currentReport.ruleResults}
+                      activeRuleId={activeRuleId}
+                      onSelectRule={handleSelectRule}
+                    />
+                    <USPCalculator />
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Inspection Notice Document */}
               <div className="pt-4">
@@ -408,15 +461,15 @@ export const App: React.FC = () => {
           )}
         </section>
 
-        {/* 6. Stats & Penalties Band */}
+        {/* 7. Stats & Penalties Band */}
         <div id="analytics">
           <BaselineStatsSection />
         </div>
 
-        {/* 7. Statutory Testimonials & Case Studies */}
+        {/* 8. Statutory Testimonials & Case Studies */}
         <BaselineTestimonialsSection />
 
-        {/* 8. Luxury Navy Footer */}
+        {/* 9. Luxury Navy Footer */}
         <BaselineFooter
           onOpenAssistant={() => setIsAssistantOpen(true)}
           onOpenHandbook={() => setIsHandbookOpen(true)}
@@ -466,6 +519,15 @@ export const App: React.FC = () => {
       <RulebookModal
         isOpen={isHandbookOpen}
         onClose={() => setIsHandbookOpen(false)}
+      />
+
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLoginSuccess={() => {
+          sounds.playSuccess();
+          setIsLoginOpen(false);
+        }}
       />
 
       {currentReport && (
@@ -521,14 +583,6 @@ export const App: React.FC = () => {
           />
         </>
       )}
-       <LoginModal 
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-        onLoginSuccess={() => {
-          alert("Successfully Logged In via WhatsApp!");
-          setIsLoginOpen(false);
-        }}
-      />
     </div>
   );
 };
