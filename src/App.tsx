@@ -280,8 +280,8 @@ export const App: React.FC = () => {
         onToggleTheme={handleToggleTheme}
       />
 
-      {/* Inset Main Frame (0.5rem - 0.75rem padding) */}
-      <main className="baseline-page-frame space-y-3">
+      {/* Inset Main Frame */}
+      <main className="baseline-page-frame space-y-4">
         {/* 3. Hero Section (Deep Navy Card) */}
         <BaselineHero
           currentSample={currentSample}
@@ -308,7 +308,7 @@ export const App: React.FC = () => {
         />
 
         {/* 5. Main Packaging Inspection Studio */}
-        <section id="studio" className="bg-[var(--surface)] rounded-[var(--radius-card-lg)] p-4 sm:p-8 lg:p-10 border border-[var(--hairline)] shadow-sm space-y-8 transition-colors duration-300">
+        <section id="studio" className="bg-[var(--surface)] rounded-[var(--radius-card-lg)] p-5 sm:p-8 lg:p-12 border border-[var(--hairline)] shadow-sm space-y-8 transition-colors duration-300">
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[var(--hairline)] pb-6">
             <div>
@@ -316,21 +316,21 @@ export const App: React.FC = () => {
                 <span className="eyebrow-dot" />
                 <span>Statutory Verification Studio</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-medium uppercase tracking-tight text-[var(--ink)]">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--ink)]">
                 Packaging Proofing &amp; Vision Audit
               </h2>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={() => setIsFieldEditorOpen(true)}
-                className="px-4 py-2 rounded-full border border-[var(--hairline)] bg-[var(--surface-card)] text-xs font-medium uppercase tracking-wider text-[var(--ink)] hover:bg-[var(--surface)] transition-all btn-tactile shadow-xs"
+                className="px-4 py-2.5 rounded-full border border-[var(--hairline)] bg-[var(--surface-card)] text-xs font-semibold uppercase tracking-wider text-[var(--ink)] hover:bg-[var(--surface)] transition-all btn-tactile shadow-xs"
               >
                 Edit Extracted Fields
               </button>
               <button
                 onClick={() => setIsPDPToolOpen(true)}
-                className="px-4 py-2 rounded-full bg-[var(--brand)] text-white text-xs font-medium uppercase tracking-wider hover:bg-[var(--brand-deep)] transition-all btn-tactile shadow-md"
+                className="px-4 py-2.5 rounded-full bg-[var(--brand)] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[var(--brand-deep)] transition-all btn-tactile shadow-md"
               >
                 PDP Geometry Tool
               </button>
