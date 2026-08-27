@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Scale, BookOpen, Layers, ShoppingBag, Download, RefreshCw, Sparkles, MessageSquare, Volume2, VolumeX } from 'lucide-react';
+import { Scale, BookOpen, Layers, ShoppingBag, Download, RefreshCw, Sparkles, MessageSquare, Volume2, VolumeX, Sun, Moon } from 'lucide-react';
 import { ComplianceReport } from '../types/compliance';
 import { exportComplianceReportPDF } from '../services/pdfExportService';
 import { sounds } from '../services/soundEffects';
@@ -12,156 +12,79 @@ interface NavbarProps {
   onReset: () => void;
   onOpenBatchModal: () => void;
   onOpenAssistant: () => void;
+  isDark: boolean;
+  toggleTheme: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  report,
-  activeTab,
-  setActiveTab,
-  onOpenHandbook,
-  onReset,
-  onOpenBatchModal,
-  onOpenAssistant
+  report, activeTab, setActiveTab, onOpenHandbook, onReset, onOpenBatchModal, onOpenAssistant, isDark, toggleTheme
 }) => {
   const [isMuted, setIsMuted] = useState(sounds.getMuted());
 
-  const handleToggleMute = () => {
-    const muted = sounds.toggleMute();
-    setIsMuted(muted);
-    if (!muted) sounds.playClick();
-  };
-
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-[#090d16]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-[#090d16]/90 backdrop-blur-md shadow-sm transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand & Identity */}
-        <div
-          className="flex items-center gap-3 cursor-pointer select-none group"
-          onClick={() => {
-            sounds.playClick();
-            setActiveTab('audit');
-          }}
-        >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-amber-500 p-0.5 shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Scale className="w-5 h-5 text-sky-400" />
-            </div>
+        
+        {/* Brand */}
+        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setActiveTab('audit')}>
+          <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center shadow-md shadow-sky-600/20">
+            <Scale className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base tracking-tight text-white group-hover:text-sky-300 transition-colors">
-                MetrologyGuard AI
-              </span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-sky-950/80 text-sky-300 border border-sky-800/80">
-                LMPC 2011 Rules
+              <span className="font-extrabold text-slate-900 dark:text-white tracking-tight">MetrologyGuard AI</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300">
+                LMPC 2011
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
-              Packaged Commodities Statutory Compliance & Vision Verification Studio
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
+              Statutory Compliance & Vision Verification Studio
             </p>
           </div>
         </div>
 
         {/* Center Nav Modes */}
-        <div className="hidden md:flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 shadow-inner">
-          <button
-            onClick={() => {
-              sounds.playClick();
-              setActiveTab('audit');
-            }}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold btn-tactile flex items-center gap-1.5 ${
-              activeTab === 'audit'
-                ? 'bg-sky-600 text-white shadow-sm shadow-sky-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            Packaging Studio & Audit
+        <div className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
+          <button onClick={() => setActiveTab('audit')}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'audit' ? 'bg-white dark:bg-sky-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}>
+            <Layers className="w-4 h-4" /> Audit Studio
           </button>
-
-          <button
-            onClick={() => {
-              sounds.playClick();
-              setActiveTab('ecommerce');
-            }}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold btn-tactile flex items-center gap-1.5 ${
-              activeTab === 'ecommerce'
-                ? 'bg-sky-600 text-white shadow-sm shadow-sky-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-            }`}
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            E-Commerce Listing (Rule 6(10))
-          </button>
-
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onOpenBatchModal();
-            }}
-            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 btn-tactile flex items-center gap-1.5"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            Bulk Batch Audit
+          <button onClick={() => setActiveTab('ecommerce')}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'ecommerce' ? 'bg-white dark:bg-sky-600 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}>
+            <ShoppingBag className="w-4 h-4" /> E-Commerce
           </button>
         </div>
 
-        {/* Action Controls */}
+        {/* Actions */}
         <div className="flex items-center gap-2">
-          {/* AI Legal Assistant Drawer Button */}
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onOpenAssistant();
-            }}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-sky-950/80 text-sky-300 border border-sky-800 hover:bg-sky-900 btn-tactile flex items-center gap-1.5 shadow-sm"
-          >
-            <MessageSquare className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden sm:inline">Ask Legal Officer</span>
+          <button onClick={onOpenAssistant} className="px-3 py-2 rounded-lg text-xs font-bold bg-slate-100 dark:bg-sky-950/80 text-slate-700 dark:text-sky-300 border border-transparent dark:border-sky-800 hover:bg-slate-200 dark:hover:bg-sky-900 flex items-center gap-1.5 transition-colors">
+            <MessageSquare className="w-4 h-4 text-sky-600 dark:text-sky-400" /> <span className="hidden sm:inline">Ask Officer</span>
           </button>
 
           {report && (
-            <button
-              onClick={() => {
-                sounds.playSuccess();
-                exportComplianceReportPDF(report);
-              }}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-950/70 text-emerald-300 border border-emerald-700/80 hover:bg-emerald-600 hover:text-white btn-tactile flex items-center gap-1.5 shadow-sm"
-              title="Download Official Legal Metrology Audit PDF"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Export Audit PDF</span>
+            <button onClick={() => exportComplianceReportPDF(report)} className="px-3 py-2 rounded-lg text-xs font-bold bg-emerald-600 dark:bg-emerald-950/70 text-white dark:text-emerald-300 border border-transparent dark:border-emerald-700/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 flex items-center gap-1.5 shadow-sm transition-colors">
+              <Download className="w-4 h-4" /> <span className="hidden sm:inline">Export PDF</span>
             </button>
           )}
 
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onOpenHandbook();
-            }}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-300 border border-slate-700 hover:bg-slate-800 hover:text-white btn-tactile flex items-center gap-1.5"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden sm:inline">LMPC Rulebook</span>
+          <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+
+          {/* Theme Toggle Button */}
+          <button onClick={toggleTheme} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Light/Dark Mode">
+            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
           </button>
 
-          {/* Sound Mute Toggle */}
-          <button
-            onClick={handleToggleMute}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 btn-tactile transition-colors"
-            title={isMuted ? 'Unmute Audio Feedback' : 'Mute Audio Feedback'}
-          >
-            {isMuted ? <VolumeX className="w-4 h-4 text-slate-500" /> : <Volume2 className="w-4 h-4 text-sky-400" />}
+          <button onClick={onOpenHandbook} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <BookOpen className="w-4 h-4" />
           </button>
-
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onReset();
-            }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 btn-tactile transition-colors"
-            title="Reset to Benchmark"
-          >
+          <button onClick={() => { const m = sounds.toggleMute(); setIsMuted(m); }} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </button>
+          <button onClick={onReset} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             <RefreshCw className="w-4 h-4" />
           </button>
         </div>
