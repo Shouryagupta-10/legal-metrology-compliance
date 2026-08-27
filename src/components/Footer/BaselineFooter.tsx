@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scale, ArrowRight } from 'lucide-react';
+import { Scale, ArrowRight, Linkedin} from 'lucide-react';
 import { sounds } from '../../services/soundEffects';
 
 export const BaselineFooter: React.FC<{
@@ -118,29 +118,34 @@ export const BaselineFooter: React.FC<{
             <span className="text-[var(--brand-light)] font-bold">Team ComplianceX</span>
             
             {/* Team LinkedIn Links */}
-            <div className="flex flex-wrap items-center gap-2 xl:border-l xl:border-white/20 xl:pl-4 text-[11px]">
-              <a href="https://www.linkedin.com/in/pulkit-sachdev-980809367" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Pulkit Sachdev</a>
-              <span className="text-white/20 hidden sm:inline">•</span>
+                        {/* Team LinkedIn Links (Premium Pill Design) */}
+            <div className="flex flex-wrap items-center gap-2 xl:border-l xl:border-white/20 xl:pl-5 text-[11px] font-sans font-medium mt-2 xl:mt-0">
               
-              <a href="https://www.linkedin.com/in/sameer-aryan-6a699b377" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Sameer Aryan</a>
-              <span className="text-white/20 hidden sm:inline">•</span>
+              <a href="https://www.linkedin.com/in/pulkit-sachdev-980809367" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/70 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300">
+                <Linkedin className="w-3 h-3" /> Pulkit Sachdev
+              </a>
               
-              <a href="https://www.linkedin.com/in/shourya-gupta-b83905374" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Shourya Gupta</a>
-              <span className="text-white/20 hidden md:inline">•</span>
+              <a href="https://www.linkedin.com/in/sameer-aryan-6a699b377" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/70 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300">
+                <Linkedin className="w-3 h-3" /> Sameer Aryan
+              </a>
               
-              <a href="https://www.linkedin.com/in/kirti-gupta-6518533ba" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Kirti Gupta</a>
-              <span className="text-white/20 hidden sm:inline">•</span>
+              <a href="https://www.linkedin.com/in/shourya-gupta-b83905374" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/70 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300">
+                <Linkedin className="w-3 h-3" /> Shourya Gupta
+              </a>
               
-              <a href="https://www.linkedin.com/in/aman-sharma-2b9608380" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Aman Sharma</a>
-              <span className="text-white/20 hidden sm:inline">•</span>
+              <a href="https://www.linkedin.com/in/kirti-gupta-6518533ba" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/70 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300">
+                <Linkedin className="w-3 h-3" /> Kirti Gupta
+              </a>
               
-              <a href="https://www.linkedin.com/in/akshita-agarwal-1ba358380" target="_blank" rel="noreferrer" className="text-white/70 hover:text-white transition-colors">Akshita Aggarwal</a>
+              <a href="https://www.linkedin.com/in/aman-sharma-2b9608380" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/70 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300">
+                <Linkedin className="w-3 h-3" /> Aman Sharma
+              </a>
+              
+              <a href="https://www.linkedin.com/in/akshita-agarwal-1ba358380" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2]/20 hover:text-[#0A66C2] text-white/70 border border-white/10 hover:border-[#0A66C2]/50 transition-all duration-300">
+                <Linkedin className="w-3 h-3" /> Akshita Aggarwal
+              </a>
             </div>
-
-            <a href="https://github.com/Shouryagupta-10/legal-metrology-compliance" target="_blank" rel="noreferrer" className="hover:text-[var(--brand-light)] text-white transition-colors font-bold underline underline-offset-4 ml-0 xl:ml-2 shrink-0">
-              GitHub Repo
-            </a>
-          </div>
+            </div>
         </div>
       </div>
     </footer>
