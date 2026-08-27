@@ -13,7 +13,7 @@
   --surface-card: #ffffff;
   --ink: #0a0a0a;         /* near-black headings */
   --ink-soft: #717784;    /* muted body */
-  --ghost-purple: rgba(147, 51, 234, 0.22); /* purple ghost watermark text */
+  --ghost-purple: rgba(147, 51, 234, 0.25); /* purple ghost watermark text */
   --ghost-purple-solid: #9333ea;
   --hairline: #e6e8ec;    /* subtle borders */
   --on-brand: #ffffff;    /* text on navy */
@@ -35,7 +35,7 @@
   --surface-card: #111c36;
   --ink: #f8fafc;
   --ink-soft: #94a3b8;
-  --ghost-purple: rgba(168, 85, 247, 0.32); /* glowing purple ghost text in dark mode */
+  --ghost-purple: rgba(168, 85, 247, 0.35); /* glowing purple ghost text in dark mode */
   --ghost-purple-solid: #c084fc;
   --hairline: #1e293b;
   --on-brand: #ffffff;
@@ -117,38 +117,43 @@ button {
   opacity: 1;
 }
 
-/* Ghost heading styling with responsive scaling and clean wrapping */
+/* Ghost heading styling with complete vertical clearance & no clipping */
 .ghost-heading {
-  font-size: clamp(2rem, 7.5vw, 6.5rem);
-  font-weight: 700;
+  font-size: clamp(1.85rem, 6.8vw, 5.8rem);
+  font-weight: 800;
   text-transform: uppercase;
-  line-height: 0.96;
-  letter-spacing: -0.03em;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
   user-select: none;
   pointer-events: none;
   width: 100%;
+  overflow: visible;
+  padding: 0.5rem 0;
 }
 
 @media (max-width: 640px) {
   .ghost-heading {
-    font-size: clamp(1.5rem, 7.2vw, 2.5rem);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.35rem, 6.2vw, 2.2rem);
+    line-height: 1.22;
+    letter-spacing: -0.015em;
+    padding: 0.25rem 0;
   }
 }
 
 /* Purple Ghost Watermark text */
 .ghost-word-purple {
   color: var(--ghost-purple);
-  text-shadow: 0 0 35px rgba(147, 51, 234, 0.2);
+  text-shadow: 0 0 35px rgba(147, 51, 234, 0.25);
   transition: color 0.5s ease;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .ghost-word-ink {
   color: var(--ink);
   transition: color 0.5s ease;
   display: inline-block;
+  white-space: nowrap;
 }
 
 /* Glass & Card Micro-Interactions */

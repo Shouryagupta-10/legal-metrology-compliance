@@ -12,14 +12,14 @@ const TRUST_SLIDES = [
     statusColor: "text-emerald-400"
   },
   {
-    headline: ["PACKAGED", "COMMODITIES", "RULES", "2011"],
+    headline: ["PACKAGED", "COMMODITY", "RULES", "VERIFIED"],
     sample: SAMPLE_PRODUCTS[1],
     inspectorRole: "Defect Audit & Redline",
     statusBadge: "3 Violations",
     statusColor: "text-rose-400"
   },
   {
-    headline: ["SCHEDULE", "TABLE 1", "SECTION", "36 PENALTY"],
+    headline: ["SCHEDULE", "TABLE-ONE", "SECTION", "PENALTIES"],
     sample: SAMPLE_PRODUCTS[3],
     inspectorRole: "2021 USP Enforcement",
     statusBadge: "USP Missing",
@@ -47,9 +47,9 @@ export const BaselineTrustSection: React.FC<{
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
 
-    // Tilt range: -10deg to +10deg
-    const rotX = (0.5 - y) * 16;
-    const rotY = (x - 0.5) * 16;
+    // Tilt range: -8deg to +8deg
+    const rotX = (0.5 - y) * 14;
+    const rotY = (x - 0.5) * 14;
 
     setTilt({
       x: rotX + 4,
@@ -66,8 +66,8 @@ export const BaselineTrustSection: React.FC<{
     const x = (touch.clientX - rect.left) / rect.width;
     const y = (touch.clientY - rect.top) / rect.height;
 
-    const rotX = (0.5 - y) * 16;
-    const rotY = (x - 0.5) * 16;
+    const rotX = (0.5 - y) * 14;
+    const rotY = (x - 0.5) * 14;
 
     setTilt({
       x: rotX + 4,
@@ -94,7 +94,7 @@ export const BaselineTrustSection: React.FC<{
   const current = TRUST_SLIDES[activeSlide];
 
   return (
-    <section className="relative isolate overflow-hidden bg-[var(--background)] py-12 sm:py-20 px-3 sm:px-8 max-w-7xl mx-auto transition-colors duration-300">
+    <section className="relative isolate overflow-visible bg-[var(--background)] py-12 sm:py-20 px-3 sm:px-8 max-w-7xl mx-auto transition-colors duration-300">
       {/* Top Badges Row */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-6 relative z-20 w-full">
         {/* 100% Circular Assurance Badge */}
@@ -133,25 +133,25 @@ export const BaselineTrustSection: React.FC<{
         </article>
       </div>
 
-      {/* Oversized PURPLE Ghost Heading Watermark (Mobile-Responsive & Clean Wrapping) */}
-      <div className="mt-8 sm:mt-16 text-center select-none pointer-events-none relative z-0 w-full overflow-hidden px-1">
-        <h2 className="ghost-heading w-full">
-          {/* Row 1 */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-4 items-center justify-between w-full">
-            <span className="ghost-word-purple text-left transition-all duration-700 truncate-none">
+      {/* Oversized PURPLE Ghost Heading Watermark with Complete Vertical Clearance */}
+      <div className="mt-8 sm:mt-14 select-none pointer-events-none relative z-0 w-full overflow-visible px-1 sm:px-2">
+        <h2 className="ghost-heading w-full space-y-8 sm:space-y-16">
+          {/* Row 1 (Top Words) */}
+          <div className="flex items-center justify-between w-full">
+            <span className="ghost-word-purple transition-all duration-700">
               {current.headline[0]}
             </span>
-            <span className="ghost-word-purple text-right transition-all duration-700 truncate-none">
+            <span className="ghost-word-purple transition-all duration-700">
               {current.headline[1]}
             </span>
           </div>
 
-          {/* Row 2 */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-4 items-center justify-between w-full mt-1 sm:mt-0">
-            <span className="ghost-word-ink text-left transition-all duration-700 truncate-none">
+          {/* Row 2 (Bottom Words) */}
+          <div className="flex items-center justify-between w-full">
+            <span className="ghost-word-ink transition-all duration-700">
               {current.headline[2]}
             </span>
-            <span className="ghost-word-purple text-right transition-all duration-700 truncate-none">
+            <span className="ghost-word-purple transition-all duration-700">
               {current.headline[3]}
             </span>
           </div>
@@ -159,7 +159,7 @@ export const BaselineTrustSection: React.FC<{
       </div>
 
       {/* Center Interactive 3D Packaging Artwork Card */}
-      <div className="relative z-10 flex justify-center -mt-10 sm:-mt-20 md:-mt-28">
+      <div className="relative z-10 flex justify-center -mt-20 sm:-mt-36 md:-mt-48 pb-4">
         <div
           ref={cardRef}
           onMouseMove={handleMouseMove}
@@ -208,7 +208,7 @@ export const BaselineTrustSection: React.FC<{
       </div>
 
       {/* Carousel Controls Row */}
-      <div className="flex items-center justify-between mt-8 sm:mt-16 relative z-20 px-2">
+      <div className="flex items-center justify-between mt-6 sm:mt-10 relative z-20 px-2">
         {/* Prev Button */}
         <button
           onClick={handlePrev}
