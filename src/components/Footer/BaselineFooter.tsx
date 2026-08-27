@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scale, ArrowRight, Heart } from 'lucide-react';
+import { Scale, ArrowRight, Heart, Linkedin, Github } from 'lucide-react';
 import { sounds } from '../../services/soundEffects';
 import { Reveal } from '../Effects/Reveal';
 
@@ -102,12 +102,91 @@ export const BaselineFooter: React.FC<{
         </Reveal>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="relative z-10 border-t border-white/15 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50 font-mono">
+      {/* Team & LinkedIn Member Strip */}
+      <div className="relative z-10 border-t border-white/15 pt-8 space-y-4">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[var(--sunny)]">
+              <Linkedin className="w-3.5 h-3.5 text-[#0a66c2] bg-white rounded-xs" />
+              <span>Project Architects &amp; Engineering Team</span>
+            </div>
+            <p className="text-[11px] text-white/60">
+              Developed for National Legal Metrology Compliance Hackathon / Enterprise Packaging Verification.
+            </p>
+          </div>
+
+          <a
+            href="https://github.com/Shouryagupta-10/legal-metrology-compliance"
+            target="_blank"
+            rel="noreferrer"
+            className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-mono text-white flex items-center gap-2 transition-colors btn-tactile shrink-0"
+          >
+            <Github className="w-3.5 h-3.5" />
+            <span>GitHub Repository</span>
+          </a>
+        </div>
+
+        {/* Member Profile Links */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-white/80">
+          <span className="text-[10px] font-mono uppercase text-white/40">Team:</span>
+          
+          <a
+            href="https://www.linkedin.com/in/sameer-aryan-6a699b377"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
+          >
+            <span>Sameer Aryan</span>
+          </a>
+          <span className="text-white/25">•</span>
+
+          <a
+            href="https://www.linkedin.com/in/shourya-gupta-b83905374"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
+          >
+            <span>Shourya Gupta</span>
+          </a>
+          <span className="text-white/25">•</span>
+
+          <a
+            href="https://www.linkedin.com/in/kirti-gupta-6518533ba"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
+          >
+            <span>Kirti Gupta</span>
+          </a>
+          <span className="text-white/25">•</span>
+
+          <a
+            href="https://www.linkedin.com/in/aman-sharma-2b9608380"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
+          >
+            <span>Aman Sharma</span>
+          </a>
+          <span className="text-white/25">•</span>
+
+          <a
+            href="https://www.linkedin.com/in/akshita-agarwal-1ba358380"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-[var(--lime)] hover:underline underline-offset-4 transition-colors flex items-center gap-1"
+          >
+            <span>Akshita Aggarwal</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Bottom Copyright Bar */}
+      <div className="relative z-10 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50 font-mono">
         <div className="flex items-center gap-1.5">
           &copy; 2026 Baseline MetrologyGuard AI. Made with
           <Heart className="w-3 h-3 fill-[var(--coral)] text-[var(--coral)]" />
-          for compliance nerds. Standard: LMPC Rules 2011 / 2024.
+          for statutory packaging compliance. Standard: LMPC Rules 2011 / 2024.
         </div>
         <div className="flex items-center gap-6">
           <button onClick={onOpenHandbook} className="hover:text-white transition-colors">Statutory Rulebook</button>
