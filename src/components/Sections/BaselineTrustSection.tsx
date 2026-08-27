@@ -2,24 +2,25 @@ import React, { useState, useRef } from 'react';
 import { ShieldCheck, ArrowLeft, ArrowRight, Sparkles, Sliders, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
+import { Reveal } from '../Effects/Reveal';
 
 const TRUST_SLIDES = [
   {
-    headline: ["STATUTORY", "ASSURANCE", "LEGAL", "METROLOGY"],
+    headline: ["TOTALLY", "LEGIT", "LOOKS", "GOOD"],
     sample: SAMPLE_PRODUCTS[0],
     inspectorRole: "Rule 6 & 11 Verified",
     statusBadge: "100% Compliant",
     statusColor: "text-emerald-400"
   },
   {
-    headline: ["PACKAGED", "COMMODITY", "RULES", "VERIFIED"],
+    headline: ["UH", "OH", "FIX", "THIS"],
     sample: SAMPLE_PRODUCTS[1],
     inspectorRole: "Defect Audit & Redline",
     statusBadge: "3 Violations",
     statusColor: "text-rose-400"
   },
   {
-    headline: ["SCHEDULE", "TABLE-ONE", "SECTION", "PENALTIES"],
+    headline: ["ALMOST", "THERE", "ONE", "GAP"],
     sample: SAMPLE_PRODUCTS[3],
     inspectorRole: "2021 USP Enforcement",
     statusBadge: "USP Missing",
@@ -96,25 +97,25 @@ export const BaselineTrustSection: React.FC<{
   return (
     <section className="relative isolate overflow-visible bg-[var(--background)] py-12 sm:py-20 px-3 sm:px-8 max-w-7xl mx-auto transition-colors duration-300">
       {/* Top Badges Row */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-6 relative z-20 w-full">
+      <Reveal variant="up" className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 sm:gap-6 relative z-20 w-full">
         {/* 100% Circular Assurance Badge */}
         <div
           onClick={() => {
             sounds.playSuccess();
           }}
-          className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-[var(--surface)] border border-[var(--hairline)] flex flex-col items-center justify-center text-center p-2.5 sm:p-3 shadow-sm shrink-0 cursor-pointer hover:scale-105 transition-transform"
+          className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-[var(--lime)] to-[var(--sky)] border border-[var(--hairline)] flex flex-col items-center justify-center text-center p-2.5 sm:p-3 shadow-lg shrink-0 cursor-pointer hover:scale-110 hover:rotate-6 transition-transform wiggle-on-hover"
         >
-          <span className="text-xl sm:text-3xl font-medium tracking-tight text-[var(--ink)] font-mono leading-none">
+          <span className="text-xl sm:text-3xl font-display font-semibold tracking-tight text-[var(--brand-deep)] leading-none">
             100%
           </span>
-          <span className="text-[9px] sm:text-[10px] text-[var(--ink-soft)] uppercase tracking-wider max-w-[8em] leading-tight mt-1">
-            Statutory Rule Adherence
+          <span className="text-[9px] sm:text-[10px] text-[var(--brand-deep)]/80 uppercase tracking-wider max-w-[8em] leading-tight mt-1 font-bold">
+            Rules, Nailed
           </span>
         </div>
 
         {/* Informational Badge Card */}
         <article className="w-full sm:max-w-md bg-[var(--surface)] border border-[var(--hairline)] rounded-[var(--radius-card)] p-4 sm:p-5 flex items-start gap-3 sm:gap-4 shadow-sm">
-          <div className="rounded-xl bg-[var(--surface-card)] border border-[var(--hairline)] px-2.5 sm:px-3 py-1 sm:py-1.5 text-sm sm:text-base font-mono font-medium text-[var(--ink)] shadow-xs shrink-0">
+          <div className="rounded-xl bg-[var(--surface-card)] border border-[var(--hairline)] px-2.5 sm:px-3 py-1 sm:py-1.5 text-sm sm:text-base font-mono font-medium text-[var(--brand)] shadow-xs shrink-0">
             #0{activeSlide + 1}
           </div>
           <div className="space-y-1 min-w-0 flex-1">
@@ -127,11 +128,11 @@ export const BaselineTrustSection: React.FC<{
               </span>
             </div>
             <p className="text-[11px] sm:text-xs text-[var(--ink-soft)] leading-relaxed">
-              Every commercial packaging SKU is audited against mandatory declarations and Schedule II font height tables.
+              Every SKU gets the full once-over: declarations, font-height tables, the works — before it ever hits shelves.
             </p>
           </div>
         </article>
-      </div>
+      </Reveal>
 
       {/* Oversized PURPLE Ghost Heading Watermark with Complete Vertical Clearance */}
       <div className="mt-8 sm:mt-14 select-none pointer-events-none relative z-0 w-full overflow-visible px-1 sm:px-2">

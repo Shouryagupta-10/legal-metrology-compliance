@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Scale, ArrowRight, BookOpen, Layers, ShoppingBag, Sparkles, MessageSquare, Download, Sun, Moon, Volume2, VolumeX, Keyboard } from 'lucide-react';
+import { Scale, BookOpen, Layers, Sparkles, MessageSquare, Download, Sun, Moon, Volume2, VolumeX, PartyPopper } from 'lucide-react';
 import { SampleProduct, ComplianceReport } from '../../types/compliance';
 import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
@@ -54,55 +54,60 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
 
   return (
     <section className="relative isolate overflow-hidden bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] min-h-[38rem] h-[calc(100svh-1.5rem)] flex flex-col justify-between p-4 sm:p-8 lg:p-10 shadow-2xl">
-      {/* Background Parallax Plate */}
+      {/* Candy Gradient Backdrop */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        <img
-          src="/samples/rice.jpg"
-          alt="Packaging Backdrop"
-          className="w-full h-full object-cover object-center opacity-25 scale-105 filter blur-[2px]"
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(120% 90% at 8% 0%, rgba(255,93,115,0.55) 0%, transparent 55%), radial-gradient(110% 90% at 95% 8%, rgba(38,208,206,0.45) 0%, transparent 50%), radial-gradient(140% 100% at 50% 120%, rgba(199,240,0,0.28) 0%, transparent 55%), linear-gradient(160deg, var(--brand-deep) 0%, #2a1259 55%, #1a0d3a 100%)'
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2f63]/85 via-[#0f2f63]/50 to-[#0f2f63]/90" />
+        {/* Morphing blobs */}
+        <div className="blob blob-float w-72 h-72 sm:w-96 sm:h-96 bg-[var(--coral)]/30 -top-16 -left-16" />
+        <div className="blob blob-float w-64 h-64 sm:w-80 sm:h-80 bg-[var(--sky)]/25 -bottom-24 -right-10" style={{ animationDelay: '1.5s' }} />
+        <div className="blob blob-float w-40 h-40 bg-[var(--lime)]/20 top-1/3 right-1/4" style={{ animationDelay: '3s' }} />
       </div>
 
       {/* Top Header Navbar */}
       <header className="flex items-center justify-between gap-4 text-xs">
         {/* Left Nav */}
-        <nav className="hidden lg:flex items-center gap-6 text-white/80 font-medium">
+        <nav className="hidden lg:flex items-center gap-6 text-white/85 font-semibold">
           <a
             href="#studio"
-            className="hover:text-white transition-colors flex items-center gap-1.5"
+            className="hover:text-[var(--lime)] transition-colors flex items-center gap-1.5"
           >
-            <Layers className="w-3.5 h-3.5 text-[var(--brand-light)]" />
-            <span>Packaging Studio</span>
+            <Layers className="w-3.5 h-3.5 text-[var(--lime)]" />
+            <span>Packaging Playground</span>
           </a>
           <a
             href="#checklist"
-            className="hover:text-white transition-colors"
+            className="hover:text-[var(--lime)] transition-colors"
           >
-            Rule 6 Checklist
+            Rule 6 Cheat Sheet
           </a>
           <button
             onClick={onOpenHandbook}
-            className="hover:text-white transition-colors flex items-center gap-1"
+            className="hover:text-[var(--lime)] transition-colors flex items-center gap-1"
           >
-            <BookOpen className="w-3.5 h-3.5 text-[var(--brand-light)]" />
-            <span>Statutory Rulebook</span>
+            <BookOpen className="w-3.5 h-3.5 text-[var(--sky)]" />
+            <span>The Rulebook</span>
           </button>
           <button
             onClick={onOpenBatchModal}
-            className="hover:text-white transition-colors flex items-center gap-1 text-amber-300"
+            className="hover:text-white transition-colors flex items-center gap-1 text-[var(--sunny)] wiggle-on-hover"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <Sparkles className="w-3.5 h-3.5 text-[var(--sunny)]" />
             <span>Batch Sweep</span>
           </button>
         </nav>
 
         {/* Center Brand Identity */}
         <div className="flex items-center gap-2.5 mx-auto lg:mx-0">
-          <div className="w-7 h-7 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-[var(--brand-light)] shadow-inner">
+          <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-[var(--coral)] to-[var(--brand-light)] flex items-center justify-center text-white shadow-lg shadow-black/20 float-idle">
             <Scale className="w-4 h-4" />
           </div>
-          <span className="text-base font-medium tracking-[0.2em] uppercase font-sans">
+          <span className="text-base font-display font-semibold tracking-[0.15em] uppercase">
             Baseline Metrology
           </span>
         </div>
@@ -119,7 +124,7 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
             {isMuted ? (
               <VolumeX className="w-4 h-4 text-white/50" />
             ) : (
-              <Volume2 className="w-4 h-4 text-emerald-300 animate-pulse" />
+              <Volume2 className="w-4 h-4 text-[var(--lime)] animate-pulse" />
             )}
           </button>
 
@@ -128,9 +133,9 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
               sounds.playClick();
               onOpenAssistant();
             }}
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-white/90 hover:text-white transition-colors mr-1"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-white/90 hover:text-[var(--lime)] transition-colors mr-1"
           >
-            <MessageSquare className="w-3.5 h-3.5 text-[var(--brand-light)]" />
+            <MessageSquare className="w-3.5 h-3.5 text-[var(--sky)]" />
             <span>Ask Legal Officer</span>
           </button>
 
@@ -140,7 +145,7 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
                 sounds.playSuccess();
                 exportComplianceReportPDF(report);
               }}
-              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500 hover:text-white text-xs font-semibold transition-colors shadow-sm"
+              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full btn-candy text-xs font-bold transition-all shadow-lg"
             >
               <Download className="w-3 h-3" />
               <span>Export Notice</span>
@@ -167,9 +172,9 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
             aria-label="Toggle theme"
           >
             {theme === 'dark' ? (
-              <Sun className="w-4 h-4 text-amber-300 transition-transform hover:rotate-45" />
+              <Sun className="w-4 h-4 text-[var(--sunny)] transition-transform hover:rotate-45" />
             ) : (
-              <Moon className="w-4 h-4 text-sky-200 transition-transform hover:-rotate-12" />
+              <Moon className="w-4 h-4 text-[var(--sky)] transition-transform hover:-rotate-12" />
             )}
           </button>
 
@@ -190,7 +195,7 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
 
       {/* Center Giant Word Title */}
       <div className="my-auto py-6">
-        <h1 className="text-[11vw] font-medium uppercase tracking-[-0.03em] leading-[0.88] select-none">
+        <h1 className="font-display text-[11vw] font-semibold uppercase tracking-[-0.02em] leading-[0.88] select-none">
           <span className="clip-word-box mr-4 sm:mr-8">
             <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '100ms' }}>
               OWN
@@ -202,13 +207,14 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
             </span>
           </span>
           <span className="clip-word-box">
-            <span className={`reveal-word text-[var(--brand-light)] ${isReady ? 'active' : ''}`} style={{ transitionDelay: '380ms' }}>
+            <span className={`reveal-word text-gradient-candy ${isReady ? 'active' : ''}`} style={{ transitionDelay: '380ms' }}>
               BENCHMARK
             </span>
           </span>
         </h1>
-        <p className="text-xs sm:text-sm text-white/70 font-mono uppercase tracking-[0.25em] mt-4">
-          Statutory Packaging Intelligence &bull; Legal Metrology Rules, 2011
+        <p className="text-xs sm:text-sm text-white/75 font-mono uppercase tracking-[0.25em] mt-4 flex items-center gap-2">
+          <PartyPopper className="w-3.5 h-3.5 text-[var(--sunny)]" />
+          Compliance shouldn't feel like homework &bull; Legal Metrology Rules, 2011
         </p>
       </div>
 
@@ -216,15 +222,15 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 pt-4 border-t border-white/15">
         {/* Tagline */}
         <div className="space-y-1">
-          <p className="text-2xl sm:text-3xl font-medium uppercase tracking-tight leading-[0.95] text-white/90">
+          <p className="text-2xl sm:text-3xl font-display font-semibold uppercase tracking-tight leading-[0.95] text-white/95">
             <span className="clip-line-box block">
               <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '450ms' }}>
                 SCAN. AUDIT.
               </span>
             </span>
-            <span className="clip-line-box block text-[var(--brand-light)]">
+            <span className="clip-line-box block text-[var(--lime)]">
               <span className={`reveal-word ${isReady ? 'active' : ''}`} style={{ transitionDelay: '560ms' }}>
-                STAY COMPLIANT.
+                STAY UNSTOPPABLE.
               </span>
             </span>
           </p>
@@ -233,7 +239,7 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
         {/* Right Cluster: Auto-advancing Collection Slider & Health Card */}
         <div className="flex items-end gap-3 w-full sm:w-auto">
           {/* Collection Slider Card */}
-          <div className="hidden md:flex flex-col gap-2 w-64 bg-white/10 border border-white/15 rounded-[var(--radius-card)] p-3 backdrop-blur shadow-2xl">
+          <div className="hidden md:flex flex-col gap-2 w-64 bg-white/10 border border-white/15 rounded-[var(--radius-card)] p-3 backdrop-blur shadow-2xl hover:bg-white/15 transition-colors">
             <div className="flex items-center gap-3">
               <img
                 src={activeSample.thumbnail}
@@ -241,10 +247,10 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
                 className="w-12 h-12 rounded-xl object-cover border border-white/20 shrink-0"
               />
               <div className="flex-1 min-w-0">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-[var(--brand-light)] block truncate">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--sunny)] block truncate">
                   {activeSample.category}
                 </span>
-                <h5 className="text-xs font-medium uppercase text-white truncate">
+                <h5 className="text-xs font-semibold uppercase text-white truncate">
                   {activeSample.name}
                 </h5>
                 <button
@@ -254,9 +260,9 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
                     const el = document.getElementById('studio');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className="text-[10px] text-white/80 hover:text-white underline tracking-wide mt-0.5 flex items-center gap-1"
+                  className="text-[10px] text-white/80 hover:text-[var(--lime)] underline tracking-wide mt-0.5 flex items-center gap-1"
                 >
-                  <span>Inspect sample &rarr;</span>
+                  <span>Poke at this sample &rarr;</span>
                 </button>
               </div>
             </div>
@@ -272,7 +278,7 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
                       setActiveSlideIndex(i);
                     }}
                     className={`h-1.5 rounded-full transition-all ${
-                      i === activeSlideIndex ? 'w-5 bg-white' : 'w-1.5 bg-white/40'
+                      i === activeSlideIndex ? 'w-5 bg-[var(--lime)]' : 'w-1.5 bg-white/40'
                     }`}
                     aria-label={`Slide ${i + 1}`}
                   />
@@ -291,21 +297,21 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
               const el = document.getElementById('studio');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="w-full sm:w-56 bg-white/10 hover:bg-white/15 cursor-pointer border border-white/15 rounded-[var(--radius-card)] p-3.5 backdrop-blur shadow-2xl flex items-center justify-between gap-3 transition-all hover:scale-102"
+            className="w-full sm:w-56 bg-white/10 hover:bg-white/15 cursor-pointer border border-white/15 rounded-[var(--radius-card)] p-3.5 backdrop-blur shadow-2xl flex items-center justify-between gap-3 transition-all hover:-translate-y-1"
           >
             <div className="space-y-1.5">
-              <div className="text-2xl font-medium text-white tracking-tight leading-none font-mono">
+              <div className="text-2xl font-display font-semibold text-white tracking-tight leading-none">
                 {report ? `${report.overallScore}%` : '100%'}
               </div>
               {/* Overlapping Dot Indicators */}
               <div className="flex -space-x-1.5 items-center">
-                <span className="w-3.5 h-3.5 rounded-full bg-[#5790e6] border border-[#0f2f63]" title="Rule 6 Declarations" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#c2e029] border border-[#0f2f63]" title="Rule 7 Font Sizing" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#0b6e97] border border-[#0f2f63]" title="2021 USP Rate" />
-                <span className="w-3.5 h-3.5 rounded-full bg-[#ffffff] border border-[#0f2f63]" title="Section 36 Compliance" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[var(--sky)] border border-[var(--brand-deep)]" title="Rule 6 Declarations" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[var(--lime)] border border-[var(--brand-deep)]" title="Rule 7 Font Sizing" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[var(--coral)] border border-[var(--brand-deep)]" title="2021 USP Rate" />
+                <span className="w-3.5 h-3.5 rounded-full bg-[var(--sunny)] border border-[var(--brand-deep)]" title="Section 36 Compliance" />
               </div>
               <span className="text-[10px] text-white/80 block leading-tight">
-                Statutory Clauses Active
+                Statutory Clauses, Handled
               </span>
             </div>
 
