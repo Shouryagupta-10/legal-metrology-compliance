@@ -1,4 +1,4 @@
-# MetrologyGuard AI ⚖️
+# MetrologyGuard AI 
 ### Legal Metrology (Packaged Commodities) Rules, 2011 Compliance & Vision Studio
 
 A software suite for regulatory authorities, FMCG brand compliance teams, packaging QA engineers, and e-commerce platforms to automatically audit and verify commercial packaging compliance under the **Legal Metrology (Packaged Commodities) Rules, 2011** and the **Legal Metrology Act, 2009** (including 2021/2022 Unit Sale Price amendments).
