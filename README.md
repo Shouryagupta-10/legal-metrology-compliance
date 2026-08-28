@@ -5,7 +5,7 @@ A software suite for regulatory authorities, FMCG brand compliance teams, packag
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 - **Photorealistic Packaging Proofing Canvas**:
   - Precision bounding box annotations synchronized bidirectionally with statutory checklist.
@@ -37,7 +37,7 @@ A software suite for regulatory authorities, FMCG brand compliance teams, packag
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+
@@ -65,7 +65,7 @@ npm run build
 
 ---
 
-## 🧪 Test Verification
+## Test Verification
 
 Run the automated test suite covering all statutory clauses and edge cases:
 
@@ -75,19 +75,19 @@ npx tsx tests/compliance.test.ts
 
 ```
 === LEGAL METROLOGY COMPLIANCE SUITE TESTS ===
-✅ PASS: Sample 1 must be COMPLIANT (Heritage Basmati Rice 5kg)
-✅ PASS: Sample 2 must be NON_COMPLIANT (Prohibited 'gms' unit)
-✅ PASS: Sample 3 must be NON_COMPLIANT (Missing 'inclusive of all taxes')
-✅ PASS: Sample 4 must be NON_COMPLIANT (Missing mandatory USP on 2L pack)
-✅ PASS: Rule 7 PDP & Table 1 Font Height Calculation
-✅ PASS: OCR Extraction Heuristics
+ PASS: Sample 1 must be COMPLIANT (Heritage Basmati Rice 5kg)
+ PASS: Sample 2 must be NON_COMPLIANT (Prohibited 'gms' unit)
+ PASS: Sample 3 must be NON_COMPLIANT (Missing 'inclusive of all taxes')
+ PASS: Sample 4 must be NON_COMPLIANT (Missing mandatory USP on 2L pack)
+ PASS: Rule 7 PDP & Table 1 Font Height Calculation
+ PASS: OCR Extraction Heuristics
 
-🎉 ALL 6 TEST SCENARIOS PASSED WITH ZERO REGRESSIONS!
+ ALL 6 TEST SCENARIOS PASSED WITH ZERO REGRESSIONS!
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Lucide Icons
 - **Vision & OCR**: Tesseract.js (Client-side WASM OCR), HTML5 Canvas
@@ -97,6 +97,6 @@ npx tsx tests/compliance.test.ts
 
 ---
 
-## 📜 License
+## License
 
 MIT License. Designed for regulatory authorities, FMCG packaging QA, and commercial compliance auditing under the Legal Metrology (Packaged Commodities) Rules, 2011.
