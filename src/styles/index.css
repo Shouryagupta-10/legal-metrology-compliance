@@ -88,15 +88,20 @@ body {
   min-height: 100vh;
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Onest', system-ui, -apple-system, sans-serif;
+  font-family: 'Geist', 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
   cursor: default;
 }
 
-.font-display {
-  font-family: 'Fredoka', 'Syne', 'Onest', system-ui, sans-serif;
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: 'Geist', 'Geist Sans', sans-serif !important;
+  letter-spacing: -0.025em;
+}
+
+code, kbd, samp, pre, .font-mono {
+  font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 :focus-visible {

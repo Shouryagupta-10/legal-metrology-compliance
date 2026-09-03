@@ -2,76 +2,36 @@
    GEIST FONT FAMILY DEFINITIONS (Vercel & Basement Studio)
    =================================================================== */
 
-/* Geist Sans Variable / Static Weights */
+/* Geist Sans Variable (Weights 100-900) */
 @font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-Regular.woff2') format('woff2');
-  font-weight: 400;
+  font-family: 'Geist';
+  src: url('/fonts/geist/geist-sans/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-Medium.woff2') format('woff2');
-  font-weight: 500;
+  src: url('/fonts/geist/geist-sans/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-SemiBold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-Black.woff2') format('woff2');
-  font-weight: 800 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Geist Mono */
+/* Geist Mono Variable (Weights 100-900) */
 @font-face {
   font-family: 'Geist Mono';
-  src: url('/fonts/geist/geist-mono/GeistMono-Regular.woff2') format('woff2');
-  font-weight: 400;
+  src: url('/fonts/geist/geist-mono/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/geist/geist-mono/GeistMono-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/geist/geist-mono/GeistMono-SemiBold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/geist/geist-mono/GeistMono-Bold.woff2') format('woff2');
-  font-weight: 700;
+  font-family: 'GeistMono';
+  src: url('/fonts/geist/geist-mono/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -118,8 +78,8 @@
 }
 
 :root {
-  --font-geist-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-geist-sans: 'Geist', 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-geist-mono: 'Geist Mono', 'GeistMono', ui-monospace, monospace;
   --font-geist-pixel-square: 'Geist Pixel Square', monospace;
   --font-geist-pixel-grid: 'Geist Pixel Grid', monospace;
   --font-geist-pixel-circle: 'Geist Pixel Circle', monospace;
@@ -130,29 +90,29 @@
 }
 
 .font-sans {
-  font-family: var(--font-geist-sans);
+  font-family: var(--font-geist-sans) !important;
 }
 
 .font-mono {
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-geist-mono) !important;
 }
 
-.font-pixel-square {
-  font-family: var(--font-geist-pixel-square);
+.font-pixel-square, .font-pixel {
+  font-family: var(--font-geist-pixel-square) !important;
 }
 
 .font-pixel-grid {
-  font-family: var(--font-geist-pixel-grid);
+  font-family: var(--font-geist-pixel-grid) !important;
 }
 
 .font-pixel-circle {
-  font-family: var(--font-geist-pixel-circle);
+  font-family: var(--font-geist-pixel-circle) !important;
 }
 
 .font-pixel-triangle {
-  font-family: var(--font-geist-pixel-triangle);
+  font-family: var(--font-geist-pixel-triangle) !important;
 }
 
 .font-pixel-line {
-  font-family: var(--font-geist-pixel-line);
+  font-family: var(--font-geist-pixel-line) !important;
 }
