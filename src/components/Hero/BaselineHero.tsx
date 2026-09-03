@@ -4,6 +4,7 @@ import { SampleProduct, ComplianceReport } from '../../types/compliance';
 import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
 import { exportComplianceReportPDF } from '../../services/pdfExportService';
+import AeroShards from '../AeroShards';
 
 interface BaselineHeroProps {
   currentSample: SampleProduct;
@@ -53,20 +54,48 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
   };
 
   return (
-    <section className="relative isolate overflow-hidden bg-[var(--brand-deep)] text-white rounded-[var(--radius-card-lg)] min-h-[38rem] h-[calc(100svh-1.5rem)] flex flex-col justify-between p-4 sm:p-8 lg:p-10 shadow-2xl">
-      {/* Candy Gradient Backdrop */}
+    <section className="relative isolate overflow-hidden bg-[#120F17] text-white rounded-[var(--radius-card-lg)] min-h-[38rem] h-[calc(100svh-1.5rem)] flex flex-col justify-between p-4 sm:p-8 lg:p-10 shadow-2xl">
+      {/* Interactive 3D AeroShards Dynamic Particle Backdrop */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+        <AeroShards
+          backgroundColor="#120F17"
+          shardColor="#896ABD"
+          accentColor="#A855F7"
+          placement="full"
+          flow="stream"
+          material="pearl"
+          detail="balanced"
+          effect="none"
+          scale={1}
+          spread={1}
+          depth={1}
+          speed={1}
+          spin={1}
+          interaction="repel"
+          density={1.5}
+          shardSize={1.1}
+          stretch={1}
+          turbulence={1}
+          glow={1}
+          edgeSoftness={2}
+          bloom={0.5}
+          grain={0.05}
+          chromaticAberration={0.0075}
+          transitionDuration={1}
+          interactionRadius={1.5}
+          interactionStrength={0.5}
+          rippleIntensity={1}
+          holdToGather
+          paused={false}
+        />
+        {/* Subtle luminous atmosphere overlay */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none opacity-40 mix-blend-screen"
           style={{
             background:
-              'radial-gradient(120% 90% at 8% 0%, rgba(255,93,115,0.55) 0%, transparent 55%), radial-gradient(110% 90% at 95% 8%, rgba(38,208,206,0.45) 0%, transparent 50%), radial-gradient(140% 100% at 50% 120%, rgba(199,240,0,0.28) 0%, transparent 55%), linear-gradient(160deg, var(--brand-deep) 0%, #2a1259 55%, #1a0d3a 100%)'
+              'radial-gradient(120% 90% at 8% 0%, rgba(255,93,115,0.3) 0%, transparent 55%), radial-gradient(110% 90% at 95% 8%, rgba(38,208,206,0.25) 0%, transparent 50%), linear-gradient(160deg, transparent 0%, rgba(18,15,23,0.7) 100%)'
           }}
         />
-        {/* Morphing blobs */}
-        <div className="blob blob-float w-72 h-72 sm:w-96 sm:h-96 bg-[var(--coral)]/30 -top-16 -left-16" />
-        <div className="blob blob-float w-64 h-64 sm:w-80 sm:h-80 bg-[var(--sky)]/25 -bottom-24 -right-10" style={{ animationDelay: '1.5s' }} />
-        <div className="blob blob-float w-40 h-40 bg-[var(--lime)]/20 top-1/3 right-1/4" style={{ animationDelay: '3s' }} />
       </div>
 
       {/* Top Header Navbar */}
