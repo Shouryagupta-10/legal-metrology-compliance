@@ -36,9 +36,10 @@ export default {
         bubble: { pink: 'var(--bubble-pink)' },
       },
       fontFamily: {
-        sans: ['Onest', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
-        display: ['Fredoka', 'Syne', 'Onest', 'sans-serif'],
+        sans: ['"Geist Sans"', 'Onest', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"Geist Mono"', '"JetBrains Mono"', 'monospace'],
+        pixel: ['"Geist Pixel Square"', 'monospace'],
+        display: ['"Geist Sans"', 'Fredoka', 'Syne', 'sans-serif'],
       },
       borderRadius: {
         card: 'var(--radius-card)',

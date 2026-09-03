@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import Lenis from 'lenis';
 import { Box, Layers, Sparkles } from 'lucide-react';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
+import { GeistPixelSquare, GeistPixelGrid, GeistPixelCircle, GeistPixelTriangle, GeistPixelLine } from 'geist/font/pixel';
 
 import {
   SampleProduct,
@@ -279,7 +282,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white transition-colors duration-300">
+    <div className={`min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white transition-colors duration-300 ${GeistSans.className}`}>
       {/* 1. Global Custom Playful Cursor */}
       <CursorFX />
 
