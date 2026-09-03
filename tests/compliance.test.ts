@@ -117,4 +117,30 @@ assert(parsed.isTaxesInclusiveDeclared === true, 'Extracted tax inclusivity must
 assert(parsed.manufacturerPin === '577101', 'Extracted PIN code must be 577101');
 assert(parsed.countryOfOrigin === 'India', 'Extracted country of origin must be India');
 
-console.log('\n🎉 ALL 6 TEST SCENARIOS PASSED WITH ZERO REGRESSIONS!');
+// Test 7: AI Tampering & Anomaly Detection
+console.log('\n--- Test 7: AI Tamper Detection (Pristine vs Sticker Tampered) ---');
+assert(report1.tamperReport.isTampered === false, 'Sample 1 must be AUTHENTIC with 0% tamper risk');
+assert(report1.tamperReport.tamperRiskScore === 0, 'Sample 1 tamper risk score must be 0');
+
+const sample5 = SAMPLE_PRODUCTS[4];
+const report5 = evaluateCompliance({
+  productName: sample5.name,
+  brandName: sample5.brand,
+  categoryName: sample5.category,
+  declarations: sample5.declarations,
+  labelImages: sample5.labelImages,
+  tamperDefaults: sample5.tamperDefaults
+});
+assert(report5.tamperReport.isTampered === true, 'Sample 5 must be flagged as TAMPERED');
+assert(report5.tamperReport.tamperRiskScore >= 80, 'Sample 5 tamper score must be >= 80%');
+assert(report5.tamperReport.stickerOverlayDetected === true, 'Sample 5 must detect sticker overlay');
+assert(report5.tamperReport.dualPricingDetected === true, 'Sample 5 must detect dual pricing conflict');
+
+// Test 8: Inspector Intelligence Priority Triage
+console.log('\n--- Test 8: Inspector Priority Triage Classification ---');
+assert(report1.inspectorTriage.tier === 'CLEARED', 'Sample 1 must be Priority 4: CLEARED');
+assert(report5.inspectorTriage.tier === 'CRITICAL_SEIZURE', 'Sample 5 must be Priority 1: CRITICAL_SEIZURE');
+assert(report5.inspectorTriage.isSeizureRecommended === true, 'Sample 5 must recommend immediate stock seizure under Sec 15');
+assert(report3.inspectorTriage.tier === 'SHOW_CAUSE_NOTICE', 'Sample 3 must be Priority 2: SHOW_CAUSE_NOTICE');
+
+console.log('\n🎉 ALL 8 TEST SCENARIOS PASSED WITH ZERO REGRESSIONS!');

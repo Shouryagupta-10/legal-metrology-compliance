@@ -6,10 +6,13 @@ import {
   PrincipalDisplayPanelCalculation,
   PenaltyEstimate,
   LabelImageRecord,
-  EcommerceListingData
+  EcommerceListingData,
+  TamperAnomaly
 } from '../types/compliance';
 import { LEGAL_METROLOGY_RULES } from './legalMetrologyRules';
 import { calculatePDP } from './pdpCalculator';
+import { detectLabelTampering } from './tamperDetector';
+import { calculatePriorityTriage } from './inspectorIntelligence';
 
 export interface EvaluateComplianceInput {
   productId?: string;
@@ -30,6 +33,11 @@ export interface EvaluateComplianceInput {
   activeImageId?: string;
   ecommerceData?: EcommerceListingData;
   isEcommerceMode?: boolean;
+  tamperDefaults?: {
+    isTampered?: boolean;
+    tamperRiskScore?: number;
+    anomalies?: TamperAnomaly[];
+  };
 }
 
 export function evaluateCompliance(input: EvaluateComplianceInput): ComplianceReport {
@@ -692,7 +700,7 @@ export function evaluateCompliance(input: EvaluateComplianceInput): ComplianceRe
     return acc;
   }, 0);
 
-  const overallScore = totalPointsPossible > 0 ? Math.round((earnedPoints / totalPointsPossible) * 100) : 100;
+  let overallScore = totalPointsPossible > 0 ? Math.round((earnedPoints / totalPointsPossible) * 100) : 100;
 
   let overallStatus: OverallComplianceStatus = 'COMPLIANT';
   if (failedRules > 0 || criticalViolations > 0) {
@@ -701,19 +709,30 @@ export function evaluateCompliance(input: EvaluateComplianceInput): ComplianceRe
     overallStatus = 'WARNING';
   }
 
+  // AI-Based Tampering & Anomaly Detection
+  const tamperReport = detectLabelTampering(declarations, labelImages, input.tamperDefaults);
+  if (tamperReport.isTampered) {
+    overallStatus = 'NON_COMPLIANT';
+    overallScore = Math.min(overallScore, Math.max(15, 100 - tamperReport.tamperRiskScore));
+    summaryNotes.unshift(`⚠️ ${tamperReport.summary}`);
+  }
+
   // Penalty Estimate under Section 36
   const penaltyEstimate: PenaltyEstimate = {
     section: 'Section 36 of Legal Metrology Act, 2009',
-    firstOffenseMinFine: failedRules > 0 ? 25000 : 0,
-    firstOffenseMaxFine: failedRules > 0 ? 25000 * Math.min(failedRules, 4) : 0,
+    firstOffenseMinFine: failedRules > 0 || tamperReport.isTampered ? 25000 : 0,
+    firstOffenseMaxFine: failedRules > 0 || tamperReport.isTampered ? 25000 * Math.max(1, Math.min(failedRules + (tamperReport.isTampered ? 2 : 0), 4)) : 0,
     secondOffenseMaxFine: 50000,
     subsequentOffenseMaxFine: 100000,
     imprisonmentMonthsMax: 12,
-    compoundingPossible: failedRules > 0,
-    legalSummary: failedRules > 0
+    compoundingPossible: failedRules > 0 || tamperReport.isTampered,
+    legalSummary: failedRules > 0 || tamperReport.isTampered
       ? `Violation of Legal Metrology (Packaged Commodities) Rules, 2011 renders the manufacturer/packer/importer liable under Section 36(1) of the Act. First offence fine is ₹25,000; second offence is ₹50,000; repeat offences attract ₹1,00,000 fine and/or imprisonment up to 1 year.`
       : 'Full statutory compliance observed under Legal Metrology (Packaged Commodities) Rules, 2011.'
   };
+
+  // Enforcement Officer Priority Triage
+  const inspectorTriage = calculatePriorityTriage(overallStatus, ruleResults, tamperReport, penaltyEstimate);
 
   const todayStr = new Date().toLocaleDateString('en-IN', {
     day: '2-digit',
@@ -735,7 +754,7 @@ export function evaluateCompliance(input: EvaluateComplianceInput): ComplianceRe
     passedRulesCount: passedRules,
     failedRulesCount: failedRules,
     warningRulesCount: warningRules,
-    criticalViolationsCount: criticalViolations,
+    criticalViolationsCount: criticalViolations + (tamperReport.isTampered ? 1 : 0),
     declarations,
     ruleResults,
     pdpCalculation: pdpCalc,
@@ -743,6 +762,8 @@ export function evaluateCompliance(input: EvaluateComplianceInput): ComplianceRe
     labelImages,
     activeImageId,
     ecommerceData,
-    summaryNotes: summaryNotes.length > 0 ? summaryNotes : ['All mandatory Legal Metrology statutory declarations verified and compliant.']
+    summaryNotes: summaryNotes.length > 0 ? summaryNotes : ['All mandatory Legal Metrology statutory declarations verified and compliant.'],
+    tamperReport,
+    inspectorTriage
   };
 }

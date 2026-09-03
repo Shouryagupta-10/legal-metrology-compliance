@@ -36,6 +36,9 @@ import { PDPMeasurementTool } from './components/Inspector/PDPMeasurementTool';
 import { FieldEditorModal } from './components/Inspector/FieldEditorModal';
 import { ComplianceScoreCard } from './components/Compliance/ComplianceScoreCard';
 import { ViolationAlerts } from './components/Compliance/ViolationAlerts';
+import { TamperDetectionCard } from './components/Inspector/TamperDetectionCard';
+import { InspectorTriagePanel } from './components/Compliance/InspectorTriagePanel';
+import { InspectorIntelligenceDashboard } from './components/Sections/InspectorIntelligenceDashboard';
 import { RuleChecklist } from './components/Compliance/RuleChecklist';
 import { USPCalculator } from './components/Compliance/USPCalculator';
 import { AuditReportView } from './components/Reports/AuditReportView';
@@ -161,7 +164,8 @@ export const App: React.FC = () => {
         depthMm: sample.pdpDefaults.depthMm,
         measuredNumeralHeightMm: sample.pdpDefaults.measuredFontHeightMm
       },
-      labelImages: sample.labelImages
+      labelImages: sample.labelImages,
+      tamperDefaults: fixMode ? undefined : sample.tamperDefaults
     });
 
     setCurrentReport(report);
@@ -416,6 +420,20 @@ export const App: React.FC = () => {
                 </div>
               </div>
 
+              {/* Core Feature 2 & 3: AI Tampering Forensics & Inspector Triage Command Deck */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <TamperDetectionCard
+                  report={currentReport.tamperReport}
+                  onFocusAnomaly={boxId => {
+                    if (boxId) handleSelectBoundingBox(boxId);
+                  }}
+                />
+                <InspectorTriagePanel
+                  triage={currentReport.inspectorTriage}
+                  report={currentReport}
+                />
+              </div>
+
               {/* Dynamic Studio Workbench: 2D vs 3D */}
               {studioMode === '3d' ? (
                 <div className="space-y-6">
@@ -461,8 +479,9 @@ export const App: React.FC = () => {
           )}
         </section>
 
-        {/* 7. Stats & Penalties Band */}
-        <div id="analytics">
+        {/* 7. Advanced Inspector Intelligence & Hotspot Mapping */}
+        <div id="analytics" className="space-y-6">
+          <InspectorIntelligenceDashboard />
           <BaselineStatsSection />
         </div>
 

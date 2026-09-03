@@ -249,5 +249,108 @@ export const SAMPLE_PRODUCTS: SampleProduct[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'sample-5',
+    name: 'Shree Pure Desi Ghee (1 L) — Sticker Tampered',
+    brand: 'Shree Agro Foods',
+    category: 'Dairy & Edible Fats',
+    thumbnail: '/samples/oil.jpg',
+    declarations: {
+      manufacturerName: 'SHREE AGRO DISTRIBUTORS PVT. LTD.',
+      manufacturerAddress: 'Plot 12, GIDC Industrial Estate, Mehsana, Gujarat - 384002',
+      manufacturerPin: '384002',
+      manufacturerState: 'Gujarat',
+      commodityName: 'Pure Cow Desi Ghee',
+      commonOrGenericName: 'Desi Ghee',
+      netQuantityValue: 1,
+      netQuantityUnit: 'l',
+      rawNetQuantityText: 'Net Volume: 1 L (910 g)',
+      netQuantitySymbolValid: true,
+      mfgMonth: 3,
+      mfgYear: 2024,
+      rawMfgDateText: 'Packed: 03/2024 (Altered Dot-Matrix)',
+      expiryDate: 'Best Before 9 Months',
+      mrpValue: 520,
+      rawMrpText: 'MRP ₹ 520.00 (Pasted Sticker over ₹ 380.00)',
+      isTaxesInclusiveDeclared: false,
+      rawTaxDeclarationText: 'STC/PASTED STICKER',
+      declaredUspValue: 520,
+      declaredUspUnit: 'l',
+      rawUspText: 'USP: ₹ 520.00 / L',
+      consumerCarePhone: '079-22334455',
+      consumerCareEmail: 'support@shreeagro.in',
+      countryOfOrigin: 'India',
+      fssaiNumber: '10718022000412',
+      barcode: '8909876543210'
+    },
+    pdpDefaults: {
+      shape: 'cylindrical',
+      heightMm: 220,
+      widthMm: 110,
+      depthMm: 110,
+      diameterMm: 110,
+      measuredFontHeightMm: 4.8
+    },
+    expectedCompliance: 'NON_COMPLIANT',
+    scenarioDescription: 'CRITICAL TAMPERING & DUAL MRP: An adhesive sticker with inflated price ₹ 520.00 has been pasted over the original factory price ₹ 380.00. Expiry date shows fugitive ink font inconsistency, violating Rule 18(2) & Section 36(1).',
+    tags: ['Critical Tampering', 'Sticker Overlay', 'Dual MRP', 'Sec 15 Seizure'],
+    tamperDefaults: {
+      isTampered: true,
+      tamperRiskScore: 94,
+      anomalies: [
+        {
+          id: 'tanom-1',
+          type: 'STICKER_OVERLAY',
+          title: 'Adhesive Price Sticker Overlay Detected',
+          description: 'A physical adhesive paper sticker (₹520) has been manually affixed directly over the original factory printed MRP (₹380).',
+          confidence: 0.96,
+          severity: 'CRITICAL',
+          boundingBoxId: 'b4-tamper',
+          evidenceSnippet: 'Adhesive sticker edge detected around MRP ₹520.00',
+          recommendedOfficerAction: 'Perform physical peel-back test and execute stock seizure under Section 15.'
+        },
+        {
+          id: 'tanom-2',
+          type: 'DUAL_MRP',
+          title: 'Dual Pricing Inflation Conflict (₹380 vs ₹520)',
+          description: 'Factory baseline print indicates ₹380 while pasted retail sticker charges ₹520. Illicit margin of ₹140 per unit.',
+          confidence: 0.92,
+          severity: 'CRITICAL',
+          boundingBoxId: 'b4-tamper',
+          evidenceSnippet: 'Original ₹380 / Sticker ₹520 (36.8% markup)',
+          recommendedOfficerAction: 'File formal charge under Section 36(1) for overcharging beyond manufacturer MRP.'
+        },
+        {
+          id: 'tanom-3',
+          type: 'FONT_INCONSISTENCY',
+          title: 'Secondary Dot-Matrix Typography Anomaly',
+          description: 'The date and batch block utilizes a 9-pin dot-matrix overprint that does not align with the master rotogravure typography.',
+          confidence: 0.85,
+          severity: 'WARNING',
+          boundingBoxId: 'b6-tamper',
+          evidenceSnippet: 'Font resolution mismatch: 120 DPI dot-matrix vs 600 DPI package substrate',
+          recommendedOfficerAction: 'Inspect batch register at manufacturing plant to verify printer serial log.'
+        }
+      ]
+    },
+    labelImages: [
+      {
+        id: 'img-s5-1',
+        viewType: 'front',
+        url: '/samples/oil.jpg',
+        name: 'Shree Pure Desi Ghee 1L Tampered Pack',
+        boundingBoxes: [
+          { id: 'b1', field: 'brand', text: 'SHREE AGRO', x: 18, y: 52, width: 24, height: 6, confidence: 0.99, status: 'valid' },
+          { id: 'b2', field: 'commodityName', text: 'PURE COW DESI GHEE', x: 18, y: 59, width: 22, height: 5, confidence: 0.98, status: 'valid', ruleCitation: 'Rule 6(1)(b)' },
+          { id: 'b3', field: 'netQuantity', text: 'Net Volume: 1 L (910 g)', x: 70, y: 51, width: 18, height: 2.8, confidence: 0.99, status: 'valid', ruleCitation: 'Rule 6(1)(c)' },
+          { id: 'b4-tamper', field: 'mrp', text: 'MRP ₹ 520.00 [PASTED STICKER OVER ₹ 380]', x: 68, y: 54.5, width: 22, height: 4.5, confidence: 0.94, status: 'invalid', ruleCitation: 'Rule 18(2) & Sec 36(1) Sticker Overprinting' },
+          { id: 'b5', field: 'usp', text: 'USP: ₹ 520.00 / L', x: 70, y: 59.5, width: 16, height: 2.2, confidence: 0.96, status: 'valid', ruleCitation: 'Rule 6(1)(e)' },
+          { id: 'b6-tamper', field: 'mfgDate', text: 'Packed: 03/2024 (Fugitive Ink)', x: 70, y: 62.5, width: 18, height: 2.5, confidence: 0.82, status: 'warning', ruleCitation: 'Rule 6(1)(d)' },
+          { id: 'b7', field: 'manufacturer', text: 'SHREE AGRO DISTRIBUTORS, Mehsana - 384002', x: 70, y: 65.5, width: 18, height: 4.2, confidence: 0.95, status: 'valid', ruleCitation: 'Rule 6(1)(a)' },
+          { id: 'b8', field: 'fssai', text: 'FSSAI Lic. No. 10718022000412', x: 70, y: 70.5, width: 18, height: 3, confidence: 0.97, status: 'valid' }
+        ]
+      }
+    ]
   }
 ];

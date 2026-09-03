@@ -20,7 +20,8 @@ import {
   SlidersHorizontal,
   SplitSquareVertical,
   Crosshair,
-  Keyboard
+  Keyboard,
+  ShieldAlert
 } from 'lucide-react';
 import { BoundingBox, LabelImageRecord } from '../../types/compliance';
 import { sounds } from '../../services/soundEffects';
@@ -49,6 +50,7 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
   const [enableLoupe, setEnableLoupe] = useState<boolean>(false);
   const [loupePower, setLoupePower] = useState<number>(2.5); // 1.5, 2.5, 4.0
   const [enableRuler, setEnableRuler] = useState<boolean>(false);
+  const [enableTamperForensics, setEnableTamperForensics] = useState<boolean>(true);
   const [isSplitMode, setIsSplitMode] = useState<boolean>(false);
   const [splitPos, setSplitPos] = useState<number>(50); // 0 to 100%
   const [hoveredBoxId, setHoveredBoxId] = useState<string | null>(null);
@@ -282,6 +284,23 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
             <Ruler className="w-3.5 h-3.5 text-amber-400" />
             <span className="hidden sm:inline">mm Ruler</span>
             <kbd className="hidden md:inline-block px-1 py-0.2 bg-black/40 text-[9px] font-mono rounded">R</kbd>
+          </button>
+
+          {/* AI Tamper & Sticker Forensics Layer */}
+          <button
+            onClick={() => {
+              sounds.playClick();
+              setEnableTamperForensics(p => !p);
+            }}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold btn-tactile flex items-center gap-1 border transition-colors ${
+              enableTamperForensics
+                ? 'bg-rose-950 text-rose-300 border-rose-500 shadow-sm shadow-rose-500/20'
+                : 'bg-slate-900 text-slate-300 border-slate-800 hover:text-white'
+            }`}
+            title="Toggle AI Tamper & Sticker Forensics Layer"
+          >
+            <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+            <span className="hidden sm:inline">Tamper Scan</span>
           </button>
 
           {/* Action Modals */}
@@ -561,6 +580,7 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
             imageRecord.boundingBoxes.map(box => {
               const isActive = box.id === activeBoundingBoxId;
               const isHovered = box.id === hoveredBoxId;
+              const isTamperFlag = enableTamperForensics && (box.id.includes('tamper') || box.ruleCitation?.includes('Sticker') || box.ruleCitation?.includes('Overprinting'));
 
               return (
                 <div
@@ -571,11 +591,11 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
                   }}
                   onMouseEnter={() => setHoveredBoxId(box.id)}
                   onMouseLeave={() => setHoveredBoxId(null)}
-                  className={`absolute cursor-pointer rounded transition-all group ${getStatusBorder(
-                    box.status,
-                    isActive,
-                    isHovered
-                  )}`}
+                  className={`absolute cursor-pointer rounded transition-all group ${
+                    isTamperFlag
+                      ? 'border-2 border-dashed border-rose-500 ring-4 ring-rose-500/40 shadow-[0_0_25px_rgba(244,63,94,0.7)] z-30'
+                      : getStatusBorder(box.status, isActive, isHovered)
+                  }`}
                   style={{
                     left: `${box.x}%`,
                     top: `${box.y}%`,
@@ -585,21 +605,39 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
                 >
                   {/* Badge Label */}
                   <div
-                    className={`absolute -top-7 left-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold tracking-wide border whitespace-nowrap z-30 transition-all ${getBadgeColor(
-                      box.status
-                    )} ${isActive || isHovered ? 'scale-110' : 'opacity-85'}`}
+                    className={`absolute -top-7 left-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold tracking-wide border whitespace-nowrap z-30 transition-all ${
+                      isTamperFlag
+                        ? 'bg-rose-950 text-rose-200 border-rose-500 shadow-md shadow-rose-950'
+                        : getBadgeColor(box.status)
+                    } ${isActive || isHovered || isTamperFlag ? 'scale-110' : 'opacity-85'}`}
                   >
                     <span className="flex items-center gap-1">
-                      {isFixApplied ? (
-                        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                      {isTamperFlag ? (
+                        <>
+                          <ShieldAlert className="w-2.5 h-2.5 text-rose-400 animate-pulse" />
+                          <span>TAMPER: {box.field}</span>
+                        </>
+                      ) : isFixApplied ? (
+                        <>
+                          <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                          <span>{box.field}</span>
+                        </>
                       ) : box.status === 'valid' ? (
-                        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                        <>
+                          <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                          <span>{box.field}</span>
+                        </>
                       ) : box.status === 'invalid' ? (
-                        <AlertOctagon className="w-2.5 h-2.5 text-rose-400 animate-pulse" />
+                        <>
+                          <AlertOctagon className="w-2.5 h-2.5 text-rose-400 animate-pulse" />
+                          <span>{box.field}</span>
+                        </>
                       ) : (
-                        <Sparkles className="w-2.5 h-2.5 text-amber-400" />
+                        <>
+                          <Sparkles className="w-2.5 h-2.5 text-amber-400" />
+                          <span>{box.field}</span>
+                        </>
                       )}
-                      <span>{box.field}</span>
                     </span>
                   </div>
                 </div>

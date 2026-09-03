@@ -176,6 +176,87 @@ export interface ComplianceReport {
   activeImageId: string;
   ecommerceData?: EcommerceListingData;
   summaryNotes: string[];
+  tamperReport: TamperAnomalyReport;
+  inspectorTriage: InspectorPriorityTriage;
+}
+
+export type TamperAnomalyType =
+  | 'STICKER_OVERLAY'
+  | 'DUAL_MRP'
+  | 'FONT_INCONSISTENCY'
+  | 'SCRATCHED_DATE'
+  | 'GEOMETRIC_MISALIGNMENT';
+
+export type TamperSeverity = 'CRITICAL' | 'WARNING' | 'INFO';
+
+export interface TamperAnomaly {
+  id: string;
+  type: TamperAnomalyType;
+  title: string;
+  description: string;
+  confidence: number; // 0.0 - 1.0
+  severity: TamperSeverity;
+  boundingBoxId?: string;
+  evidenceSnippet: string;
+  recommendedOfficerAction: string;
+}
+
+export interface TamperAnomalyReport {
+  isTampered: boolean;
+  tamperRiskScore: number; // 0 - 100
+  authenticityRating: 'AUTHENTIC' | 'SUSPICIOUS' | 'CONFIRMED_TAMPERED';
+  stickerOverlayDetected: boolean;
+  dualPricingDetected: boolean;
+  anomalies: TamperAnomaly[];
+  summary: string;
+}
+
+export type PriorityTier =
+  | 'CRITICAL_SEIZURE'
+  | 'SHOW_CAUSE_NOTICE'
+  | 'TECHNICAL_RECTIFICATION'
+  | 'CLEARED';
+
+export interface InspectorPriorityTriage {
+  tier: PriorityTier;
+  priorityRank: 1 | 2 | 3 | 4;
+  title: string;
+  badgeColor: string;
+  statutorySection: string;
+  recommendedAction: string;
+  urgencyHours: number;
+  actionChecklist: string[];
+  isSeizureRecommended: boolean;
+}
+
+export interface GeospatialHotspotData {
+  stateCode: string;
+  stateName: string;
+  totalInspections: number;
+  nonComplianceRate: number; // percentage
+  criticalViolationsCount: number;
+  tamperingCasesCount: number;
+  topViolatedRule: string;
+  riskIndex: 'HIGH' | 'MEDIUM' | 'LOW';
+  districts: {
+    name: string;
+    rate: number;
+    inspections: number;
+  }[];
+}
+
+export interface ManufacturerTrendData {
+  id: string;
+  brandName: string;
+  manufacturerName: string;
+  category: string;
+  totalAudited: number;
+  compliantCount: number;
+  tamperedCount: number;
+  complianceScoreAvg: number;
+  repeatOffender: boolean;
+  riskGrade: 'A+' | 'A' | 'B' | 'C' | 'HIGH_RISK';
+  lastInspectionDate: string;
 }
 
 export interface SampleProduct {
@@ -197,4 +278,9 @@ export interface SampleProduct {
   expectedCompliance: OverallComplianceStatus;
   scenarioDescription: string;
   tags: string[];
+  tamperDefaults?: {
+    isTampered?: boolean;
+    tamperRiskScore?: number;
+    anomalies?: TamperAnomaly[];
+  };
 }
