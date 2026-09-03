@@ -3,6 +3,7 @@ import { Upload, Camera, ShoppingBag, Sparkles, Image as ImageIcon, CheckCircle2
 import { SampleProduct } from '../../types/compliance';
 import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
+import AccordionGallery from '../AccordionGallery';
 
 interface MultiImageUploaderProps {
   onImageSelected: (imageDataUrl: string, fileName: string) => void;
@@ -27,6 +28,7 @@ export const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'compliant' | 'violations'>('all');
+  const [viewMode, setViewMode] = useState<'accordion' | 'grid'>('accordion');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,112 +136,194 @@ export const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
 
       {/* Specimen Cards Shelf Gallery */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-soft)] font-mono">
               Commercial Benchmarks ({filteredSamples.length} SKUs)
             </span>
           </div>
 
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 bg-[var(--surface)] p-1 rounded-full border border-[var(--hairline)]">
-            {(['all', 'compliant', 'violations'] as const).map(f => (
+          <div className="flex flex-wrap items-center gap-2">
+            {/* View Mode: Accordion 3D vs Grid */}
+            <div className="flex items-center gap-1 bg-[var(--surface)] p-1 rounded-full border border-[var(--hairline)]">
               <button
-                key={f}
                 onClick={() => {
                   sounds.playClick();
-                  setSelectedFilter(f);
+                  setViewMode('accordion');
+                }}
+                className={`px-3 py-1 rounded-full text-[11px] font-semibold flex items-center gap-1.5 transition-all btn-tactile ${
+                  viewMode === 'accordion'
+                    ? 'bg-purple-600 text-white shadow-sm'
+                    : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+                <span>Accordion 3D</span>
+              </button>
+              <button
+                onClick={() => {
+                  sounds.playClick();
+                  setViewMode('grid');
                 }}
                 className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all btn-tactile ${
-                  selectedFilter === f
+                  viewMode === 'grid'
                     ? 'bg-[var(--ink)] text-[var(--background)] shadow-sm'
                     : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
                 }`}
               >
-                {f === 'all' ? 'All' : f === 'compliant' ? '100% Pass' : 'Defect Samples'}
+                Grid
               </button>
-            ))}
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1.5 bg-[var(--surface)] p-1 rounded-full border border-[var(--hairline)]">
+              {(['all', 'compliant', 'violations'] as const).map(f => (
+                <button
+                  key={f}
+                  onClick={() => {
+                    sounds.playClick();
+                    setSelectedFilter(f);
+                  }}
+                  className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all btn-tactile ${
+                    selectedFilter === f
+                      ? 'bg-[var(--ink)] text-[var(--background)] shadow-sm'
+                      : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+                  }`}
+                >
+                  {f === 'all' ? 'All' : f === 'compliant' ? '100% Pass' : 'Defect Samples'}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Specimen Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {filteredSamples.map((sample, index) => {
-            const isCompliant = sample.expectedCompliance === 'COMPLIANT';
-            const isActive = activeSampleId === sample.id;
+        {/* View Mode: AccordionGallery vs Specimen Grid */}
+        {viewMode === 'accordion' ? (
+          <div className="w-full rounded-[1.5rem] overflow-hidden border border-purple-500/20 bg-[#0d0a14] p-3 shadow-2xl space-y-2">
+            <AccordionGallery
+              items={filteredSamples.map(sample => {
+                const isCompliant = sample.expectedCompliance === 'COMPLIANT';
+                return {
+                  image: sample.thumbnail,
+                  label: sample.name,
+                  category: sample.category,
+                  price: `${sample.declarations.netQuantityValue} ${sample.declarations.netQuantityUnit} • ₹${sample.declarations.mrpValue}`,
+                  statusBadge: isCompliant
+                    ? '100% PASS'
+                    : sample.id === 'sample-5'
+                    ? 'TAMPER SEIZURE'
+                    : 'DEFECT',
+                  sample
+                };
+              })}
+              defaultIndex={Math.max(
+                0,
+                filteredSamples.findIndex(s => s.id === activeSampleId)
+              )}
+              expandRatio={0.52}
+              trigger="hover"
+              accentColor="#A855F7"
+              overlayColor="#060010"
+              textColor="#ffffff"
+              grayscale
+              showLabels
+              duration={0.6}
+              ease="power3.out"
+              parallax={0.5}
+              tilt={8}
+              stagger={0.06}
+              height={460}
+              gap={10}
+              radius={16}
+              orientation="horizontal"
+              onItemSelect={item => {
+                sounds.playClick();
+                if (item.sample) {
+                  onSelectSample(item.sample);
+                }
+              }}
+            />
+          </div>
+        ) : (
+          /* Specimen Grid */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {filteredSamples.map((sample, index) => {
+              const isCompliant = sample.expectedCompliance === 'COMPLIANT';
+              const isActive = activeSampleId === sample.id;
 
-            return (
-              <article
-                key={sample.id}
-                onClick={() => {
-                  sounds.playClick();
-                  onSelectSample(sample);
-                }}
-                className={`group cursor-pointer rounded-[1.5rem] border transition-all flex flex-col justify-between overflow-hidden relative select-none ${
-                  isActive
-                    ? 'border-[var(--brand)] bg-[var(--surface-card)] shadow-xl ring-2 ring-[var(--brand)]/30 scale-[1.01]'
-                    : 'border-[var(--hairline)] bg-[var(--surface-card)] hover:border-[var(--brand-light)] hover:shadow-md'
-                }`}
-              >
-                {/* Artwork Thumbnail with Gloss Overlay */}
-                <div className="relative w-full h-44 bg-[var(--brand-deep)] overflow-hidden border-b border-[var(--hairline)] flex items-center justify-center">
-                  <img
-                    src={sample.thumbnail}
-                    alt={sample.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none" />
+              return (
+                <article
+                  key={sample.id}
+                  onClick={() => {
+                    sounds.playClick();
+                    onSelectSample(sample);
+                  }}
+                  className={`group cursor-pointer rounded-[1.5rem] border transition-all flex flex-col justify-between overflow-hidden relative select-none ${
+                    isActive
+                      ? 'border-[var(--brand)] bg-[var(--surface-card)] shadow-xl ring-2 ring-[var(--brand)]/30 scale-[1.01]'
+                      : 'border-[var(--hairline)] bg-[var(--surface-card)] hover:border-[var(--brand-light)] hover:shadow-md'
+                  }`}
+                >
+                  {/* Artwork Thumbnail with Gloss Overlay */}
+                  <div className="relative w-full h-44 bg-[var(--brand-deep)] overflow-hidden border-b border-[var(--hairline)] flex items-center justify-center">
+                    <img
+                      src={sample.thumbnail}
+                      alt={sample.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none" />
 
-                  {/* Specimen Stamp */}
-                  <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[9px] font-mono font-bold text-white/90 border border-white/15">
-                    SPECIMEN // 0{index + 1}
+                    {/* Specimen Stamp */}
+                    <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[9px] font-mono font-bold text-white/90 border border-white/15">
+                      SPECIMEN // 0{index + 1}
+                    </div>
+
+                    {/* Status Stamp */}
+                    <div
+                      className={`absolute top-3 right-3 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 backdrop-blur-md uppercase tracking-wider ${
+                        isCompliant
+                          ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50'
+                          : 'bg-rose-950/90 text-rose-300 border border-rose-500/50 animate-pulse'
+                      }`}
+                    >
+                      {isCompliant ? <CheckCircle2 className="w-2.5 h-2.5" /> : <AlertTriangle className="w-2.5 h-2.5" />}
+                      <span>{isCompliant ? 'PASS' : 'DEFECT'}</span>
+                    </div>
+
+                    {/* Net Quantity & MRP Ribbon */}
+                    <div className="absolute bottom-2.5 left-3 text-[10px] font-mono font-semibold text-white/95 bg-black/75 px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/10">
+                      {sample.declarations.netQuantityValue} {sample.declarations.netQuantityUnit} &bull; ₹{sample.declarations.mrpValue}
+                    </div>
                   </div>
 
-                  {/* Status Stamp */}
-                  <div
-                    className={`absolute top-3 right-3 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 backdrop-blur-md uppercase tracking-wider ${
-                      isCompliant
-                        ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50'
-                        : 'bg-rose-950/90 text-rose-300 border border-rose-500/50 animate-pulse'
-                    }`}
-                  >
-                    {isCompliant ? <CheckCircle2 className="w-2.5 h-2.5" /> : <AlertTriangle className="w-2.5 h-2.5" />}
-                    <span>{isCompliant ? 'PASS' : 'DEFECT'}</span>
-                  </div>
+                  {/* Metadata Details */}
+                  <div className="p-4 flex flex-col justify-between flex-1 space-y-3">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--brand)]">
+                        {sample.category}
+                      </span>
+                      <h4 className="font-semibold text-sm text-[var(--ink)] group-hover:text-[var(--brand)] transition-colors leading-snug line-clamp-1">
+                        {sample.name}
+                      </h4>
+                      <p className="text-[11px] text-[var(--ink-soft)] line-clamp-2 leading-relaxed">
+                        {sample.scenarioDescription}
+                      </p>
+                    </div>
 
-                  {/* Net Quantity & MRP Ribbon */}
-                  <div className="absolute bottom-2.5 left-3 text-[10px] font-mono font-semibold text-white/95 bg-black/75 px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/10">
-                    {sample.declarations.netQuantityValue} {sample.declarations.netQuantityUnit} &bull; ₹{sample.declarations.mrpValue}
+                    <div className="pt-2 border-t border-[var(--hairline)] flex items-center justify-between text-xs">
+                      <span className="text-[10px] text-[var(--ink-soft)] font-mono uppercase">
+                        {sample.tags[0]}
+                      </span>
+                      <span className="text-xs font-semibold text-[var(--brand)] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                        Audit &rarr;
+                      </span>
+                    </div>
                   </div>
-                </div>
-
-                {/* Metadata Details */}
-                <div className="p-4 flex flex-col justify-between flex-1 space-y-3">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--brand)]">
-                      {sample.category}
-                    </span>
-                    <h4 className="font-semibold text-sm text-[var(--ink)] group-hover:text-[var(--brand)] transition-colors leading-snug line-clamp-1">
-                      {sample.name}
-                    </h4>
-                    <p className="text-[11px] text-[var(--ink-soft)] line-clamp-2 leading-relaxed">
-                      {sample.scenarioDescription}
-                    </p>
-                  </div>
-
-                  <div className="pt-2 border-t border-[var(--hairline)] flex items-center justify-between text-xs">
-                    <span className="text-[10px] text-[var(--ink-soft)] font-mono uppercase">
-                      {sample.tags[0]}
-                    </span>
-                    <span className="text-xs font-semibold text-[var(--brand)] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                      Audit &rarr;
-                    </span>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
