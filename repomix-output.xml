@@ -5455,167 +5455,6 @@ export function detectLabelTampering(
 }
 </file>
 
-<file path="src/styles/geist.css">
-/* ===================================================================
-   GEIST FONT FAMILY DEFINITIONS (Vercel & Basement Studio)
-   =================================================================== */
-
-/* Geist Sans Variable / Static Weights */
-@font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-SemiBold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Sans';
-  src: url('/fonts/geist/geist-sans/Geist-Black.woff2') format('woff2');
-  font-weight: 800 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Geist Mono */
-@font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/geist/geist-mono/GeistMono-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/geist/geist-mono/GeistMono-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/geist/geist-mono/GeistMono-SemiBold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/geist/geist-mono/GeistMono-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Geist Pixel Variations */
-@font-face {
-  font-family: 'Geist Pixel Square';
-  src: url('/fonts/geist/geist-pixel/GeistPixel-Square.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Pixel Grid';
-  src: url('/fonts/geist/geist-pixel/GeistPixel-Grid.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Pixel Circle';
-  src: url('/fonts/geist/geist-pixel/GeistPixel-Circle.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Pixel Triangle';
-  src: url('/fonts/geist/geist-pixel/GeistPixel-Triangle.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Geist Pixel Line';
-  src: url('/fonts/geist/geist-pixel/GeistPixel-Line.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-:root {
-  --font-geist-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-geist-pixel-square: 'Geist Pixel Square', monospace;
-  --font-geist-pixel-grid: 'Geist Pixel Grid', monospace;
-  --font-geist-pixel-circle: 'Geist Pixel Circle', monospace;
-  --font-geist-pixel-triangle: 'Geist Pixel Triangle', monospace;
-  --font-geist-pixel-line: 'Geist Pixel Line', monospace;
-
-  font-family: var(--font-geist-sans);
-}
-
-.font-sans {
-  font-family: var(--font-geist-sans);
-}
-
-.font-mono {
-  font-family: var(--font-geist-mono);
-}
-
-.font-pixel-square {
-  font-family: var(--font-geist-pixel-square);
-}
-
-.font-pixel-grid {
-  font-family: var(--font-geist-pixel-grid);
-}
-
-.font-pixel-circle {
-  font-family: var(--font-geist-pixel-circle);
-}
-
-.font-pixel-triangle {
-  font-family: var(--font-geist-pixel-triangle);
-}
-
-.font-pixel-line {
-  font-family: var(--font-geist-pixel-line);
-}
-</file>
-
 <file path="src/types/geist.d.ts">
 declare module 'geist/font/sans' {
   export const GeistSans: {
@@ -9370,6 +9209,127 @@ export function calculatePDP(input: PDPInput): PrincipalDisplayPanelCalculation 
     isNumeralHeightCompliant,
     ruleCitation: `Rule 7 Table 1: Minimum numeral height ${requiredMinNumeralHeightMm} mm and letter height ${requiredMinLetterHeightMm} mm required for net qty ${netQtyEquivalentGramsOrMl} g/ml.`
   };
+}
+</file>
+
+<file path="src/styles/geist.css">
+/* ===================================================================
+   GEIST FONT FAMILY DEFINITIONS (Vercel & Basement Studio)
+   =================================================================== */
+
+/* Geist Sans Variable (Weights 100-900) */
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/geist/geist-sans/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/fonts/geist/geist-sans/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Geist Mono Variable (Weights 100-900) */
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist/geist-mono/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GeistMono';
+  src: url('/fonts/geist/geist-mono/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Geist Pixel Variations */
+@font-face {
+  font-family: 'Geist Pixel Square';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Square.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Pixel Grid';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Grid.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Pixel Circle';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Circle.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Pixel Triangle';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Triangle.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Pixel Line';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Line.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-geist-sans: 'Geist', 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-geist-mono: 'Geist Mono', 'GeistMono', ui-monospace, monospace;
+  --font-geist-pixel-square: 'Geist Pixel Square', monospace;
+  --font-geist-pixel-grid: 'Geist Pixel Grid', monospace;
+  --font-geist-pixel-circle: 'Geist Pixel Circle', monospace;
+  --font-geist-pixel-triangle: 'Geist Pixel Triangle', monospace;
+  --font-geist-pixel-line: 'Geist Pixel Line', monospace;
+
+  font-family: var(--font-geist-sans);
+}
+
+.font-sans {
+  font-family: var(--font-geist-sans) !important;
+}
+
+.font-mono {
+  font-family: var(--font-geist-mono) !important;
+}
+
+.font-pixel-square, .font-pixel {
+  font-family: var(--font-geist-pixel-square) !important;
+}
+
+.font-pixel-grid {
+  font-family: var(--font-geist-pixel-grid) !important;
+}
+
+.font-pixel-circle {
+  font-family: var(--font-geist-pixel-circle) !important;
+}
+
+.font-pixel-triangle {
+  font-family: var(--font-geist-pixel-triangle) !important;
+}
+
+.font-pixel-line {
+  font-family: var(--font-geist-pixel-line) !important;
 }
 </file>
 
@@ -13582,28 +13542,6 @@ export const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
 };
 </file>
 
-<file path="index.html">
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563c9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M4.8 5.6A9 9 0 0 0 4.8 18.4'/><path d='M19.2 5.6a9 9 0 0 1 0 12.8'/></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Baseline MetrologyGuard | Your Friendly Packaging Compliance Sidekick</title>
-    <meta name="description" content="Scan it. Score it. Ship it compliant. The playful way to nail Legal Metrology packaging rules." />
-
-    <!-- Google Fonts: Onest, Syne, Fredoka, Plus Jakarta Sans, JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Onest:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Syne:wght@600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-</file>
-
 <file path="README.md">
 # MetrologyGuard AI 
 ### Legal Metrology (Packaged Commodities) Rules, 2011 Compliance & Vision Studio
@@ -13739,90 +13677,26 @@ export default defineConfig({
 });
 </file>
 
-<file path="tailwind.config.js">
-/** @type {import('tailwindcss').Config} */
-export default {
-   darkMode: 'class',
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
-        brand: {
-          DEFAULT: 'var(--brand)',
-          deep: 'var(--brand-deep)',
-          light: 'var(--brand-light)',
-        },
-        accent: {
-          teal: 'var(--accent-teal)',
-        },
-        surface: {
-          DEFAULT: 'var(--surface)',
-          card: 'var(--surface-card)',
-        },
-        ink: {
-          DEFAULT: 'var(--ink)',
-          soft: 'var(--ink-soft)',
-        },
-        ghost: 'var(--ghost)',
-        hairline: 'var(--hairline)',
-        'on-brand': 'var(--on-brand)',
-        coral: { DEFAULT: 'var(--coral)', deep: 'var(--coral-deep)' },
-        lime: { DEFAULT: 'var(--lime)', deep: 'var(--lime-deep)' },
-        sunny: { DEFAULT: 'var(--sunny)', deep: 'var(--sunny-deep)' },
-        sky: { DEFAULT: 'var(--sky)', deep: 'var(--sky-deep)' },
-        bubble: { pink: 'var(--bubble-pink)' },
-      },
-      fontFamily: {
-        sans: ['"Geist Sans"', 'Onest', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['"Geist Mono"', '"JetBrains Mono"', 'monospace'],
-        pixel: ['"Geist Pixel Square"', 'monospace'],
-        display: ['"Geist Sans"', 'Fredoka', 'Syne', 'sans-serif'],
-      },
-      borderRadius: {
-        card: 'var(--radius-card)',
-        'card-lg': 'var(--radius-card-lg)',
-        pill: 'var(--radius-pill)',
-        xl: '0.75rem',
-      },
-      keyframes: {
-        'word-slide-up': {
-          '0%': { transform: 'translateY(115%)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' }
-        },
-        'curtain-exit': {
-          '0%': { transform: 'translateY(0)' },
-          '100%': { transform: 'translateY(-105%)' }
-        },
-        'progress-fill': {
-          '0%': { transform: 'scaleX(0)' },
-          '100%': { transform: 'scaleX(1)' }
-        },
-        'bounce-in': {
-          '0%': { transform: 'scale(0.3)', opacity: '0' },
-          '60%': { transform: 'scale(1.08)', opacity: '1' },
-          '100%': { transform: 'scale(1)' }
-        },
-        'pop-spin': {
-          '0%': { transform: 'rotate(0deg) scale(0.8)', opacity: '0' },
-          '100%': { transform: 'rotate(360deg) scale(1)', opacity: '1' }
-        }
-      },
-      animation: {
-        'word-slide': 'word-slide-up 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-        'curtain-slide': 'curtain-exit 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards',
-        'progress': 'progress-fill 1.28s cubic-bezier(0.65, 0, 0.35, 1) forwards',
-        'bounce-in': 'bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-        'pop-spin': 'pop-spin 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
-      }
-    },
-  },
-  plugins: [],
-}
+<file path="index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563c9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M4.8 5.6A9 9 0 0 0 4.8 18.4'/><path d='M19.2 5.6a9 9 0 0 1 0 12.8'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Baseline MetrologyGuard | Your Friendly Packaging Compliance Sidekick</title>
+    <meta name="description" content="Scan it. Score it. Ship it compliant. The playful way to nail Legal Metrology packaging rules." />
+
+    <!-- Google Fonts: Geist, Geist Mono, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
 </file>
 
 <file path="src/components/Footer/BaselineFooter.tsx">
@@ -14010,6 +13884,92 @@ export const BaselineFooter: React.FC<{
     </footer>
   );
 };
+</file>
+
+<file path="tailwind.config.js">
+/** @type {import('tailwindcss').Config} */
+export default {
+   darkMode: 'class',
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        brand: {
+          DEFAULT: 'var(--brand)',
+          deep: 'var(--brand-deep)',
+          light: 'var(--brand-light)',
+        },
+        accent: {
+          teal: 'var(--accent-teal)',
+        },
+        surface: {
+          DEFAULT: 'var(--surface)',
+          card: 'var(--surface-card)',
+        },
+        ink: {
+          DEFAULT: 'var(--ink)',
+          soft: 'var(--ink-soft)',
+        },
+        ghost: 'var(--ghost)',
+        hairline: 'var(--hairline)',
+        'on-brand': 'var(--on-brand)',
+        coral: { DEFAULT: 'var(--coral)', deep: 'var(--coral-deep)' },
+        lime: { DEFAULT: 'var(--lime)', deep: 'var(--lime-deep)' },
+        sunny: { DEFAULT: 'var(--sunny)', deep: 'var(--sunny-deep)' },
+        sky: { DEFAULT: 'var(--sky)', deep: 'var(--sky-deep)' },
+        bubble: { pink: 'var(--bubble-pink)' },
+      },
+      fontFamily: {
+        sans: ['Geist', '"Geist Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"Geist Mono"', 'monospace'],
+        pixel: ['"Geist Pixel Square"', 'monospace'],
+        display: ['Geist', '"Geist Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+      borderRadius: {
+        card: 'var(--radius-card)',
+        'card-lg': 'var(--radius-card-lg)',
+        pill: 'var(--radius-pill)',
+        xl: '0.75rem',
+      },
+      keyframes: {
+        'word-slide-up': {
+          '0%': { transform: 'translateY(115%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' }
+        },
+        'curtain-exit': {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-105%)' }
+        },
+        'progress-fill': {
+          '0%': { transform: 'scaleX(0)' },
+          '100%': { transform: 'scaleX(1)' }
+        },
+        'bounce-in': {
+          '0%': { transform: 'scale(0.3)', opacity: '0' },
+          '60%': { transform: 'scale(1.08)', opacity: '1' },
+          '100%': { transform: 'scale(1)' }
+        },
+        'pop-spin': {
+          '0%': { transform: 'rotate(0deg) scale(0.8)', opacity: '0' },
+          '100%': { transform: 'rotate(360deg) scale(1)', opacity: '1' }
+        }
+      },
+      animation: {
+        'word-slide': 'word-slide-up 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'curtain-slide': 'curtain-exit 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards',
+        'progress': 'progress-fill 1.28s cubic-bezier(0.65, 0, 0.35, 1) forwards',
+        'bounce-in': 'bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        'pop-spin': 'pop-spin 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+      }
+    },
+  },
+  plugins: [],
+}
 </file>
 
 <file path="src/components/Hero/BaselineHero.tsx">
@@ -14754,6 +14714,51 @@ export const BaselineTrustSection: React.FC<{
 };
 </file>
 
+<file path="package.json">
+{
+  "name": "legal-metrology-compliance-system",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@types/three": "^0.185.4",
+    "canvas-confetti": "^1.9.4",
+    "clsx": "^2.1.1",
+    "geist": "^1.7.2",
+    "gsap": "^3.15.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
+    "lenis": "^1.3.26",
+    "lucide-react": "^0.475.0",
+    "motion": "^13.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^3.0.1",
+    "tesseract.js": "^5.1.1",
+    "three": "^0.185.1",
+    "vgpu": "^0.3.1"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^22.13.4",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.2",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.12",
+    "typescript": "~5.7.2",
+    "vite": "^6.1.0"
+  }
+}
+</file>
+
 <file path="src/styles/index.css">
 @import './geist.css';
 @tailwind base;
@@ -14845,15 +14850,20 @@ body {
   min-height: 100vh;
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Onest', system-ui, -apple-system, sans-serif;
+  font-family: 'Geist', 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
   cursor: default;
 }
 
-.font-display {
-  font-family: 'Fredoka', 'Syne', 'Onest', system-ui, sans-serif;
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: 'Geist', 'Geist Sans', sans-serif !important;
+  letter-spacing: -0.025em;
+}
+
+code, kbd, samp, pre, .font-mono {
+  font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 :focus-visible {
@@ -15265,51 +15275,6 @@ button {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-  }
-}
-</file>
-
-<file path="package.json">
-{
-  "name": "legal-metrology-compliance-system",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@types/three": "^0.185.4",
-    "canvas-confetti": "^1.9.4",
-    "clsx": "^2.1.1",
-    "geist": "^1.7.2",
-    "gsap": "^3.15.0",
-    "jspdf": "^2.5.2",
-    "jspdf-autotable": "^3.8.4",
-    "lenis": "^1.3.26",
-    "lucide-react": "^0.475.0",
-    "motion": "^13.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "tailwind-merge": "^3.0.1",
-    "tesseract.js": "^5.1.1",
-    "three": "^0.185.1",
-    "vgpu": "^0.3.1"
-  },
-  "devDependencies": {
-    "@types/canvas-confetti": "^1.9.0",
-    "@types/node": "^22.13.4",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
-    "@vitejs/plugin-react": "^4.3.4",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.2",
-    "tailwindcss": "^3.4.17",
-    "tsx": "^4.23.12",
-    "typescript": "~5.7.2",
-    "vite": "^6.1.0"
   }
 }
 </file>
