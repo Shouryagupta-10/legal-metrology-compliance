@@ -8,6 +8,7 @@ import React, {
   type UIEvent
 } from 'react';
 import { motion, useInView } from 'motion/react';
+import './AnimatedList.css';
 
 interface AnimatedItemProps {
   children: ReactNode;
@@ -29,7 +30,7 @@ const AnimatedItem: React.FC<AnimatedItemProps> = ({ children, delay = 0, index,
       initial={{ scale: 0.7, opacity: 0 }}
       animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.7, opacity: 0 }}
       transition={{ duration: 0.2, delay }}
-      className="mb-4 cursor-pointer"
+      style={{ marginBottom: '1rem', cursor: 'pointer' }}
     >
       {children}
     </motion.div>
@@ -47,7 +48,7 @@ export interface AnimatedListProps {
   initialSelectedIndex?: number;
 }
 
-export const AnimatedList: React.FC<AnimatedListProps> = ({
+const AnimatedList: React.FC<AnimatedListProps> = ({
   items = [
     'Item 1',
     'Item 2',
@@ -93,12 +94,12 @@ export const AnimatedList: React.FC<AnimatedListProps> = ({
     [onItemSelect]
   );
 
-  const handleScroll = (e: UIEvent<HTMLDivElement>) => {
+  const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target as HTMLDivElement;
     setTopGradientOpacity(Math.min(scrollTop / 50, 1));
     const bottomDistance = scrollHeight - (scrollTop + clientHeight);
     setBottomGradientOpacity(scrollHeight <= clientHeight ? 0 : Math.min(bottomDistance / 50, 1));
-  };
+  }, []);
 
   useEffect(() => {
     if (!enableArrowNavigation) return;
@@ -148,57 +149,26 @@ export const AnimatedList: React.FC<AnimatedListProps> = ({
   }, [selectedIndex, keyboardNav]);
 
   return (
-    <div className={`relative w-full max-w-[500px] ${className}`}>
-      <div
-        ref={listRef}
-        className={`max-h-[400px] overflow-y-auto p-4 ${
-          displayScrollbar
-            ? '[&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-track]:bg-[#120F17] [&::-webkit-scrollbar-thumb]:bg-[#222] [&::-webkit-scrollbar-thumb]:rounded-[4px]'
-            : 'scrollbar-hide'
-        }`}
-        onScroll={handleScroll}
-        style={{
-          scrollbarWidth: displayScrollbar ? 'thin' : 'none',
-          scrollbarColor: '#222 #120F17'
-        }}
-      >
+    <div className={`scroll-list-container ${className}`}>
+      <div ref={listRef} className={`scroll-list ${!displayScrollbar ? 'no-scrollbar' : ''}`} onScroll={handleScroll}>
         {items.map((item, index) => (
           <AnimatedItem
             key={index}
-            delay={0.05}
+            delay={0.1}
             index={index}
             onMouseEnter={() => handleItemMouseEnter(index)}
             onClick={() => handleItemClick(item, index)}
           >
-            <div
-              className={`p-4 rounded-xl border transition-all ${
-                selectedIndex === index
-                  ? 'bg-purple-950/70 border-purple-500/60 shadow-lg shadow-purple-500/10'
-                  : 'bg-[#16131d]/80 hover:bg-[#1f1b29] border-white/10'
-              } ${itemClassName}`}
-            >
-              <p className="text-white text-sm font-medium m-0 flex items-center justify-between">
-                <span>{item}</span>
-                {selectedIndex === index && (
-                  <span className="text-[10px] font-mono text-purple-400 bg-purple-950 px-2 py-0.5 rounded-full border border-purple-500/40">
-                    Selected
-                  </span>
-                )}
-              </p>
+            <div className={`item ${selectedIndex === index ? 'selected' : ''} ${itemClassName}`}>
+              <p className="item-text">{item}</p>
             </div>
           </AnimatedItem>
         ))}
       </div>
       {showGradients && (
         <>
-          <div
-            className="absolute top-0 left-0 right-0 h-[50px] bg-gradient-to-b from-[#120F17] to-transparent pointer-events-none transition-opacity duration-300 ease"
-            style={{ opacity: topGradientOpacity }}
-          />
-          <div
-            className="absolute bottom-0 left-0 right-0 h-[100px] bg-gradient-to-t from-[#120F17] to-transparent pointer-events-none transition-opacity duration-300 ease"
-            style={{ opacity: bottomGradientOpacity }}
-          />
+          <div className="top-gradient" style={{ opacity: topGradientOpacity }} />
+          <div className="bottom-gradient" style={{ opacity: bottomGradientOpacity }} />
         </>
       )}
     </div>
