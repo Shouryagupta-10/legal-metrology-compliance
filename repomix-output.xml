@@ -96,6 +96,8 @@ src/
     ThreeD/
       HolographicSeal3D.tsx
       Packaging3DLab.tsx
+    AccordionGallery.css
+    AccordionGallery.tsx
     AeroShards.tsx
     AnimatedList.css
     AnimatedList.tsx
@@ -116,6 +118,8 @@ src/
     index.css
   types/
     compliance.ts
+  AccordionGallery.css
+  AccordionGallery.tsx
   AeroShards.tsx
   AnimatedList.css
   AnimatedList.tsx
@@ -1860,6 +1864,523 @@ export const Packaging3DLab: React.FC<Packaging3DLabProps> = ({ currentSample, r
     </div>
   );
 };
+</file>
+
+<file path="src/components/AccordionGallery.css">
+.accordion-gallery {
+  --ag-accent: #ffffff;
+  --ag-overlay: #060010;
+  --ag-text: #ffffff;
+  --ag-gap: 10px;
+  --ag-radius: 16px;
+  --ag-media-size: 320px;
+
+  display: flex;
+  flex-direction: row;
+  gap: var(--ag-gap);
+  width: 100%;
+  max-width: 100%;
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+}
+
+.accordion-gallery--vertical {
+  flex-direction: column;
+}
+
+.ag-panel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--ag-radius);
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  outline: none;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  background: #0a0713;
+  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.8);
+  will-change: flex-grow, transform;
+  -webkit-tap-highlight-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.3s ease;
+}
+
+.ag-panel:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.ag-panel--active {
+  border-color: rgba(168, 85, 247, 0.8);
+  box-shadow: 0 15px 40px -12px rgba(168, 85, 247, 0.25);
+}
+
+.ag-panel:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--ag-accent),
+    0 10px 30px -18px rgba(0, 0, 0, 0.8);
+}
+
+.ag-panel__frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ag-panel__media {
+  --ag-gray: 1;
+  --ag-dim: 0.35;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--ag-media-size);
+  height: 100%;
+  filter: grayscale(var(--ag-gray));
+  will-change: transform, filter;
+}
+
+.accordion-gallery--vertical .ag-panel__media {
+  width: 100%;
+  height: var(--ag-media-size);
+}
+
+.ag-panel__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.ag-panel__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--ag-overlay) 85%, transparent) 100%),
+    color-mix(in srgb, var(--ag-overlay) calc(var(--ag-dim, 0.35) * 100%), transparent);
+}
+
+.ag-panel__label {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ag-panel__info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ag-panel__bar {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 28px;
+  border-radius: 4px;
+  background: var(--ag-accent);
+  opacity: 0;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--ag-accent) 60%, transparent);
+}
+
+.ag-panel__text {
+  color: var(--ag-text);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.25vw, 1.25rem);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 640px) {
+  .accordion-gallery {
+    flex-direction: column;
+    perspective: none;
+    height: auto !important;
+  }
+  .ag-panel {
+    min-height: 96px;
+    transform: none !important;
+  }
+  .accordion-gallery .ag-panel__media {
+    width: 100%;
+    height: var(--ag-media-size);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ag-panel,
+  .ag-panel__media {
+    will-change: auto;
+  }
+}
+</file>
+
+<file path="src/components/AccordionGallery.tsx">
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { gsap } from 'gsap';
+import './AccordionGallery.css';
+
+export interface AccordionItem {
+  image: string;
+  label: string;
+  link?: string;
+  alt?: string;
+  badge?: string;
+  statusBadge?: string;
+  statusColor?: string;
+  category?: string;
+  price?: string;
+  sample?: any;
+}
+
+export interface AccordionGalleryProps {
+  items?: AccordionItem[];
+  defaultIndex?: number;
+  accentColor?: string;
+  overlayColor?: string;
+  textColor?: string;
+  height?: number;
+  gap?: number;
+  radius?: number;
+  expandRatio?: number;
+  orientation?: 'horizontal' | 'vertical';
+  duration?: number;
+  ease?: string;
+  parallax?: number;
+  tilt?: number;
+  stagger?: number;
+  trigger?: 'hover' | 'click';
+  showLabels?: boolean;
+  grayscale?: boolean;
+  className?: string;
+  onItemSelect?: (item: AccordionItem, index: number) => void;
+}
+
+const DEFAULT_ITEMS: AccordionItem[] = [
+  { image: 'https://picsum.photos/id/1015/900/1200', label: 'Canyon', link: '#' },
+  { image: 'https://picsum.photos/id/1018/900/1200', label: 'Ridgeline', link: '#' },
+  { image: 'https://picsum.photos/id/1039/900/1200', label: 'Falls', link: '#' },
+  { image: 'https://picsum.photos/id/1043/900/1200', label: 'Harbour', link: '#' },
+  { image: 'https://picsum.photos/id/1044/900/1200', label: 'Skyline', link: '#' }
+];
+
+export const AccordionGallery: React.FC<AccordionGalleryProps> = ({
+  items = DEFAULT_ITEMS,
+  defaultIndex = 2,
+  accentColor = '#ffffff',
+  overlayColor = '#060010',
+  textColor = '#ffffff',
+  height = 460,
+  gap = 10,
+  radius = 16,
+  expandRatio = 0.52,
+  orientation = 'horizontal',
+  duration = 0.6,
+  ease = 'power3.out',
+  parallax = 0.5,
+  tilt = 8,
+  stagger = 0.06,
+  trigger = 'hover',
+  showLabels = true,
+  grayscale = true,
+  className = '',
+  onItemSelect
+}) => {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const panelRefs = useRef<(HTMLElement | null)[]>([]);
+  const mediaRefs = useRef<(HTMLElement | null)[]>([]);
+  const barRefs = useRef<(HTMLElement | null)[]>([]);
+  const textRefs = useRef<(HTMLElement | null)[]>([]);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const firstRunRef = useRef(true);
+  const mediaSizeRef = useRef(320);
+
+  const vertical = orientation === 'vertical';
+  const count = items.length;
+  const [active, setActive] = useState(Math.min(Math.max(defaultIndex, 0), count - 1));
+
+  const prefersReduced =
+    typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false;
+
+  const applyLayout = useCallback(
+    (animate: boolean) => {
+      const panels = panelRefs.current;
+      if (!panels.length) return;
+
+      const r = Math.min(Math.max(expandRatio, 0.2), 0.9);
+      const grow = count > 1 ? (r * (count - 1)) / (1 - r) : 1;
+      const mediaSize = mediaSizeRef.current;
+
+      tlRef.current?.kill();
+      const dur = animate && !prefersReduced ? duration : 0;
+      const tl = gsap.timeline();
+
+      panels.forEach((panel, i) => {
+        if (!panel) return;
+        const isActive = i === active;
+        const media = mediaRefs.current[i];
+        const bar = barRefs.current[i];
+        const text = textRefs.current[i];
+
+        const rot = isActive ? 0 : i < active ? tilt : -tilt;
+        const rotProp = vertical ? { rotateX: -rot } : { rotateY: rot };
+
+        tl.to(panel, { flexGrow: isActive ? grow : 1, ...rotProp, duration: dur, ease }, 0);
+
+        if (media) {
+          const drift = Math.max(-1.5, Math.min(1.5, active - i));
+          const shift = drift * parallax * mediaSize * 0.06;
+          const gray = grayscale ? (isActive ? 0 : 1) : 0;
+          tl.to(
+            media,
+            {
+              xPercent: -50,
+              yPercent: -50,
+              x: vertical ? 0 : isActive ? 0 : shift,
+              y: vertical ? (isActive ? 0 : shift) : 0,
+              '--ag-gray': gray,
+              '--ag-dim': isActive ? 0 : 0.35,
+              duration: dur,
+              ease
+            },
+            0
+          );
+        }
+
+        if (showLabels && bar && text) {
+          if (isActive) {
+            tl.to([bar, text], { opacity: 1, x: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0);
+          } else {
+            tl.to([bar, text], { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0);
+          }
+        }
+      });
+
+      tlRef.current = tl;
+    },
+    [
+      active,
+      count,
+      expandRatio,
+      duration,
+      ease,
+      vertical,
+      tilt,
+      parallax,
+      grayscale,
+      showLabels,
+      stagger,
+      prefersReduced
+    ]
+  );
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      const total = vertical ? rect.height : rect.width;
+      const usable = Math.max(total - gap * (count - 1), 120);
+      const size = Math.max(140, usable * Math.min(Math.max(expandRatio, 0.2), 0.9) * 1.22);
+      mediaSizeRef.current = size;
+      el.style.setProperty('--ag-media-size', `${size}px`);
+      applyLayout(!firstRunRef.current);
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [applyLayout, gap, count, expandRatio, vertical]);
+
+  useEffect(() => {
+    applyLayout(!firstRunRef.current);
+    firstRunRef.current = false;
+  }, [applyLayout]);
+
+  useEffect(
+    () => () => {
+      tlRef.current?.kill();
+    },
+    []
+  );
+
+  const handleEnter = (i: number) => {
+    if (trigger === 'hover') setActive(i);
+  };
+
+  const handleClick = (i: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    setActive(i);
+    if (onItemSelect && items[i]) {
+      onItemSelect(items[i], i);
+    }
+  };
+
+  const handleKeyDown = (i: number, e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = (i + 1) % count;
+      setActive(next);
+      if (onItemSelect && items[next]) {
+        onItemSelect(items[next], next);
+      }
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = (i - 1 + count) % count;
+      setActive(prev);
+      if (onItemSelect && items[prev]) {
+        onItemSelect(items[prev], prev);
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (onItemSelect && items[i]) {
+        onItemSelect(items[i], i);
+      }
+    }
+  };
+
+  return (
+    <div
+      ref={rootRef}
+      className={`accordion-gallery${vertical ? ' accordion-gallery--vertical' : ''}${className ? ` ${className}` : ''}`}
+      style={
+        {
+          '--ag-accent': accentColor,
+          '--ag-overlay': overlayColor,
+          '--ag-text': textColor,
+          '--ag-gap': `${gap}px`,
+          '--ag-radius': `${radius}px`,
+          height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`
+        } as React.CSSProperties
+      }
+      role="list"
+      aria-label="Image accordion gallery"
+    >
+      {items.map((item, i) => {
+        const isActive = i === active;
+        const Tag = item.link ? 'a' : 'div';
+        return (
+          <Tag
+            key={i}
+            ref={el => {
+              panelRefs.current[i] = el;
+            }}
+            className={`ag-panel${isActive ? ' ag-panel--active' : ''}`}
+            style={{ borderRadius: `${radius}px` }}
+            href={item.link || undefined}
+            onClick={e => handleClick(i, e)}
+            onMouseEnter={() => handleEnter(i)}
+            onFocus={() => setActive(i)}
+            onKeyDown={e => handleKeyDown(i, e)}
+            role="listitem"
+            tabIndex={0}
+            aria-current={isActive ? 'true' : undefined}
+            aria-label={item.label}
+          >
+            {/* Top Badges for Commercial Benchmarks */}
+            <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between gap-1 pointer-events-none">
+              <span className="text-[10px] font-mono font-bold bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-md text-white/90 border border-white/15">
+                SPECIMEN // 0{i + 1}
+              </span>
+              {item.statusBadge && (
+                <span
+                  className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded uppercase tracking-wider backdrop-blur-md border ${
+                    item.statusBadge.includes('PASS') || item.statusBadge.includes('COMPLIANT')
+                      ? 'bg-emerald-950/85 text-emerald-400 border-emerald-500/40'
+                      : item.statusBadge.includes('TAMPER')
+                      ? 'bg-fuchsia-950/85 text-fuchsia-300 border-fuchsia-500/40'
+                      : 'bg-rose-950/85 text-rose-300 border-rose-500/40'
+                  }`}
+                >
+                  {item.statusBadge}
+                </span>
+              )}
+            </div>
+
+            {/* Price Tag pill */}
+            {item.price && (
+              <div className="absolute top-11 left-3 z-20 pointer-events-none">
+                <span className="text-[10px] font-mono font-bold bg-slate-900/85 backdrop-blur-md px-2 py-0.5 rounded text-sky-300 border border-slate-700">
+                  {item.price}
+                </span>
+              </div>
+            )}
+
+            <span className="ag-panel__frame">
+              <span
+                className="ag-panel__media"
+                ref={el => {
+                  mediaRefs.current[i] = el;
+                }}
+              >
+                <img src={item.image} alt={item.alt || item.label || ''} draggable="false" />
+              </span>
+              <span className="ag-panel__overlay" aria-hidden="true" />
+            </span>
+
+            {showLabels && (
+              <span className="ag-panel__label" aria-hidden="true">
+                <div className="ag-panel__info">
+                  <span
+                    className="ag-panel__bar"
+                    ref={el => {
+                      barRefs.current[i] = el;
+                    }}
+                  />
+                  <div className="min-w-0">
+                    <span
+                      className="ag-panel__text block truncate"
+                      ref={el => {
+                        textRefs.current[i] = el;
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                    {item.category && (
+                      <span className="text-[10px] font-mono text-purple-300 uppercase tracking-wider block opacity-90 mt-0.5">
+                        {item.category}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {isActive && (
+                  <span className="bg-purple-600/90 text-white text-[10px] font-bold font-mono px-2.5 py-1 rounded-full border border-purple-400/40 shrink-0 shadow-md">
+                    Inspect &rarr;
+                  </span>
+                )}
+              </span>
+            )}
+          </Tag>
+        );
+      })}
+    </div>
+  );
+};
+
+export default AccordionGallery;
 </file>
 
 <file path="src/components/AeroShards.tsx">
@@ -4776,6 +5297,15 @@ export function detectLabelTampering(
       : 'AUTHENTIC PACKAGING: No evidence of sticker overlays, price alterations, or typographic manipulation.'
   };
 }
+</file>
+
+<file path="src/AccordionGallery.css">
+@import './components/AccordionGallery.css';
+</file>
+
+<file path="src/AccordionGallery.tsx">
+export { default } from './components/AccordionGallery';
+export * from './components/AccordionGallery';
 </file>
 
 <file path="src/AeroShards.tsx">
@@ -9548,255 +10078,6 @@ export const FullscreenMenu: React.FC<FullscreenMenuProps> = ({
 };
 </file>
 
-<file path="src/components/Scanner/MultiImageUploader.tsx">
-import React, { useRef, useState } from 'react';
-import { Upload, Camera, ShoppingBag, Sparkles, Image as ImageIcon, CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, Layers } from 'lucide-react';
-import { SampleProduct } from '../../types/compliance';
-import { SAMPLE_PRODUCTS } from '../../services/sampleData';
-import { sounds } from '../../services/soundEffects';
-
-interface MultiImageUploaderProps {
-  onImageSelected: (imageDataUrl: string, fileName: string) => void;
-  onSelectSample: (sample: SampleProduct) => void;
-  onOpenLiveCamera: () => void;
-  onOpenEcommerceModal: () => void;
-  isScanning: boolean;
-  scanProgress: number;
-  scanStatusText: string;
-  activeSampleId?: string;
-}
-
-export const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
-  onImageSelected,
-  onSelectSample,
-  onOpenLiveCamera,
-  onOpenEcommerceModal,
-  isScanning,
-  scanProgress,
-  scanStatusText,
-  activeSampleId
-}) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'compliant' | 'violations'>('all');
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        sounds.playSuccess();
-        onImageSelected(reader.result, file.name);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const filteredSamples = SAMPLE_PRODUCTS.filter(s => {
-    if (selectedFilter === 'compliant') return s.expectedCompliance === 'COMPLIANT';
-    if (selectedFilter === 'violations') return s.expectedCompliance === 'NON_COMPLIANT';
-    return true;
-  });
-
-  return (
-    <div className="space-y-6">
-      {/* Top Action Ribbon / Dropzone */}
-      <div className="rounded-[1.5rem] border border-[var(--hairline)] bg-[var(--surface-card)] p-4 sm:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors duration-300">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-
-        {/* Scan Progress Overlay if active */}
-        {isScanning && (
-          <div className="absolute inset-0 bg-[#0a0a0a]/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 rounded-[1.5rem] text-white">
-            <div className="w-14 h-14 rounded-full bg-[#5790e6]/20 border-2 border-[#5790e6] border-t-transparent animate-spin mb-3 flex items-center justify-center shadow-lg">
-              <Sparkles className="w-6 h-6 text-[#5790e6] animate-pulse" />
-            </div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider font-mono mb-1">
-              Optical Vision OCR &bull; Rule 6 Evaluation
-            </h4>
-            <p className="text-xs text-sky-300 font-mono mb-3">{scanStatusText}</p>
-            <div className="w-64 h-1.5 bg-white/20 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#2563c9] to-[#5790e6] transition-all duration-300 rounded-full"
-                style={{ width: `${scanProgress}%` }}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Left Info */}
-        <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-full bg-[var(--surface)] border border-[var(--hairline)] flex items-center justify-center text-[var(--brand)] shrink-0 shadow-xs">
-            <Upload className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="baseline-eyebrow tone-dark text-[10px] mb-0.5">
-              <span className="eyebrow-dot" />
-              <span>Inspection Specimens</span>
-            </div>
-            <h3 className="text-sm font-semibold text-[var(--ink)] tracking-tight">
-              Select a Packaging Specimen or Upload Custom Artwork
-            </h3>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto">
-          <button
-            onClick={() => {
-              sounds.playClick();
-              fileInputRef.current?.click();
-            }}
-            className="flex-1 md:flex-initial px-4 py-2.5 rounded-full bg-[var(--brand)] hover:bg-[var(--brand-deep)] text-white text-xs font-semibold uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 btn-tactile transition-all"
-          >
-            <ImageIcon className="w-3.5 h-3.5" />
-            <span>Upload Artwork</span>
-          </button>
-
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onOpenLiveCamera();
-            }}
-            className="px-3.5 py-2.5 rounded-full bg-[var(--surface)] hover:bg-[var(--hairline)] text-[var(--ink)] border border-[var(--hairline)] text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 btn-tactile transition-all"
-          >
-            <Camera className="w-3.5 h-3.5 text-[var(--brand)]" />
-            <span className="hidden sm:inline">Camera</span>
-          </button>
-
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onOpenEcommerceModal();
-            }}
-            className="px-3.5 py-2.5 rounded-full bg-[var(--surface)] hover:bg-[var(--hairline)] text-[var(--ink)] border border-[var(--hairline)] text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 btn-tactile transition-all"
-          >
-            <ShoppingBag className="w-3.5 h-3.5 text-amber-500" />
-            <span className="hidden sm:inline">E-Commerce</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Specimen Cards Shelf Gallery */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-soft)] font-mono">
-              Commercial Benchmarks ({filteredSamples.length} SKUs)
-            </span>
-          </div>
-
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 bg-[var(--surface)] p-1 rounded-full border border-[var(--hairline)]">
-            {(['all', 'compliant', 'violations'] as const).map(f => (
-              <button
-                key={f}
-                onClick={() => {
-                  sounds.playClick();
-                  setSelectedFilter(f);
-                }}
-                className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all btn-tactile ${
-                  selectedFilter === f
-                    ? 'bg-[var(--ink)] text-[var(--background)] shadow-sm'
-                    : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
-                }`}
-              >
-                {f === 'all' ? 'All' : f === 'compliant' ? '100% Pass' : 'Defect Samples'}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Specimen Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {filteredSamples.map((sample, index) => {
-            const isCompliant = sample.expectedCompliance === 'COMPLIANT';
-            const isActive = activeSampleId === sample.id;
-
-            return (
-              <article
-                key={sample.id}
-                onClick={() => {
-                  sounds.playClick();
-                  onSelectSample(sample);
-                }}
-                className={`group cursor-pointer rounded-[1.5rem] border transition-all flex flex-col justify-between overflow-hidden relative select-none ${
-                  isActive
-                    ? 'border-[var(--brand)] bg-[var(--surface-card)] shadow-xl ring-2 ring-[var(--brand)]/30 scale-[1.01]'
-                    : 'border-[var(--hairline)] bg-[var(--surface-card)] hover:border-[var(--brand-light)] hover:shadow-md'
-                }`}
-              >
-                {/* Artwork Thumbnail with Gloss Overlay */}
-                <div className="relative w-full h-44 bg-[var(--brand-deep)] overflow-hidden border-b border-[var(--hairline)] flex items-center justify-center">
-                  <img
-                    src={sample.thumbnail}
-                    alt={sample.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none" />
-
-                  {/* Specimen Stamp */}
-                  <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[9px] font-mono font-bold text-white/90 border border-white/15">
-                    SPECIMEN // 0{index + 1}
-                  </div>
-
-                  {/* Status Stamp */}
-                  <div
-                    className={`absolute top-3 right-3 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 backdrop-blur-md uppercase tracking-wider ${
-                      isCompliant
-                        ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50'
-                        : 'bg-rose-950/90 text-rose-300 border border-rose-500/50 animate-pulse'
-                    }`}
-                  >
-                    {isCompliant ? <CheckCircle2 className="w-2.5 h-2.5" /> : <AlertTriangle className="w-2.5 h-2.5" />}
-                    <span>{isCompliant ? 'PASS' : 'DEFECT'}</span>
-                  </div>
-
-                  {/* Net Quantity & MRP Ribbon */}
-                  <div className="absolute bottom-2.5 left-3 text-[10px] font-mono font-semibold text-white/95 bg-black/75 px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/10">
-                    {sample.declarations.netQuantityValue} {sample.declarations.netQuantityUnit} &bull; ₹{sample.declarations.mrpValue}
-                  </div>
-                </div>
-
-                {/* Metadata Details */}
-                <div className="p-4 flex flex-col justify-between flex-1 space-y-3">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--brand)]">
-                      {sample.category}
-                    </span>
-                    <h4 className="font-semibold text-sm text-[var(--ink)] group-hover:text-[var(--brand)] transition-colors leading-snug line-clamp-1">
-                      {sample.name}
-                    </h4>
-                    <p className="text-[11px] text-[var(--ink-soft)] line-clamp-2 leading-relaxed">
-                      {sample.scenarioDescription}
-                    </p>
-                  </div>
-
-                  <div className="pt-2 border-t border-[var(--hairline)] flex items-center justify-between text-xs">
-                    <span className="text-[10px] text-[var(--ink-soft)] font-mono uppercase">
-                      {sample.tags[0]}
-                    </span>
-                    <span className="text-xs font-semibold text-[var(--brand)] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                      Audit &rarr;
-                    </span>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-};
-</file>
-
 <file path="src/components/Sections/BaselineTestimonialsSection.tsx">
 import React from 'react';
 import { Star } from 'lucide-react';
@@ -12619,6 +12900,339 @@ export const InteractiveStudioCanvas: React.FC<InteractiveStudioCanvasProps> = (
         <div className="flex items-center gap-2">
           <span>Press &apos;?&apos; for shortcuts</span>
         </div>
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/Scanner/MultiImageUploader.tsx">
+import React, { useRef, useState } from 'react';
+import { Upload, Camera, ShoppingBag, Sparkles, Image as ImageIcon, CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, Layers } from 'lucide-react';
+import { SampleProduct } from '../../types/compliance';
+import { SAMPLE_PRODUCTS } from '../../services/sampleData';
+import { sounds } from '../../services/soundEffects';
+import AccordionGallery from '../AccordionGallery';
+
+interface MultiImageUploaderProps {
+  onImageSelected: (imageDataUrl: string, fileName: string) => void;
+  onSelectSample: (sample: SampleProduct) => void;
+  onOpenLiveCamera: () => void;
+  onOpenEcommerceModal: () => void;
+  isScanning: boolean;
+  scanProgress: number;
+  scanStatusText: string;
+  activeSampleId?: string;
+}
+
+export const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
+  onImageSelected,
+  onSelectSample,
+  onOpenLiveCamera,
+  onOpenEcommerceModal,
+  isScanning,
+  scanProgress,
+  scanStatusText,
+  activeSampleId
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'compliant' | 'violations'>('all');
+  const [viewMode, setViewMode] = useState<'accordion' | 'grid'>('accordion');
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        sounds.playSuccess();
+        onImageSelected(reader.result, file.name);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const filteredSamples = SAMPLE_PRODUCTS.filter(s => {
+    if (selectedFilter === 'compliant') return s.expectedCompliance === 'COMPLIANT';
+    if (selectedFilter === 'violations') return s.expectedCompliance === 'NON_COMPLIANT';
+    return true;
+  });
+
+  return (
+    <div className="space-y-6">
+      {/* Top Action Ribbon / Dropzone */}
+      <div className="rounded-[1.5rem] border border-[var(--hairline)] bg-[var(--surface-card)] p-4 sm:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors duration-300">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+
+        {/* Scan Progress Overlay if active */}
+        {isScanning && (
+          <div className="absolute inset-0 bg-[#0a0a0a]/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 rounded-[1.5rem] text-white">
+            <div className="w-14 h-14 rounded-full bg-[#5790e6]/20 border-2 border-[#5790e6] border-t-transparent animate-spin mb-3 flex items-center justify-center shadow-lg">
+              <Sparkles className="w-6 h-6 text-[#5790e6] animate-pulse" />
+            </div>
+            <h4 className="text-sm font-semibold uppercase tracking-wider font-mono mb-1">
+              Optical Vision OCR &bull; Rule 6 Evaluation
+            </h4>
+            <p className="text-xs text-sky-300 font-mono mb-3">{scanStatusText}</p>
+            <div className="w-64 h-1.5 bg-white/20 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-[#2563c9] to-[#5790e6] transition-all duration-300 rounded-full"
+                style={{ width: `${scanProgress}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Left Info */}
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-full bg-[var(--surface)] border border-[var(--hairline)] flex items-center justify-center text-[var(--brand)] shrink-0 shadow-xs">
+            <Upload className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="baseline-eyebrow tone-dark text-[10px] mb-0.5">
+              <span className="eyebrow-dot" />
+              <span>Inspection Specimens</span>
+            </div>
+            <h3 className="text-sm font-semibold text-[var(--ink)] tracking-tight">
+              Select a Packaging Specimen or Upload Custom Artwork
+            </h3>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto">
+          <button
+            onClick={() => {
+              sounds.playClick();
+              fileInputRef.current?.click();
+            }}
+            className="flex-1 md:flex-initial px-4 py-2.5 rounded-full bg-[var(--brand)] hover:bg-[var(--brand-deep)] text-white text-xs font-semibold uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 btn-tactile transition-all"
+          >
+            <ImageIcon className="w-3.5 h-3.5" />
+            <span>Upload Artwork</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onOpenLiveCamera();
+            }}
+            className="px-3.5 py-2.5 rounded-full bg-[var(--surface)] hover:bg-[var(--hairline)] text-[var(--ink)] border border-[var(--hairline)] text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 btn-tactile transition-all"
+          >
+            <Camera className="w-3.5 h-3.5 text-[var(--brand)]" />
+            <span className="hidden sm:inline">Camera</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sounds.playClick();
+              onOpenEcommerceModal();
+            }}
+            className="px-3.5 py-2.5 rounded-full bg-[var(--surface)] hover:bg-[var(--hairline)] text-[var(--ink)] border border-[var(--hairline)] text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 btn-tactile transition-all"
+          >
+            <ShoppingBag className="w-3.5 h-3.5 text-amber-500" />
+            <span className="hidden sm:inline">E-Commerce</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Specimen Cards Shelf Gallery */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--ink-soft)] font-mono">
+              Commercial Benchmarks ({filteredSamples.length} SKUs)
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {/* View Mode: Accordion 3D vs Grid */}
+            <div className="flex items-center gap-1 bg-[var(--surface)] p-1 rounded-full border border-[var(--hairline)]">
+              <button
+                onClick={() => {
+                  sounds.playClick();
+                  setViewMode('accordion');
+                }}
+                className={`px-3 py-1 rounded-full text-[11px] font-semibold flex items-center gap-1.5 transition-all btn-tactile ${
+                  viewMode === 'accordion'
+                    ? 'bg-purple-600 text-white shadow-sm'
+                    : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+                <span>Accordion 3D</span>
+              </button>
+              <button
+                onClick={() => {
+                  sounds.playClick();
+                  setViewMode('grid');
+                }}
+                className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all btn-tactile ${
+                  viewMode === 'grid'
+                    ? 'bg-[var(--ink)] text-[var(--background)] shadow-sm'
+                    : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+                }`}
+              >
+                Grid
+              </button>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1.5 bg-[var(--surface)] p-1 rounded-full border border-[var(--hairline)]">
+              {(['all', 'compliant', 'violations'] as const).map(f => (
+                <button
+                  key={f}
+                  onClick={() => {
+                    sounds.playClick();
+                    setSelectedFilter(f);
+                  }}
+                  className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all btn-tactile ${
+                    selectedFilter === f
+                      ? 'bg-[var(--ink)] text-[var(--background)] shadow-sm'
+                      : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+                  }`}
+                >
+                  {f === 'all' ? 'All' : f === 'compliant' ? '100% Pass' : 'Defect Samples'}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* View Mode: AccordionGallery vs Specimen Grid */}
+        {viewMode === 'accordion' ? (
+          <div className="w-full rounded-[1.5rem] overflow-hidden border border-purple-500/20 bg-[#0d0a14] p-3 shadow-2xl space-y-2">
+            <AccordionGallery
+              items={filteredSamples.map(sample => {
+                const isCompliant = sample.expectedCompliance === 'COMPLIANT';
+                return {
+                  image: sample.thumbnail,
+                  label: sample.name,
+                  category: sample.category,
+                  price: `${sample.declarations.netQuantityValue} ${sample.declarations.netQuantityUnit} • ₹${sample.declarations.mrpValue}`,
+                  statusBadge: isCompliant
+                    ? '100% PASS'
+                    : sample.id === 'sample-5'
+                    ? 'TAMPER SEIZURE'
+                    : 'DEFECT',
+                  sample
+                };
+              })}
+              defaultIndex={Math.max(
+                0,
+                filteredSamples.findIndex(s => s.id === activeSampleId)
+              )}
+              expandRatio={0.52}
+              trigger="hover"
+              accentColor="#A855F7"
+              overlayColor="#060010"
+              textColor="#ffffff"
+              grayscale
+              showLabels
+              duration={0.6}
+              ease="power3.out"
+              parallax={0.5}
+              tilt={8}
+              stagger={0.06}
+              height={460}
+              gap={10}
+              radius={16}
+              orientation="horizontal"
+              onItemSelect={item => {
+                sounds.playClick();
+                if (item.sample) {
+                  onSelectSample(item.sample);
+                }
+              }}
+            />
+          </div>
+        ) : (
+          /* Specimen Grid */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {filteredSamples.map((sample, index) => {
+              const isCompliant = sample.expectedCompliance === 'COMPLIANT';
+              const isActive = activeSampleId === sample.id;
+
+              return (
+                <article
+                  key={sample.id}
+                  onClick={() => {
+                    sounds.playClick();
+                    onSelectSample(sample);
+                  }}
+                  className={`group cursor-pointer rounded-[1.5rem] border transition-all flex flex-col justify-between overflow-hidden relative select-none ${
+                    isActive
+                      ? 'border-[var(--brand)] bg-[var(--surface-card)] shadow-xl ring-2 ring-[var(--brand)]/30 scale-[1.01]'
+                      : 'border-[var(--hairline)] bg-[var(--surface-card)] hover:border-[var(--brand-light)] hover:shadow-md'
+                  }`}
+                >
+                  {/* Artwork Thumbnail with Gloss Overlay */}
+                  <div className="relative w-full h-44 bg-[var(--brand-deep)] overflow-hidden border-b border-[var(--hairline)] flex items-center justify-center">
+                    <img
+                      src={sample.thumbnail}
+                      alt={sample.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none" />
+
+                    {/* Specimen Stamp */}
+                    <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full text-[9px] font-mono font-bold text-white/90 border border-white/15">
+                      SPECIMEN // 0{index + 1}
+                    </div>
+
+                    {/* Status Stamp */}
+                    <div
+                      className={`absolute top-3 right-3 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 backdrop-blur-md uppercase tracking-wider ${
+                        isCompliant
+                          ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50'
+                          : 'bg-rose-950/90 text-rose-300 border border-rose-500/50 animate-pulse'
+                      }`}
+                    >
+                      {isCompliant ? <CheckCircle2 className="w-2.5 h-2.5" /> : <AlertTriangle className="w-2.5 h-2.5" />}
+                      <span>{isCompliant ? 'PASS' : 'DEFECT'}</span>
+                    </div>
+
+                    {/* Net Quantity & MRP Ribbon */}
+                    <div className="absolute bottom-2.5 left-3 text-[10px] font-mono font-semibold text-white/95 bg-black/75 px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/10">
+                      {sample.declarations.netQuantityValue} {sample.declarations.netQuantityUnit} &bull; ₹{sample.declarations.mrpValue}
+                    </div>
+                  </div>
+
+                  {/* Metadata Details */}
+                  <div className="p-4 flex flex-col justify-between flex-1 space-y-3">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--brand)]">
+                        {sample.category}
+                      </span>
+                      <h4 className="font-semibold text-sm text-[var(--ink)] group-hover:text-[var(--brand)] transition-colors leading-snug line-clamp-1">
+                        {sample.name}
+                      </h4>
+                      <p className="text-[11px] text-[var(--ink-soft)] line-clamp-2 leading-relaxed">
+                        {sample.scenarioDescription}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-[var(--hairline)] flex items-center justify-between text-xs">
+                      <span className="text-[10px] text-[var(--ink-soft)] font-mono uppercase">
+                        {sample.tags[0]}
+                      </span>
+                      <span className="text-xs font-semibold text-[var(--brand)] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                        Audit &rarr;
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
