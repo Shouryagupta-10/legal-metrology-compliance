@@ -5,6 +5,7 @@ import { SAMPLE_PRODUCTS } from '../../services/sampleData';
 import { sounds } from '../../services/soundEffects';
 import { exportComplianceReportPDF } from '../../services/pdfExportService';
 import AeroShards from '../AeroShards';
+import GooeyNav from '../GooeyNav';
 
 interface BaselineHeroProps {
   currentSample: SampleProduct;
@@ -53,6 +54,30 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
     if (!muted) sounds.playClick();
   };
 
+  const gooeyNavItems = [
+    { label: "Studio", href: "#studio" },
+    { label: "Checklist", href: "#checklist" },
+    { label: "Benchmarks", href: "#benchmarks" },
+    {
+      label: "Rulebook",
+      href: "#",
+      onClick: (e: React.MouseEvent) => {
+        e.preventDefault();
+        sounds.playClick();
+        onOpenHandbook();
+      }
+    },
+    {
+      label: "Batch Sweep",
+      href: "#",
+      onClick: (e: React.MouseEvent) => {
+        e.preventDefault();
+        sounds.playClick();
+        onOpenBatchModal();
+      }
+    }
+  ];
+
   return (
     <section className="relative isolate overflow-hidden bg-[#120F17] text-white rounded-[var(--radius-card-lg)] min-h-[38rem] h-[calc(100svh-1.5rem)] flex flex-col justify-between p-4 sm:p-8 lg:p-10 shadow-2xl">
       {/* Interactive 3D AeroShards Dynamic Particle Backdrop */}
@@ -88,9 +113,12 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
           holdToGather
           paused={false}
         />
-        {/* Subtle luminous atmosphere overlay */}
+      </div>
+
+      {/* Decorative Brand Ambient Lighting */}
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none opacity-40">
         <div
-          className="absolute inset-0 pointer-events-none opacity-40 mix-blend-screen"
+          className="absolute -top-32 -left-20 w-96 h-96 rounded-full blur-3xl"
           style={{
             background:
               'radial-gradient(120% 90% at 8% 0%, rgba(255,93,115,0.3) 0%, transparent 55%), radial-gradient(110% 90% at 95% 8%, rgba(38,208,206,0.25) 0%, transparent 50%), linear-gradient(160deg, transparent 0%, rgba(18,15,23,0.7) 100%)'
@@ -100,36 +128,19 @@ export const BaselineHero: React.FC<BaselineHeroProps> = ({
 
       {/* Top Header Navbar */}
       <header className="flex items-center justify-between gap-4 text-xs">
-        {/* Left Nav */}
-        <nav className="hidden lg:flex items-center gap-6 text-white/85 font-semibold">
-          <a
-            href="#studio"
-            className="hover:text-[var(--lime)] transition-colors flex items-center gap-1.5"
-          >
-            <Layers className="w-3.5 h-3.5 text-[var(--lime)]" />
-            <span>Packaging Playground</span>
-          </a>
-          <a
-            href="#checklist"
-            className="hover:text-[var(--lime)] transition-colors"
-          >
-            Rule 6 Cheat Sheet
-          </a>
-          <button
-            onClick={onOpenHandbook}
-            className="hover:text-[var(--lime)] transition-colors flex items-center gap-1"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-[var(--sky)]" />
-            <span>The Rulebook</span>
-          </button>
-          <button
-            onClick={onOpenBatchModal}
-            className="hover:text-white transition-colors flex items-center gap-1 text-[var(--sunny)] wiggle-on-hover"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[var(--sunny)]" />
-            <span>Batch Sweep</span>
-          </button>
-        </nav>
+        {/* Left Gooey Navigation */}
+        <div className="hidden lg:block">
+          <GooeyNav
+            items={gooeyNavItems}
+            particleCount={15}
+            particleDistances={[90, 10]}
+            particleR={100}
+            initialActiveIndex={0}
+            animationTime={600}
+            timeVariance={300}
+            colors={[1, 2, 3, 1, 2, 3, 1, 4]}
+          />
+        </div>
 
         {/* Center Brand Identity */}
         <div className="flex items-center gap-2.5 mx-auto lg:mx-0">

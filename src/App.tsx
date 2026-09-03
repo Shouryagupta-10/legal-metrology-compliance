@@ -27,6 +27,7 @@ import { BaselineHero } from './components/Hero/BaselineHero';
 import { FullscreenMenu } from './components/Navigation/FullscreenMenu';
 import { BaselineTrustSection } from './components/Sections/BaselineTrustSection';
 import { AeroShardsShowcase } from './components/Sections/AeroShardsShowcase';
+import { GooeyNavShowcase } from './components/Sections/GooeyNavShowcase';
 import { BaselineStatsSection } from './components/Sections/BaselineStatsSection';
 import { BaselineTestimonialsSection } from './components/Sections/BaselineTestimonialsSection';
 import { BaselineFooter } from './components/Footer/BaselineFooter';
@@ -329,6 +330,9 @@ export const App: React.FC = () => {
 
         {/* 5b. Interactive 3D AeroShards Particle Stream Deck */}
         <AeroShardsShowcase />
+
+        {/* 5c. GooeyNav Liquid Physics Navigation Deck */}
+        <GooeyNavShowcase />
 
         {/* 6. Main Packaging Inspection Studio */}
         <section id="studio" className="bg-[var(--surface)] rounded-[var(--radius-card-lg)] p-5 sm:p-8 lg:p-12 border border-[var(--hairline)] shadow-sm space-y-8 transition-colors duration-300">
