@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { CheckCircle2, XCircle, AlertTriangle, HelpCircle, ChevronDown, ChevronUp, Scale, Sparkles, ArrowUpRight, Search, Filter } from 'lucide-react';
+import { CheckCircle2, XCircle, AlertTriangle, HelpCircle, ChevronDown, ChevronUp, Scale, Sparkles, ArrowUpRight, Search, Filter, Eye } from 'lucide-react';
 import { RuleResult } from '../../types/compliance';
 import { sounds } from '../../services/soundEffects';
+import AnimatedList from '../AnimatedList';
 
 interface RuleChecklistProps {
   ruleResults: RuleResult[];
@@ -14,6 +15,7 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
   activeRuleId,
   onSelectRule
 }) => {
+  const [viewMode, setViewMode] = useState<'animated' | 'cards'>('animated');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedRuleId, setExpandedRuleId] = useState<string | null>(null);
@@ -91,16 +93,49 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
           </p>
         </div>
 
-        {/* Live Search Input */}
-        <div className="relative min-w-48">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Search clause or penalty..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
-          />
+        <div className="flex flex-wrap items-center gap-2">
+          {/* View Mode Switcher */}
+          <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button
+              onClick={() => {
+                sounds.playClick();
+                setViewMode('animated');
+              }}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                viewMode === 'animated'
+                  ? 'bg-purple-600 text-white shadow-sm shadow-purple-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+              <span>Animated List</span>
+            </button>
+            <button
+              onClick={() => {
+                sounds.playClick();
+                setViewMode('cards');
+              }}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'cards'
+                  ? 'bg-sky-600 text-white shadow-sm shadow-sky-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Cards
+            </button>
+          </div>
+
+          {/* Live Search Input */}
+          <div className="relative min-w-40">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search clause..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
+            />
+          </div>
         </div>
       </div>
 
@@ -124,8 +159,115 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
         ))}
       </div>
 
-      {/* Rules List */}
-      <div className="space-y-2.5 max-h-[560px] overflow-y-auto pr-1">
+      {/* View Mode: Animated Queue vs Expanded Cards */}
+      {viewMode === 'animated' ? (
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start pt-2">
+          {/* AnimatedList Queue */}
+          <div className="md:col-span-6 bg-slate-950/60 p-3 rounded-2xl border border-slate-800 shadow-lg">
+            <div className="px-2 py-1.5 mb-2 border-b border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span>Use ↑ / ↓ Arrow Keys or Click</span>
+              <span className="text-purple-400 font-bold">{filteredRules.length} Clauses</span>
+            </div>
+            {filteredRules.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 text-xs">
+                No rules matching &ldquo;{searchQuery || selectedCategory}&rdquo;.
+              </div>
+            ) : (
+              <AnimatedList
+                items={filteredRules.map(
+                  r => `${r.status === 'PASS' ? '✅' : r.status === 'FAIL' ? '❌' : '⚠️'} ${r.ruleClause} • ${r.ruleTitle}`
+                )}
+                onItemSelect={(_, idx) => {
+                  sounds.playClick();
+                  if (filteredRules[idx]) {
+                    onSelectRule(filteredRules[idx].ruleId);
+                  }
+                }}
+                showGradients
+                enableArrowNavigation
+                displayScrollbar
+                className="w-full max-w-full"
+              />
+            )}
+          </div>
+
+          {/* Active Rule Details Dossier */}
+          <div className="md:col-span-6 bg-slate-950/90 rounded-2xl border border-slate-800 p-5 space-y-4 shadow-xl">
+            {(() => {
+              const activeRule = filteredRules.find(r => r.ruleId === activeRuleId) || filteredRules[0];
+              if (!activeRule) {
+                return (
+                  <div className="text-center py-12 text-slate-500 text-xs font-mono">
+                    No active clause selected.
+                  </div>
+                );
+              }
+
+              return (
+                <>
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <span className="text-xs font-mono font-bold text-sky-400 bg-sky-950/60 px-2.5 py-1 rounded-lg border border-sky-800/60">
+                      {activeRule.ruleClause}
+                    </span>
+                    {getStatusBadge(activeRule.status)}
+                  </div>
+
+                  <div>
+                    <h4 className="text-base font-bold text-white tracking-tight">{activeRule.ruleTitle}</h4>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">{activeRule.description}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-slate-900/90 p-3 rounded-xl border border-slate-800 font-mono text-[11px]">
+                    <div>
+                      <span className="text-slate-500 block text-[10px] uppercase font-sans">Extracted Value</span>
+                      <span className={`font-semibold ${activeRule.extractedValue ? 'text-slate-200' : 'text-rose-400 italic'}`}>
+                        {activeRule.extractedValue || 'Missing on Label'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500 block text-[10px] uppercase font-sans">Statutory Requirement</span>
+                      <span className="text-sky-300 font-semibold">{activeRule.expectedFormat}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-xs">
+                    <div className="text-sky-400 font-medium font-mono text-[11px]">
+                      Legal Citation: {activeRule.legalCitation}
+                    </div>
+                    {activeRule.deficiencyReason && (
+                      <div className="text-rose-300 font-medium bg-rose-950/40 p-2.5 rounded-xl border border-rose-900/40">
+                        Deficiency: {activeRule.deficiencyReason}
+                      </div>
+                    )}
+                    {activeRule.recommendation && (
+                      <div className="text-emerald-300 font-medium bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-900/40">
+                        Statutory Remedy: {activeRule.recommendation}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 text-[11px] font-mono text-slate-400 border-t border-slate-800/60">
+                    <span>Schedule: {activeRule.penaltyClause}</span>
+                    <span className="text-amber-300 font-semibold">
+                      Fine: ₹{activeRule.penaltyAmountMin.toLocaleString('en-IN')} &ndash; ₹{activeRule.penaltyAmountMax.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => onSelectRule(activeRule.ruleId)}
+                    className="w-full mt-2 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-md shadow-sky-600/20 btn-tactile"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Focus Declaration on Visual Canvas</span>
+                  </button>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      ) : (
+        /* Rules List (Cards Mode) */
+        <div className="space-y-2.5 max-h-[560px] overflow-y-auto pr-1">
         {filteredRules.length === 0 ? (
           <div className="p-8 text-center text-slate-400 text-xs">
             No rules matching &ldquo;{searchQuery || selectedCategory}&rdquo;.
@@ -222,6 +364,7 @@ export const RuleChecklist: React.FC<RuleChecklistProps> = ({
           })
         )}
       </div>
+    )}
     </div>
   );
 };
