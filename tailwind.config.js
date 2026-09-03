@@ -39,7 +39,8 @@ export default {
         sans: ['Geist', '"Geist Sans"', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"Geist Mono"', 'monospace'],
         pixel: ['"Geist Pixel Square"', 'monospace'],
-        display: ['Geist', '"Geist Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Madimi One"', 'sans-serif'],
+        madimi: ['"Madimi One"', 'sans-serif'],
       },
       borderRadius: {
         card: 'var(--radius-card)',

@@ -95,9 +95,9 @@ body {
   cursor: default;
 }
 
-h1, h2, h3, h4, h5, h6, .font-display {
-  font-family: 'Geist', 'Geist Sans', sans-serif !important;
-  letter-spacing: -0.025em;
+h1, h2, h3, h4, h5, h6, .font-display, .font-madimi {
+  font-family: 'Madimi One', sans-serif !important;
+  letter-spacing: -0.01em;
 }
 
 code, kbd, samp, pre, .font-mono {
