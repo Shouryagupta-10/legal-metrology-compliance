@@ -41,6 +41,96 @@ The content is organized as follows:
 
 <directory_structure>
 public/
+  fonts/
+    geist/
+      geist-mono/
+        GeistMono-Black.ttf
+        GeistMono-Black.woff2
+        GeistMono-BlackItalic.ttf
+        GeistMono-BlackItalic.woff2
+        GeistMono-Bold.ttf
+        GeistMono-Bold.woff2
+        GeistMono-BoldItalic.ttf
+        GeistMono-BoldItalic.woff2
+        GeistMono-ExtraBoldItalic.ttf
+        GeistMono-ExtraBoldItalic.woff2
+        GeistMono-ExtraLightItalic.ttf
+        GeistMono-ExtraLightItalic.woff2
+        GeistMono-Italic.ttf
+        GeistMono-Italic.woff2
+        GeistMono-Italic[wght].ttf
+        GeistMono-Italic[wght].woff2
+        GeistMono-Light.ttf
+        GeistMono-Light.woff2
+        GeistMono-LightItalic.ttf
+        GeistMono-LightItalic.woff2
+        GeistMono-Medium.ttf
+        GeistMono-Medium.woff2
+        GeistMono-MediumItalic.ttf
+        GeistMono-MediumItalic.woff2
+        GeistMono-Regular.ttf
+        GeistMono-Regular.woff2
+        GeistMono-SemiBold.ttf
+        GeistMono-SemiBold.woff2
+        GeistMono-SemiBoldItalic.ttf
+        GeistMono-SemiBoldItalic.woff2
+        GeistMono-Thin.ttf
+        GeistMono-Thin.woff2
+        GeistMono-ThinItalic.ttf
+        GeistMono-ThinItalic.woff2
+        GeistMono-UltraBlack.ttf
+        GeistMono-UltraBlack.woff2
+        GeistMono-UltraLight.ttf
+        GeistMono-UltraLight.woff2
+        GeistMono-Variable.ttf
+        GeistMono-Variable.woff2
+      geist-pixel/
+        GeistPixel-Circle.woff2
+        GeistPixel-Grid.woff2
+        GeistPixel-Line.woff2
+        GeistPixel-Square.woff2
+        GeistPixel-Triangle.woff2
+      geist-sans/
+        Geist-Black.ttf
+        Geist-Black.woff2
+        Geist-BlackItalic.ttf
+        Geist-BlackItalic.woff2
+        Geist-Bold.ttf
+        Geist-Bold.woff2
+        Geist-BoldItalic.ttf
+        Geist-BoldItalic.woff2
+        Geist-ExtraBoldItalic.ttf
+        Geist-ExtraBoldItalic.woff2
+        Geist-ExtraLightItalic.ttf
+        Geist-ExtraLightItalic.woff2
+        Geist-Italic.ttf
+        Geist-Italic.woff2
+        Geist-Italic[wght].ttf
+        Geist-Italic[wght].woff2
+        Geist-Light.ttf
+        Geist-Light.woff2
+        Geist-LightItalic.ttf
+        Geist-LightItalic.woff2
+        Geist-Medium.ttf
+        Geist-Medium.woff2
+        Geist-MediumItalic.ttf
+        Geist-MediumItalic.woff2
+        Geist-Regular.ttf
+        Geist-Regular.woff2
+        Geist-SemiBold.ttf
+        Geist-SemiBold.woff2
+        Geist-SemiBoldItalic.ttf
+        Geist-SemiBoldItalic.woff2
+        Geist-Thin.ttf
+        Geist-Thin.woff2
+        Geist-ThinItalic.ttf
+        Geist-ThinItalic.woff2
+        Geist-UltraBlack.ttf
+        Geist-UltraBlack.woff2
+        Geist-UltraLight.ttf
+        Geist-UltraLight.woff2
+        Geist-Variable.ttf
+        Geist-Variable.woff2
   samples/
     chips.jpg
     cream.jpg
@@ -103,6 +193,10 @@ src/
     AnimatedList.tsx
     ChromaGrid.tsx
     Navbar.tsx
+  fonts/
+    mono.ts
+    pixel.ts
+    sans.ts
   services/
     clientOcr.ts
     extractorService.ts
@@ -115,9 +209,11 @@ src/
     soundEffects.ts
     tamperDetector.ts
   styles/
+    geist.css
     index.css
   types/
     compliance.ts
+    geist.d.ts
   AccordionGallery.css
   AccordionGallery.tsx
   AeroShards.tsx
@@ -4861,6 +4957,66 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
 export default ChromaGrid;
 </file>
 
+<file path="src/fonts/mono.ts">
+export const GeistMono = {
+  className: 'font-mono',
+  variable: '--font-geist-mono',
+  style: { fontFamily: "var(--font-geist-mono)" }
+};
+
+export default GeistMono;
+</file>
+
+<file path="src/fonts/pixel.ts">
+export const GeistPixelSquare = {
+  className: 'font-pixel-square',
+  variable: '--font-geist-pixel-square',
+  style: { fontFamily: "var(--font-geist-pixel-square)" }
+};
+
+export const GeistPixelGrid = {
+  className: 'font-pixel-grid',
+  variable: '--font-geist-pixel-grid',
+  style: { fontFamily: "var(--font-geist-pixel-grid)" }
+};
+
+export const GeistPixelCircle = {
+  className: 'font-pixel-circle',
+  variable: '--font-geist-pixel-circle',
+  style: { fontFamily: "var(--font-geist-pixel-circle)" }
+};
+
+export const GeistPixelTriangle = {
+  className: 'font-pixel-triangle',
+  variable: '--font-geist-pixel-triangle',
+  style: { fontFamily: "var(--font-geist-pixel-triangle)" }
+};
+
+export const GeistPixelLine = {
+  className: 'font-pixel-line',
+  variable: '--font-geist-pixel-line',
+  style: { fontFamily: "var(--font-geist-pixel-line)" }
+};
+
+export default {
+  GeistPixelSquare,
+  GeistPixelGrid,
+  GeistPixelCircle,
+  GeistPixelTriangle,
+  GeistPixelLine
+};
+</file>
+
+<file path="src/fonts/sans.ts">
+export const GeistSans = {
+  className: 'font-sans',
+  variable: '--font-geist-sans',
+  style: { fontFamily: "var(--font-geist-sans)" }
+};
+
+export default GeistSans;
+</file>
+
 <file path="src/services/inspectorIntelligence.ts">
 import {
   RuleResult,
@@ -5295,6 +5451,215 @@ export function detectLabelTampering(
       : score > 0
       ? 'SUSPICIOUS LABEL ANOMALIES: Minor typographic and contour inconsistencies detected. Physical officer verification recommended.'
       : 'AUTHENTIC PACKAGING: No evidence of sticker overlays, price alterations, or typographic manipulation.'
+  };
+}
+</file>
+
+<file path="src/styles/geist.css">
+/* ===================================================================
+   GEIST FONT FAMILY DEFINITIONS (Vercel & Basement Studio)
+   =================================================================== */
+
+/* Geist Sans Variable / Static Weights */
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/fonts/geist/geist-sans/Geist-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/fonts/geist/geist-sans/Geist-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/fonts/geist/geist-sans/Geist-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/fonts/geist/geist-sans/Geist-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/fonts/geist/geist-sans/Geist-Black.woff2') format('woff2');
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Geist Mono */
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist/geist-mono/GeistMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist/geist-mono/GeistMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist/geist-mono/GeistMono-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/fonts/geist/geist-mono/GeistMono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Geist Pixel Variations */
+@font-face {
+  font-family: 'Geist Pixel Square';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Square.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Pixel Grid';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Grid.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Pixel Circle';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Circle.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Pixel Triangle';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Triangle.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Pixel Line';
+  src: url('/fonts/geist/geist-pixel/GeistPixel-Line.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-geist-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-geist-pixel-square: 'Geist Pixel Square', monospace;
+  --font-geist-pixel-grid: 'Geist Pixel Grid', monospace;
+  --font-geist-pixel-circle: 'Geist Pixel Circle', monospace;
+  --font-geist-pixel-triangle: 'Geist Pixel Triangle', monospace;
+  --font-geist-pixel-line: 'Geist Pixel Line', monospace;
+
+  font-family: var(--font-geist-sans);
+}
+
+.font-sans {
+  font-family: var(--font-geist-sans);
+}
+
+.font-mono {
+  font-family: var(--font-geist-mono);
+}
+
+.font-pixel-square {
+  font-family: var(--font-geist-pixel-square);
+}
+
+.font-pixel-grid {
+  font-family: var(--font-geist-pixel-grid);
+}
+
+.font-pixel-circle {
+  font-family: var(--font-geist-pixel-circle);
+}
+
+.font-pixel-triangle {
+  font-family: var(--font-geist-pixel-triangle);
+}
+
+.font-pixel-line {
+  font-family: var(--font-geist-pixel-line);
+}
+</file>
+
+<file path="src/types/geist.d.ts">
+declare module 'geist/font/sans' {
+  export const GeistSans: {
+    className: string;
+    variable: string;
+    style: { fontFamily: string };
+  };
+  export default GeistSans;
+}
+
+declare module 'geist/font/mono' {
+  export const GeistMono: {
+    className: string;
+    variable: string;
+    style: { fontFamily: string };
+  };
+  export default GeistMono;
+}
+
+declare module 'geist/font/pixel' {
+  export const GeistPixelSquare: {
+    className: string;
+    variable: string;
+    style: { fontFamily: string };
+  };
+  export const GeistPixelGrid: {
+    className: string;
+    variable: string;
+    style: { fontFamily: string };
+  };
+  export const GeistPixelCircle: {
+    className: string;
+    variable: string;
+    style: { fontFamily: string };
+  };
+  export const GeistPixelTriangle: {
+    className: string;
+    variable: string;
+    style: { fontFamily: string };
+  };
+  export const GeistPixelLine: {
+    className: string;
+    variable: string;
+    style: { fontFamily: string };
   };
 }
 </file>
@@ -11842,28 +12207,6 @@ assert(report3.inspectorTriage.tier === 'SHOW_CAUSE_NOTICE', 'Sample 3 must be P
 console.log('\n🎉 ALL 8 TEST SCENARIOS PASSED WITH ZERO REGRESSIONS!');
 </file>
 
-<file path="vite.config.ts">
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-    host: true,
-    cors: true,
-    allowedHosts: true
-  },
-  preview: {
-    port: 5173,
-    host: true,
-    cors: true,
-    allowedHosts: true
-  }
-});
-</file>
-
 <file path="src/components/Compliance/RuleChecklist.tsx">
 import React, { useState } from 'react';
 import { CheckCircle2, XCircle, AlertTriangle, HelpCircle, ChevronDown, ChevronUp, Scale, Sparkles, ArrowUpRight, Search, Filter, Eye } from 'lucide-react';
@@ -13366,6 +13709,36 @@ npx tsx tests/compliance.test.ts
 MIT License. Designed for regulatory authorities, FMCG packaging QA, and commercial compliance auditing under the Legal Metrology (Packaged Commodities) Rules, 2011.
 </file>
 
+<file path="vite.config.ts">
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      'geist/font/sans': path.resolve(__dirname, 'src/fonts/sans.ts'),
+      'geist/font/mono': path.resolve(__dirname, 'src/fonts/mono.ts'),
+      'geist/font/pixel': path.resolve(__dirname, 'src/fonts/pixel.ts')
+    }
+  },
+  server: {
+    port: 5173,
+    host: true,
+    cors: true,
+    allowedHosts: true
+  },
+  preview: {
+    port: 5173,
+    host: true,
+    cors: true,
+    allowedHosts: true
+  }
+});
+</file>
+
 <file path="tailwind.config.js">
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -13405,9 +13778,10 @@ export default {
         bubble: { pink: 'var(--bubble-pink)' },
       },
       fontFamily: {
-        sans: ['Onest', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
-        display: ['Fredoka', 'Syne', 'Onest', 'sans-serif'],
+        sans: ['"Geist Sans"', 'Onest', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['"Geist Mono"', '"JetBrains Mono"', 'monospace'],
+        pixel: ['"Geist Pixel Square"', 'monospace'],
+        display: ['"Geist Sans"', 'Fredoka', 'Syne', 'sans-serif'],
       },
       borderRadius: {
         card: 'var(--radius-card)',
@@ -14381,6 +14755,7 @@ export const BaselineTrustSection: React.FC<{
 </file>
 
 <file path="src/styles/index.css">
+@import './geist.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14909,6 +15284,7 @@ button {
     "@types/three": "^0.185.4",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
+    "geist": "^1.7.2",
     "gsap": "^3.15.0",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
@@ -14943,6 +15319,9 @@ import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import Lenis from 'lenis';
 import { Box, Layers, Sparkles } from 'lucide-react';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
+import { GeistPixelSquare, GeistPixelGrid, GeistPixelCircle, GeistPixelTriangle, GeistPixelLine } from 'geist/font/pixel';
 
 import {
   SampleProduct,
@@ -15220,7 +15599,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white transition-colors duration-300">
+    <div className={`min-h-screen bg-[var(--background)] text-[var(--foreground)] antialiased selection:bg-[var(--brand)] selection:text-white transition-colors duration-300 ${GeistSans.className}`}>
       {/* 1. Global Custom Playful Cursor */}
       <CursorFX />
 
