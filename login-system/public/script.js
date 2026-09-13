@@ -73,7 +73,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             return;
         }
 
-        showAlert('Access Granted! Redirecting to secure operational grid...', 'success');
+        showAlert('Welcome! Connecting to Delhi Safety Grid...', 'success');
         localStorage.setItem('rakshak_token', data.token);
         localStorage.setItem('rakshak_user', JSON.stringify(data.user));
 
@@ -117,7 +117,7 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
             return;
         }
 
-        showAlert('Officer account created successfully! Credentials active.', 'success');
+        showAlert('Citizen account created! Loading safety dashboard...', 'success');
         localStorage.setItem('rakshak_token', data.token);
         localStorage.setItem('rakshak_user', JSON.stringify(data.user));
 
@@ -138,19 +138,19 @@ function quickFill(email, password) {
     tabs[0].click();
     document.getElementById('login-email').value = email;
     document.getElementById('login-password').value = password;
-    showAlert(`Demo credentials loaded for ${email}. Click Authenticate below!`, 'success');
+    showAlert(`Demo credentials loaded for ${email}. Click Sign In below!`, 'success');
 }
 
 function quickGuest() {
     const guestUser = {
-        name: "Public Citizen Explorer",
+        name: "Delhi Citizen Explorer",
         email: "citizen@delhi.gov.in",
         role: "Public Citizen",
-        district: "All Districts"
+        district: "Delhi NCR"
     };
-    localStorage.setItem('rakshak_token', 'demo-guest-token');
+    localStorage.setItem('rakshak_token', 'demo-citizen-token');
     localStorage.setItem('rakshak_user', JSON.stringify(guestUser));
-    showModal(guestUser, 'demo-guest-token');
+    showModal(guestUser, 'demo-citizen-token');
 }
 
 // Modal Handling
@@ -172,7 +172,7 @@ function logout() {
 window.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('rakshak_token');
     const userJson = localStorage.getItem('rakshak_user');
-    if (token && userJson && token !== 'demo-guest-token') {
+    if (token && userJson && token !== 'demo-citizen-token') {
         try {
             const res = await fetch('/api/me', {
                 headers: { 'Authorization': `Bearer ${token}` }

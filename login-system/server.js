@@ -55,25 +55,25 @@ function resetFailures(ip) {
 // Database helper functions
 function loadUsers() {
     if (!fs.existsSync(DB_FILE)) {
-        // Seed default verified law enforcement credentials
+        // Seed default verified citizen and commuter credentials
         const salt = bcrypt.genSaltSync(10);
         const defaultUsers = [
             {
                 id: "USR-001",
-                name: "Inspector Rajeev Sharma",
-                email: "inspector@delhipolice.gov.in",
-                passwordHash: bcrypt.hashSync("Password@123", salt),
-                role: "Senior Crime Branch Inspector",
-                district: "Central Delhi",
+                name: "Ananya Sharma",
+                email: "ananya.sharma@gmail.com",
+                passwordHash: bcrypt.hashSync("Citizen@2026", salt),
+                role: "Daily Metro & Walking Commuter",
+                district: "South Delhi",
                 createdAt: new Date().toISOString()
             },
             {
                 id: "USR-002",
-                name: "Sub-Inspector Priya Verma",
-                email: "dispatch@delhipolice.gov.in",
-                passwordHash: bcrypt.hashSync("Dispatch@2026", salt),
-                role: "Rapid Patrol Dispatcher",
-                district: "New Delhi",
+                name: "Rahul Verma",
+                email: "rahul.verma@gmail.com",
+                passwordHash: bcrypt.hashSync("Safety@2026", salt),
+                role: "Neighborhood Safety Volunteer",
+                district: "Central Delhi",
                 createdAt: new Date().toISOString()
             }
         ];
@@ -94,7 +94,7 @@ function saveUsers(users) {
 
 // API Routes
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'online', service: 'Rakshak Sentinel Auth Gateway', timestamp: new Date() });
+    res.json({ status: 'online', service: 'Rakshak Citizen Safety Gateway', timestamp: new Date() });
 });
 
 // POST /api/register
@@ -106,8 +106,8 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ error: 'Name, email, and password are required fields.' });
         }
 
-        if (password.length < 8) {
-            return res.status(400).json({ error: 'Password must be at least 8 characters long.' });
+        if (password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
         }
 
         const users = loadUsers();
@@ -124,7 +124,7 @@ app.post('/api/register', async (req, res) => {
             name: name.trim(),
             email: email.toLowerCase().trim(),
             passwordHash,
-            role: role || 'Verified Officer',
+            role: role || 'Public Citizen',
             district: district || 'Delhi NCR',
             createdAt: new Date().toISOString()
         };
@@ -139,7 +139,7 @@ app.post('/api/register', async (req, res) => {
         );
 
         return res.status(201).json({
-            message: 'Account registered successfully.',
+            message: 'Citizen account registered successfully.',
             token,
             user: {
                 id: newUser.id,
@@ -162,7 +162,7 @@ app.post('/api/login', rateLimiter, async (req, res) => {
         const ip = req.ip || req.connection.remoteAddress;
 
         if (!email || !password) {
-            return res.status(400).json({ error: 'Please provide both email and password.' });
+            return res.status(400).json({ error: 'Please provide both your email and password.' });
         }
 
         const users = loadUsers();
@@ -170,13 +170,13 @@ app.post('/api/login', rateLimiter, async (req, res) => {
 
         if (!user) {
             recordFailure(ip);
-            return res.status(401).json({ error: 'Invalid credentials. Please verify your email and password.' });
+            return res.status(401).json({ error: 'Invalid email or password. Please verify your credentials.' });
         }
 
         const isMatch = await bcrypt.compare(password, user.passwordHash);
         if (!isMatch) {
             recordFailure(ip);
-            return res.status(401).json({ error: 'Invalid credentials. Please verify your email and password.' });
+            return res.status(401).json({ error: 'Invalid email or password. Please verify your credentials.' });
         }
 
         resetFailures(ip);
@@ -228,6 +228,6 @@ app.get('/api/me', authenticateToken, (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🛡️ Rakshak Authentication Server listening on port ${PORT}`);
+    console.log(`🛡️ Rakshak Citizen Safety Gateway listening on port ${PORT}`);
     console.log(`🌐 Open http://localhost:${PORT} in your browser to view the login portal.`);
 });
