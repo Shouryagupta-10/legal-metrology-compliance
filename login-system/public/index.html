@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rakshak.ai | Law Enforcement & Citizen Safety Gateway</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Glows -->
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="grid-overlay"></div>
+
+    <main class="login-wrapper">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="card-header">
+                <div class="logo-wrapper">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="India Emblem" class="emblem-img">
+                </div>
+                <div class="badge-pill">
+                    <span class="pulse-dot"></span>
+                    SECURE ACCESS GATEWAY
+                </div>
+                <h1 class="brand-title">Rakshak.ai</h1>
+                <p class="brand-subtitle">Delhi State Predictive Policing & Citizen Sentinel Network</p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Sign In</button>
+                <button class="tab-btn" data-tab="register">Register</button>
+                <button class="tab-btn" data-tab="demo">Instant Demo</button>
+            </div>
+
+            <!-- Feedback Alert Banner -->
+            <div id="alert-banner" class="alert-banner hidden"></div>
+
+            <!-- Tab 1: Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-email">Official Email Address</label>
+                    <input type="email" id="login-email" placeholder="officer@delhipolice.gov.in" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••••••" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="submit-btn" id="login-submit-btn">
+                    <span class="btn-text">Authenticate & Enter Portal</span>
+                    <span class="btn-spinner hidden"></span>
+                </button>
+            </form>
+
+            <!-- Tab 2: Register Form -->
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="reg-name">Full Name & Rank</label>
+                    <input type="text" id="reg-name" placeholder="Sub-Inspector Rajesh Kumar" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-email">Official / Verification Email</label>
+                    <input type="email" id="reg-email" placeholder="rajesh.kumar@delhipolice.gov.in" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reg-role">Designation</label>
+                        <select id="reg-role">
+                            <option value="Senior Crime Branch Inspector">Senior Inspector</option>
+                            <option value="Rapid Patrol Dispatcher">Patrol Dispatcher</option>
+                            <option value="Crime Analyst Specialist">Crime Analyst</option>
+                            <option value="Civic Community Safety Member">Civic Safety Member</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-district">Delhi District</label>
+                        <select id="reg-district">
+                            <option value="Central">Central Delhi</option>
+                            <option value="New Delhi">New Delhi</option>
+                            <option value="North">North Delhi</option>
+                            <option value="South">South Delhi</option>
+                            <option value="West">West Delhi</option>
+                            <option value="East">East Delhi</option>
+                            <option value="North West">North West</option>
+                            <option value="South West">South West</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password">Security Password (Min 8 characters)</label>
+                    <input type="password" id="reg-password" placeholder="••••••••••••" required minlength="8">
+                </div>
+
+                <button type="submit" class="submit-btn" id="register-submit-btn">
+                    <span class="btn-text">Create Account & Issue Credentials</span>
+                    <span class="btn-spinner hidden"></span>
+                </button>
+            </form>
+
+            <!-- Tab 3: Quick Demo Credentials -->
+            <div id="demo-pane" class="auth-form">
+                <p class="demo-info">Click any pre-verified role below to instantly load credentials and enter the application without manual typing:</p>
+                
+                <div class="demo-grid">
+                    <button type="button" class="demo-card-btn" onclick="quickFill('inspector@delhipolice.gov.in', 'Password@123')">
+                        <div class="demo-icon">🛡️</div>
+                        <div class="demo-details">
+                            <div class="demo-title">Senior Inspector Sharma</div>
+                            <div class="demo-sub">Central District • Full Clearance</div>
+                        </div>
+                    </button>
+
+                    <button type="button" class="demo-card-btn" onclick="quickFill('dispatch@delhipolice.gov.in', 'Dispatch@2026')">
+                        <div class="demo-icon">🚓</div>
+                        <div class="demo-details">
+                            <div class="demo-title">Dispatcher Priya Verma</div>
+                            <div class="demo-sub">New Delhi • Patrol Fleet Command</div>
+                        </div>
+                    </button>
+
+                    <button type="button" class="demo-card-btn demo-citizen" onclick="quickGuest()">
+                        <div class="demo-icon">👤</div>
+                        <div class="demo-details">
+                            <div class="demo-title">Public Citizen Explorer</div>
+                            <div class="demo-sub">Delhi NCR • Public Safety Access</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card Footer -->
+            <div class="card-footer">
+                <span>🔒 256-Bit Cryptographic Hash Protection</span>
+                <span>•</span>
+                <span>Delhi Police GIS Grid</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-badge">✅ AUTHENTICATED</div>
+            <h2 id="modal-name">Welcome, Officer</h2>
+            <p id="modal-role-info">Session established with highest-priority clearance.</p>
+            <div class="modal-token-box">
+                <span class="token-label">Active JWT Session:</span>
+                <code id="modal-token">...</code>
+            </div>
+            <div class="modal-actions">
+                <a href="/" class="modal-action-btn primary" onclick="location.reload()">Refresh Gateway</a>
+                <button class="modal-action-btn secondary" onclick="logout()">Terminate Session</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
